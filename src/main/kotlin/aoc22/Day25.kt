@@ -1,38 +1,78 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package aoc22
 
 import readInput
 import java.math.BigInteger
+import kotlin.math.abs
 
 class Day25 {
+
+    val snafuRange = -2..2
+
     fun solve() {
         val rawInput = readInput("day25.txt")
-        val exponents = prepareExponents(rawInput)
-        val answer = rawInput.sumOf { convertSNAFUToDecadic(it, exponents).sum() }
-        println(answer)
 
-        // 20-1-0=-2=-2220=0011 TODO decoding
+        val exponents = prepareExponents(rawInput)
+
+        val decadicAnswer = rawInput.sumOf { convertSNAFUToDecadic(it, exponents).sum() }
+        val result = convertDecadicToSNAFU(decadicAnswer)
+
+        println("Part one: $result")
     }
 
-    private fun convertSNAFUToDecadic(
-        snafuNumber: String,
-        exponents: List<Long>,
-    ): List<Long> {
-        val parseSnafu = { snafuDecimal: Char ->
-            when (snafuDecimal) {
-                '-' -> -1
-                '=' -> -2
-                else -> snafuDecimal.digitToInt()
-            }
+    fun convertDecadicToSNAFU(value: Long): String {
+        val exponents = (0..100).asSequence()
+            .map { BigInteger.valueOf(5L).pow(it).toLong() }
+            .zipWithNext()
+            .takeWhile { (it, _) -> it < value }
+            .flatMap { it.toList() }
+            .distinct()
+            .toList()
+            .reversed()
+
+        val exponentValues = snafuRange.toList()
+
+        val (_, resultSnafuExponents) = exponents.fold(0L to "") { (accValue, result), exponent ->
+            val (newExponent, newAccValue) = exponentValues
+                .associateWith { exponent * it + accValue }
+                .minBy { (_, exponentValue) -> abs(exponentValue - value) }
+
+            newAccValue to (result + convertToSnafu(newExponent))
         }
 
-        return snafuNumber
-            .reversed()
-            .mapIndexed { index, char -> parseSnafu(char) * exponents[index] }
+        return resultSnafuExponents.dropWhile { it == '0' }
     }
 
-    private fun prepareExponents(input: List<String>): List<Long> {
+    fun convertToSnafu(value: Int): Char = when (value) {
+        -2 -> '='
+        -1 -> '-'
+        0 -> '0'
+        1 -> '1'
+        2 -> '2'
+        else -> error("Illegal value $value")
+    }
+
+    fun parseSnafu(value: Char): Int {
+        val parsedValue = when (value) {
+            '-' -> -1
+            '=' -> -2
+            else -> value.digitToInt()
+        }
+
+        check(parsedValue in snafuRange)
+
+        return parsedValue
+    }
+
+    fun convertSNAFUToDecadic(snafuNumber: String, exponents: List<Long>): List<Long> = snafuNumber
+        .reversed()
+        .mapIndexed { index, char -> parseSnafu(char) * exponents[index] }
+
+    fun prepareExponents(input: List<String>): List<Long> {
         val longestLine = input.maxOf { it.length }
-        return (0..longestLine + 4).map {
+
+        return (0..longestLine).map {
             BigInteger.valueOf(5L).pow(it).toLong()
         }
     }
