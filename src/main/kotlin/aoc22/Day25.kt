@@ -22,8 +22,8 @@ class Day25 {
     }
 
     fun convertDecadicToSNAFU(value: Long): String {
-        val exponents = (0..100).asSequence()
-            .map { BigInteger.valueOf(5L).pow(it).toLong() }
+        val exponents = generateSequence(0, Int::inc)
+            .map { BigInteger.valueOf(5).pow(it).toLong() }
             .zipWithNext()
             .takeWhile { (it, _) -> it < value }
             .flatMap { it.toList() }
@@ -33,15 +33,17 @@ class Day25 {
 
         val exponentValues = snafuRange.toList()
 
-        val (_, resultSnafuExponents) = exponents.fold(0L to "") { (accValue, result), exponent ->
-            val (newExponent, newAccValue) = exponentValues
-                .associateWith { exponent * it + accValue }
+        val (_, resultSnafuExponents) = exponents.fold(0L to listOf<Int>()) { (currentValue, result), exponent ->
+            val (newExponent, updatedValue) = exponentValues
+                .associateWith { exponent * it + currentValue }
                 .minBy { (_, exponentValue) -> abs(exponentValue - value) }
 
-            newAccValue to (result + convertToSnafu(newExponent))
+            updatedValue to (result + newExponent)
         }
 
-        return resultSnafuExponents.dropWhile { it == '0' }
+        val resultSnafu = resultSnafuExponents.dropWhile { it == 0 }.joinToString("") { convertToSnafu(it).toString() }
+
+        return resultSnafu
     }
 
     fun convertToSnafu(value: Int): Char = when (value) {
