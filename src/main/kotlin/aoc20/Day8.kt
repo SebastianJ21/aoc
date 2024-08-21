@@ -4,6 +4,7 @@ package aoc20
 
 import AOCYear
 import kotlinx.collections.immutable.persistentHashSetOf
+import kotlinx.collections.immutable.toPersistentList
 import readInput
 
 class Day8 {
@@ -17,11 +18,11 @@ class Day8 {
             val (operation, rawNumber) = line.split(" ")
 
             OperationType.valueOf(operation.uppercase()) to rawNumber.toInt()
-        }
+        }.toPersistentList()
 
-        val executionSeq = createExecutionSequence(instructions)
+        val executionSequence = createExecutionSequence(instructions)
 
-        val partOne = executionSeq.last().second
+        val partOne = executionSequence.last().second
 
         val partTwo = instructions.indices.firstNotNullOf { instructionIndex ->
             val (operation, value) = instructions[instructionIndex]
@@ -32,10 +33,7 @@ class Day8 {
                 OperationType.ACC -> return@firstNotNullOf null
             }
 
-            val alteredInstructions = instructions
-                .take(instructionIndex)
-                .plus(toSwap)
-                .plus(instructions.takeLast(instructions.lastIndex - instructionIndex))
+            val alteredInstructions = instructions.set(instructionIndex, toSwap)
 
             val (index, acc) = createExecutionSequence(alteredInstructions).last()
 
