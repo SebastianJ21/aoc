@@ -11,38 +11,35 @@ class Day3 {
         val rawInput = readInput("day3.txt", AOCYear.TwentyOne)
 
         val matrix = convertInputToMatrix(rawInput) { value -> value.digitToInt() }
-        val transposedMatrix = matrix.transposed()
 
-        val mostCommonBits = transposedMatrix.map { it.mostCommonBit() }
-        val leastCommonBits = transposedMatrix.map { it.leastCommonBit() }
+        val (mostCommonBits, leastCommonBits) = matrix.transposed().run {
+            map { it.mostCommonBit() } to map { it.leastCommonBit() }
+        }
+
         val partOne = binaryToDecimal(leastCommonBits) * binaryToDecimal(mostCommonBits)
 
-        val oxygenRating = rating(matrix, transposedMatrix) { mostCommonBit() }
-        val co2Rating = rating(matrix, transposedMatrix) { leastCommonBit() }
+        val oxygenRating = rating(matrix) { mostCommonBit() }
+        val co2Rating = rating(matrix) { leastCommonBit() }
+
         val partTwo = binaryToDecimal(oxygenRating) * binaryToDecimal(co2Rating)
 
         println("Part One: $partOne")
         println("Part One: $partTwo")
     }
 
-    private fun rating(
-        matrix: List<List<Int>>,
-        transposedMatrix: List<List<Int>>,
-        bitSelector: List<Int>.() -> Int,
-    ): List<Int> {
-        val sequence =
-            generateSequence(Triple(matrix, transposedMatrix, 0)) { (currentMatrix, currentTransposed, index) ->
-                if (currentMatrix.size <= 1) return@generateSequence null
+    private fun rating(matrix: List<List<Int>>, bitSelector: List<Int>.() -> Int): List<Int> {
+        val sequence = generateSequence(matrix to 0) { (currentMatrix, index) ->
+            if (currentMatrix.size <= 1) return@generateSequence null
 
-                val bitToKeep = currentTransposed[index].bitSelector()
-                val newMatrix = currentMatrix.filter { bits -> bits[index] == bitToKeep }
+            val bitToKeep = currentMatrix.transposed()[index].bitSelector()
+            val newMatrix = currentMatrix.filter { bits -> bits[index] == bitToKeep }
 
-                Triple(newMatrix, newMatrix.transposed(), index + 1)
-            }
+            newMatrix to index + 1
+        }
 
-        val lastRating = sequence.last()
+        val (lastRatingMatrix) = sequence.last()
 
-        return lastRating.first.single()
+        return lastRatingMatrix.single()
     }
 
     private fun List<Int>.mostCommonBit(): Int {
