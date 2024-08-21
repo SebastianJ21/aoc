@@ -17,18 +17,20 @@ class Day10 {
         }
 
         val adapterSequence = adapters.sorted()
-
         val differences = adapterSequence.zipWithNext { a, b -> b - a }
 
         val partOne = differences.count { it == 1 } * differences.count { it == 3 }
 
-        val nodeToPossiblePaths = adapterSequence.drop(1).fold(mapOf(adapterSequence.first() to 1L)) { paths, adapter ->
+        val initialPaths = mapOf(adapterSequence.first() to 1L)
+
+        val adapterToPossiblePaths = adapterSequence.drop(1).fold(initialPaths) { paths, adapter ->
+            // Path to adapter = Sum of paths to previous 3 adapters
             val adapterPaths = (1..3).sumOf { paths[adapter - it] ?: 0L }
 
             paths + (adapter to adapterPaths)
         }
 
-        val partTwo = nodeToPossiblePaths.getValue(adapterSequence.last())
+        val partTwo = adapterToPossiblePaths.getValue(adapterSequence.last())
 
         println("Part one: $partOne")
         println("Part two: $partTwo")

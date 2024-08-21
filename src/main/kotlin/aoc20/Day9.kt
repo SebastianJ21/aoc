@@ -11,9 +11,10 @@ class Day9 {
 
         val numbers = rawInput.mapToLong()
 
-        val partOne = numbers.asSequence().windowed(26, 1).first { nums ->
-            !twoSum(nums.dropLast(1), nums.last())
-        }.last()
+        val partOne = numbers.asSequence()
+            .windowed(26, 1)
+            .first { window -> !twoSum(window.dropLast(1), window.last()) }
+            .last()
 
         val prefixSums = numbers.runningReduce { acc, num -> acc + num }
 
