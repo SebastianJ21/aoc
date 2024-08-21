@@ -15,7 +15,8 @@ class Day6 {
 
         val partTwo = answersPerGroup.sumOf { groupAnswers ->
             groupAnswers.flatten()
-                .groupingBy { it }.eachCount()
+                .groupingBy { it }
+                .eachCount()
                 .count { (_, answerCount) -> answerCount == groupAnswers.size }
         }
 
