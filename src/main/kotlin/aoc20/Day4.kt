@@ -13,29 +13,31 @@ class Day4 {
 
         val blankCid = "cid" to "420"
 
-        val allEntriesPassports = rawPassports.mapNotNull { rawPassport ->
-            val entryFields = rawPassport.joinToString(" ").split(" ").associate { fullEntry ->
-                val (entry, value) = fullEntry.split(':')
-                entry to value
+        val validEntries = rawPassports.mapNotNull { rawPassport ->
+            val passportEntries = rawPassport.joinToString(" ").split(" ")
+
+            val entryFields = passportEntries.associate { entry ->
+                val (name, value) = entry.split(':')
+
+                name to value
             } + blankCid
 
             entryFields.takeIf { it.keys.size == 8 }
         }
 
-        val partOne = allEntriesPassports.size
+        val partOne = validEntries.size
 
-        val hclValidation = (0..9).map { it.toString().single() } + listOf('a', 'b', 'c', 'd', 'e', 'f')
         val eclValidation = listOf("amb", "blu", "brn", "gry", "grn", "hzl", "oth")
 
-        val validPassports = allEntriesPassports.filter { passportEntries ->
-            passportEntries.all { (entry, rawValue) ->
+        val validPassports = validEntries.filter { entries ->
+            entries.all { (entry, value) ->
                 when (entry) {
-                    "byr" -> rawValue.length == 4 && rawValue.toInt() in 1920..2002
-                    "iyr" -> rawValue.length == 4 && rawValue.toInt() in 2010..2020
-                    "eyr" -> rawValue.length == 4 && rawValue.toInt() in 2020..2030
+                    "byr" -> value.length == 4 && value.toInt() in 1920..2002
+                    "iyr" -> value.length == 4 && value.toInt() in 2010..2020
+                    "eyr" -> value.length == 4 && value.toInt() in 2020..2030
                     "hgt" -> {
-                        val number = rawValue.takeWhile { it.isDigit() }.toInt()
-                        val unit = rawValue.takeLastWhile { !it.isDigit() }
+                        val number = value.takeWhile { it.isDigit() }.toInt()
+                        val unit = value.takeLastWhile { !it.isDigit() }
 
                         when (unit) {
                             "in" -> number in 59..76
@@ -43,11 +45,9 @@ class Day4 {
                             else -> false
                         }
                     }
-                    "hcl" -> rawValue.run {
-                        startsWith('#') && length == 7 && drop(1).all { it in hclValidation }
-                    }
-                    "ecl" -> rawValue in eclValidation
-                    "pid" -> rawValue.length == 9 && rawValue.all { it.isDigit() }
+                    "hcl" -> value.startsWith('#') && value.drop(1) matches Regex("[0-9a-f]{6}")
+                    "ecl" -> value in eclValidation
+                    "pid" -> value.length == 9 && value.all { it.isDigit() }
                     "cid" -> true
                     else -> false
                 }
