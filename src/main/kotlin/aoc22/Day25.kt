@@ -22,8 +22,7 @@ class Day25 {
     }
 
     fun convertDecadicToSNAFU(value: Long): String {
-        val exponents = generateSequence(0, Int::inc)
-            .map { BigInteger.valueOf(5).pow(it).toLong() }
+        val exponents = generateSequence(1L) { it * 5L }
             .zipWithNext()
             .takeWhile { (it, _) -> it < value }
             .flatMap { it.toList() }
