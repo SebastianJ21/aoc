@@ -6,6 +6,7 @@ enum class AOCYear {
     TwentyTwo,
     TwentyOne,
     Twenty,
+    Nineteen,
 }
 
 const val RESOURCES_PATH = "src/main/resources"
@@ -21,6 +22,7 @@ fun AOCYear.getSuffix() = when (this) {
     AOCYear.TwentyTwo -> "aoc22"
     AOCYear.TwentyOne -> "aoc21"
     AOCYear.Twenty -> "aoc20"
+    AOCYear.Nineteen -> "aoc19"
 }
 
 typealias Position = Pair<Int, Int>
@@ -157,3 +159,8 @@ fun <T, K, V : Iterable<T>> invertListMap(map: Map<K, V>): Map<T, List<K>> =
 fun <T> List<T>.firstAndRest() = first() to drop(1)
 
 fun String.firstAndRest() = first() to drop(1)
+
+fun printAOCAnswers(partOne: Any?, partTwo: Any? = null) {
+    println("Part one: ${partOne ?: "not solved"}")
+    println("Part two: ${partTwo ?: "not solved"}")
+}
