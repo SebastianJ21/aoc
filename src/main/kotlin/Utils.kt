@@ -63,10 +63,11 @@ operator fun <T> Array<Array<T>>.set(position: Pair<Int, Int>, value: T) {
 fun <T> Array<Array<T>>.getOrNull(position: Position) = getOrNull(position.first)?.getOrNull(position.second)
 
 inline fun <reified T> Array<Array<T>>.transposed(): Array<Array<T>> {
-    val rowSize = this[0].size
-    check(all { it.size == rowSize }) { "Array to be transposed is not a matrix" }
+    val rowSize = first().size
 
     return Array(rowSize) { rowI ->
+        check(this[rowI].size == rowSize) { "Array to be transposed is not a matrix" }
+
         Array(this.size) { colI ->
             this[colI][rowI]
         }
@@ -86,9 +87,10 @@ inline fun <reified T> Array<Array<T>>.executeBlockOnEach(block: (T, Pair<Int, I
 
 fun <T> List<List<T>>.transposed(): List<List<T>> {
     val rowSize = first().size
-    check(all { it.size == rowSize }) { "Array to be transposed is not a matrix" }
 
     return List(rowSize) { rowI ->
+        check(this[rowI].size == rowSize) { "Array to be transposed is not a matrix" }
+
         List(size) { colI ->
             this[colI][rowI]
         }
