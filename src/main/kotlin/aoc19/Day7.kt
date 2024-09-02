@@ -33,15 +33,15 @@ class Day7 {
     }
 
     fun maxAmpLoopSignal(instructions: PersistentList<Int>, phaseSettings: List<Int>): Int {
+        val lastAmpIndex = phaseSettings.last()
+        val firstAmpIndex = phaseSettings.first()
+
         fun executeAmpLoop(configurationSetting: List<Int>): Map<Int, ExecutionState> {
-            val initialAmps = configurationSetting.associateWith {
-                ExecutionState(instructions, 0, listOf(it))
-            }
+            val initialAmps = phaseSettings.zip(configurationSetting) { ampIndex, phaseSetting ->
+                ampIndex to ExecutionState(instructions, 0, listOf(phaseSetting))
+            }.toMap()
 
-            val firstAmp = configurationSetting.min()
-            val lastAmp = configurationSetting.max()
-
-            val initialState = Triple(0, firstAmp, initialAmps)
+            val initialState = Triple(0, firstAmpIndex, initialAmps)
 
             val sequence = generateSequence(initialState) { (inputSignal, ampIndex, ampStates) ->
                 val ampState = ampStates.getValue(ampIndex).run {
@@ -54,7 +54,7 @@ class Day7 {
                 if (newState.outputs.isEmpty()) return@generateSequence null
 
                 val newInputSignal = newState.outputs.last()
-                val newAmpIndex = if (ampIndex == lastAmp) firstAmp else ampIndex + 1
+                val newAmpIndex = if (ampIndex == lastAmpIndex) firstAmpIndex else ampIndex + 1
 
                 Triple(newInputSignal, newAmpIndex, ampStates.plus(ampIndex to newState))
             }
@@ -72,8 +72,7 @@ class Day7 {
                 if (newUnusedSettings.isEmpty()) {
                     val ampLoopResult = executeAmpLoop(newUsedSettings)
 
-                    // settingToUse corresponds to the last amp
-                    ampLoopResult.getValue(settingToUse).outputs.single()
+                    ampLoopResult.getValue(lastAmpIndex).outputs.single()
                 } else {
                     findMaxAmpLoopSignal(newUnusedSettings, newUsedSettings)
                 }
