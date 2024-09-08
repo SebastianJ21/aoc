@@ -3,11 +3,11 @@
 package aoc23
 
 import Position
+import applyDirection
 import convertInputToCharMatrix
 import getOrNull
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
-import plus
 import readInput
 
 class Day23 {
@@ -40,13 +40,15 @@ class Day23 {
         val toggles = matrixWithoutSlopes.flatMapIndexed { rowI, row ->
             row.mapIndexedNotNull { colI, value ->
                 if (value != '.') return@mapIndexedNotNull null
-                val position = rowI to colI
 
-                position to directions.mapNotNull { direction ->
-                    val check = position + direction
+                val position = rowI to colI
+                val possibleDirections = directions.mapNotNull { direction ->
+                    val check = position.applyDirection(direction)
 
                     check.takeIf { matrixWithoutSlopes.getOrNull(it) == '.' }
                 }
+
+                position to possibleDirections
             }.filter { (_, togglePaths) -> togglePaths.size > 2 }
         }.toMap() + (start to getNextPositions(start, matrix)) + (end to getNextPositions(end, matrix))
 
@@ -91,27 +93,25 @@ class Day23 {
     fun getAllTogglePaths(
         matrix: List<List<Char>>,
         toggles: Map<Position, List<Position>>,
-    ): Map<Position, List<Pair<Position, Int>>> {
-        return toggles.mapValues { (toggle, togglePaths) ->
-            val reachableToggles = togglePaths.map { path -> findNextToggle(path, toggles, matrix, toggle) }
-                .filter { it.isNotEmpty() }
+    ): Map<Position, List<Pair<Position, Int>>> = toggles.mapValues { (toggle, togglePaths) ->
+        val reachableToggles = togglePaths
+            .map { path -> findNextTogglePath(path, toggles, matrix, toggle) }
+            .filter { it.isNotEmpty() }
 
-            reachableToggles.map { path -> path.last() to path.size }
-        }
+        reachableToggles.map { path -> path.last() to path.size }
     }
 
     fun getNextPositions(position: Position, matrix: List<List<Char>>, previous: Position? = null) =
         directions.mapNotNull { direction ->
-            val newPosition = position + direction
+            val newPosition = position.applyDirection(direction)
             val value = matrix.getOrNull(newPosition)
 
-            newPosition.takeIf {
-                it != previous &&
-                    (value != null && (value == '.' || slopeToDirection[value] == direction))
-            }
+            if (value == null || newPosition == previous) return@mapNotNull null
+
+            newPosition.takeIf { value == '.' || slopeToDirection[value] == direction }
         }
 
-    fun findNextToggle(
+    fun findNextTogglePath(
         position: Position,
         toggles: Map<Position, List<Position>>,
         matrix: List<List<Char>>,
