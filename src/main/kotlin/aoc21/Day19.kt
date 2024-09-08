@@ -13,22 +13,14 @@ typealias Position = Triple<Int, Int, Int>
 
 class Day19 {
 
-    data class BeaconPairing(
-        val first: Position,
-        val second: Position,
-        val scannerIndex: Int,
-    ) {
+    data class BeaconPairing(val first: Position, val second: Position, val scannerIndex: Int) {
 
         val absoluteAxisDistance = first.let { (a, b, c) ->
             listOf(abs(a - second.first), abs(b - second.second), abs(c - second.third)).sorted()
         }.let { (a, b, c) -> Triple(a, b, c) }
     }
 
-    data class ScannerResolver(
-        val fromIndex: Int,
-        val toIndex: Int,
-        val resolver: (Position) -> Position,
-    )
+    data class ScannerResolver(val fromIndex: Int, val toIndex: Int, val resolver: (Position) -> Position)
 
     fun solve() {
         val rawInput = readInput("day19.txt", AOCYear.TwentyOne)
