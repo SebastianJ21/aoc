@@ -19,7 +19,8 @@ class Day15 {
     }
 
     private fun vanEck(initial: List<Int>, n: Int): Int {
-        // Sadly, the cost of using immutable data structure for Van Eck is too high (more than double of time complexity)
+        // Sadly, the cost of using immutable data structure for Van Eck is too high
+        // (more than double the time complexity)
         val occurrences = Array<Int?>(n) { null }
 
         initial.dropLast(1).forEachIndexed { index, number -> occurrences[number] = index + 1 }
