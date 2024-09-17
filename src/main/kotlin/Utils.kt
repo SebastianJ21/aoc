@@ -92,10 +92,9 @@ inline fun <reified T> Array<Array<T>>.executeBlockOnEach(block: (T, Pair<Int, I
 
 fun <T> List<List<T>>.transposed(): List<List<T>> {
     val rowSize = first().size
+    check(all { it.size == rowSize }) { "Array to be transposed is not a matrix" }
 
     return List(rowSize) { rowI ->
-        check(this[rowI].size == rowSize) { "Array to be transposed is not a matrix" }
-
         List(size) { colI ->
             this[colI][rowI]
         }
