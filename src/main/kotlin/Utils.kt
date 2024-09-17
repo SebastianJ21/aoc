@@ -27,7 +27,12 @@ fun AOCYear.getSuffix() = when (this) {
 
 typealias Position = Pair<Int, Int>
 
-fun Position.applyDirection(direction: Pair<Int, Int>): Position = this + direction
+/**
+ * For more descriptive naming when used alongside [Position]
+ */
+typealias Direction = Pair<Int, Int>
+
+fun Position.applyDirection(direction: Direction): Position = this + direction
 
 operator fun Pair<Int, Int>.plus(other: Pair<Int, Int>) = first.plus(other.first) to second.plus(other.second)
 

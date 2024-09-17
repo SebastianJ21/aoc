@@ -3,6 +3,7 @@
 package aoc19
 
 import AOCYear
+import Direction
 import Position
 import applyDirection
 import kotlinx.collections.immutable.PersistentSet
@@ -18,32 +19,40 @@ class Day11 {
     val left = 0 to -1
     val right = 0 to 1
 
+    data class PaintState(
+        val executionState: ExecutionState,
+        val position: Position,
+        val direction: Direction,
+        val currentWhiteTiles: PersistentSet<Position>,
+        val paintedTiles: PersistentSet<Position>,
+    )
+
     fun solve() {
         val rawInput = readInput("day11.txt", AOCYear.Nineteen)
 
         val inputInstructions = rawInput.single().split(",").mapToLong()
-        val initialRobotState = Triple(ExecutionState.fromList(inputInstructions, listOf()), Position(0, 0), up)
+        val initialExecutionState = ExecutionState.fromList(inputInstructions, listOf())
 
-        fun getFinalTiles(
-            initialWhiteTiles: PersistentSet<Position>,
-        ): Pair<PersistentSet<Position>, PersistentSet<Position>> {
-            val initialTileState = initialWhiteTiles to initialWhiteTiles
+        fun getFinalPaintState(initialWhiteTiles: PersistentSet<Position>): PaintState {
+            val initialState = PaintState(
+                executionState = initialExecutionState,
+                position = Position(0, 0),
+                direction = up,
+                currentWhiteTiles = initialWhiteTiles,
+                paintedTiles = initialWhiteTiles,
+            )
 
-            val paintSequence = generateSequence(initialRobotState to initialTileState) { (robotState, tilesState) ->
-                val (state, position, direction) = robotState
-
-                val (currentWhiteTiles, paintedTiles) = tilesState
+            val paintSequence = generateSequence(initialState) { paintState ->
+                val (state, position, direction, currentWhiteTiles, paintedTiles) = paintState
 
                 val input = if (position in currentWhiteTiles) 1L else 0L
 
                 executeTwiceOrNull(state.copy(inputs = listOf(input)))?.let { (newState, outputs) ->
                     val (paintInstruction, turnInstruction) = outputs
 
-                    val newTiles = when (paintInstruction) {
+                    val (newWhiteTiles, newPaintedTiles) = when (paintInstruction) {
                         0L -> currentWhiteTiles.remove(position) to paintedTiles
-                        1L -> {
-                            currentWhiteTiles.add(position) to paintedTiles.add(position)
-                        }
+                        1L -> currentWhiteTiles.add(position) to paintedTiles.add(position)
                         else -> error("Illegal instruction $paintInstruction")
                     }
 
@@ -54,25 +63,25 @@ class Day11 {
                     }
                     val newPosition = position.applyDirection(newDirection)
 
-                    Triple(newState, newPosition, newDirection) to newTiles
+                    PaintState(newState, newPosition, newDirection, newWhiteTiles, newPaintedTiles)
                 }
             }
 
-            val (_, finalTileState) = paintSequence.last()
-
-            return finalTileState
+            return paintSequence.last()
         }
 
-        val (_, paintedTiles) = getFinalTiles(persistentHashSetOf())
-        val (finalWhiteTiles) = getFinalTiles(persistentHashSetOf(Position(0, 0)))
+        val partOnePaintState = getFinalPaintState(persistentHashSetOf())
+        val partTwoPaintState = getFinalPaintState(persistentHashSetOf(Position(0, 0)))
 
-        val partOne = paintedTiles.size
+        val partTwoWhiteTiles = partTwoPaintState.currentWhiteTiles
 
-        val maxCol = finalWhiteTiles.maxOf { (_, col) -> col }.inc()
-        val maxRow = finalWhiteTiles.maxOf { (row) -> row }.inc()
+        val partOne = partOnePaintState.paintedTiles.size
+
+        val maxCol = partTwoWhiteTiles.maxOf { (_, col) -> col }.inc()
+        val maxRow = partTwoWhiteTiles.maxOf { (row) -> row }.inc()
 
         val finalMatrix = List(maxRow) { rowI ->
-            List(maxCol) { colI -> if (finalWhiteTiles.contains(rowI to colI)) "#" else " " }
+            List(maxCol) { colI -> if (partTwoWhiteTiles.contains(rowI to colI)) "#" else " " }
         }
 
         val partTwo = "\n" + finalMatrix.joinToString("\n") { row ->
@@ -97,7 +106,7 @@ class Day11 {
 
     private fun ExecutionState.withoutOutputs() = copy(outputs = emptyList())
 
-    fun turnLeft(currentDirection: Pair<Int, Int>) = when (currentDirection) {
+    fun turnLeft(currentDirection: Direction) = when (currentDirection) {
         up -> left
         left -> down
         down -> right
@@ -105,7 +114,7 @@ class Day11 {
         else -> error("Illegal direction $currentDirection")
     }
 
-    fun turnRight(currentDirection: Pair<Int, Int>) = when (currentDirection) {
+    fun turnRight(currentDirection: Direction) = when (currentDirection) {
         up -> right
         left -> up
         down -> left
