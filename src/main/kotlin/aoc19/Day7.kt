@@ -47,7 +47,7 @@ class Day7 {
                     copy(inputs = inputs.plus(inputSignal), outputs = emptyList())
                 }
 
-                val newState = executeInstructions(ampState, true)
+                val newState = executeInstructions(ampState, 1)
 
                 if (newState.outputs.isEmpty()) return@generateSequence null
 
@@ -83,7 +83,7 @@ class Day7 {
         val possibleOutputs = phaseSettings.associateWith { phaseSetting ->
             val state = ExecutionState(initialMemory, listOf(phaseSetting, input))
 
-            executeInstructions(state, false).outputs.single()
+            executeInstructions(state).outputs.single()
         }
 
         return possibleOutputs.maxOf { (usedSetting, output) ->

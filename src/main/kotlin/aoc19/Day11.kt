@@ -47,24 +47,29 @@ class Day11 {
 
                 val input = if (position in currentWhiteTiles) 1L else 0L
 
-                executeTwiceOrNull(state.copy(inputs = listOf(input)))?.let { (newState, outputs) ->
-                    val (paintInstruction, turnInstruction) = outputs
+                val newState = IntCodeRunner.executeInstructions(
+                    state.copy(inputs = listOf(input), outputs = emptyList()),
+                    2,
+                )
 
-                    val (newWhiteTiles, newPaintedTiles) = when (paintInstruction) {
-                        0L -> currentWhiteTiles.remove(position) to paintedTiles
-                        1L -> currentWhiteTiles.add(position) to paintedTiles.add(position)
-                        else -> error("Illegal instruction $paintInstruction")
-                    }
+                if (newState.outputs.isEmpty()) return@generateSequence null
 
-                    val newDirection = when (turnInstruction) {
-                        0L -> turnLeft(direction)
-                        1L -> turnRight(direction)
-                        else -> error("Illegal instruction $paintInstruction")
-                    }
-                    val newPosition = position.applyDirection(newDirection)
+                val (paintInstruction, turnInstruction) = newState.outputs
 
-                    PaintState(newState, newPosition, newDirection, newWhiteTiles, newPaintedTiles)
+                val (newWhiteTiles, newPaintedTiles) = when (paintInstruction) {
+                    0L -> currentWhiteTiles.remove(position) to paintedTiles
+                    1L -> currentWhiteTiles.add(position) to paintedTiles.add(position)
+                    else -> error("Illegal instruction $paintInstruction")
                 }
+
+                val newDirection = when (turnInstruction) {
+                    0L -> turnLeft(direction)
+                    1L -> turnRight(direction)
+                    else -> error("Illegal instruction $paintInstruction")
+                }
+                val newPosition = position.applyDirection(newDirection)
+
+                PaintState(newState, newPosition, newDirection, newWhiteTiles, newPaintedTiles)
             }
 
             return paintSequence.last()
@@ -90,21 +95,6 @@ class Day11 {
 
         printAOCAnswers(partOne, partTwo)
     }
-
-    fun executeTwiceOrNull(state: ExecutionState): Pair<ExecutionState, Pair<Long, Long>>? {
-        val first = IntCodeRunner.executeInstructions(state, true)
-        val firstOutput = first.outputs.singleOrNull()
-
-        val second = IntCodeRunner.executeInstructions(first.withoutOutputs(), true)
-        val secondOutput = second.outputs.singleOrNull()
-
-        // The program finished
-        if (firstOutput == null || secondOutput == null) return null
-
-        return second.withoutOutputs() to Pair(firstOutput, secondOutput)
-    }
-
-    private fun ExecutionState.withoutOutputs() = copy(outputs = emptyList())
 
     fun turnLeft(currentDirection: Direction) = when (currentDirection) {
         up -> left

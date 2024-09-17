@@ -37,7 +37,7 @@ class IntCodeRunner {
             else -> error("Illegal mode for readWriteAddress $mode")
         }
 
-        fun executeInstructions(initialState: ExecutionState, stopOnOutput: Boolean = false): ExecutionState {
+        fun executeInstructions(initialState: ExecutionState, stopOnOutputSize: Int? = null): ExecutionState {
             val sequence = generateSequence(initialState) { currentState ->
                 val (memory, inputs, output, index, relativeOffset) = currentState
 
@@ -46,7 +46,7 @@ class IntCodeRunner {
                 val opCode = instruction.takeLast(2).toInt()
                 val parameterModes = instruction.take(3).map { it.digitToInt() }.reversed()
 
-                if (output.isNotEmpty() && stopOnOutput) {
+                if (stopOnOutputSize != null && stopOnOutputSize <= output.size) {
                     return@generateSequence null
                 }
 
