@@ -20,7 +20,7 @@ class Day15 {
 
     val directions = listOf(up to 1L, down to 2L, left to 3L, right to 4L)
 
-    enum class PositionType { TILE, OXYGEN_SYSTEM }
+    enum class PositionType { WALL, TILE, OXYGEN }
 
     fun solve() {
         val rawInput = readInput("day15.txt", AOCYear.Nineteen)
@@ -30,9 +30,7 @@ class Day15 {
 
         val shortestPaths = dijkstra(initialExecutionState)
 
-        val (partOne) = shortestPaths.values.single { (_, type) ->
-            type == PositionType.OXYGEN_SYSTEM
-        }
+        val (partOne) = shortestPaths.values.single { (_, type) -> type == PositionType.OXYGEN }
 
         val positionToTileType = shortestPaths.mapValues { (_, value) -> value.second }
 
@@ -40,21 +38,21 @@ class Day15 {
             .zipWithNext()
             .takeWhile { (state, nextState) -> state != nextState }
             .count()
-            .dec() // Don't count the initial state
 
         printAOCAnswers(partOne, partTwo)
     }
 
     fun spreadOxygen(state: Map<Position, PositionType>) = buildMap {
         state.forEach { (position, type) ->
-
             when (type) {
-                PositionType.OXYGEN_SYSTEM -> {
-                    directions.forEach { (direction) ->
-                        val adjecentPosition = position.applyDirection(direction)
+                PositionType.OXYGEN -> {
+                    put(position, PositionType.OXYGEN)
 
-                        if (adjecentPosition in state) {
-                            put(adjecentPosition, PositionType.OXYGEN_SYSTEM)
+                    directions.forEach { (direction) ->
+                        val adjacentPosition = position.applyDirection(direction)
+
+                        if (state[adjacentPosition] == PositionType.TILE) {
+                            put(adjacentPosition, PositionType.OXYGEN)
                         }
                     }
                 }
@@ -63,15 +61,20 @@ class Day15 {
                         put(position, PositionType.TILE)
                     }
                 }
+                PositionType.WALL -> {
+                    put(position, PositionType.WALL)
+                    // Type inference bug...
+                    return@forEach
+                }
             }
         }
     }
 
     private fun dijkstra(initialState: ExecutionState): Map<Position, Pair<Int, PositionType>> {
         val visited = hashSetOf<Position>()
+        val queue = PriorityQueue<Triple<Int, Position, ExecutionState>>(compareBy { (distance) -> distance })
         val startPosition = 0 to 0
 
-        val queue = PriorityQueue<Triple<Int, Position, ExecutionState>>(compareBy { it.first })
         queue.add(Triple(0, startPosition, initialState))
 
         val resultMap: Map<Position, Pair<Int, PositionType>> = buildMap {
@@ -82,7 +85,7 @@ class Day15 {
 
                 if (!visited.add(position)) continue
 
-                val tileDataToCheck = directions.mapNotNull { (direction, input) ->
+                val tileDataToCheck = directions.map { (direction, input) ->
                     val positionToCheck = position.applyDirection(direction)
 
                     val resultState = IntCodeRunner.executeInstructions(
@@ -90,14 +93,14 @@ class Day15 {
                         1,
                     )
 
-                    val tileData = when (resultState.outputs.single()) {
-                        0L -> null
-                        1L -> Triple(positionToCheck, PositionType.TILE, resultState)
-                        2L -> Triple(positionToCheck, PositionType.OXYGEN_SYSTEM, resultState)
+                    val tileType = when (resultState.outputs.single()) {
+                        0L -> PositionType.WALL
+                        1L -> PositionType.TILE
+                        2L -> PositionType.OXYGEN
                         else -> error("Illegal IntCode output: ${resultState.outputs.single()}")
                     }
 
-                    tileData
+                    Triple(positionToCheck, tileType, resultState)
                 }
 
                 tileDataToCheck.forEach { (positionToCheck, tileType, state) ->
@@ -107,7 +110,9 @@ class Day15 {
 
                     this[positionToCheck] = minDistance to tileType
 
-                    queue.add(Triple(minDistance, positionToCheck, state))
+                    if (tileType != PositionType.WALL) {
+                        queue.add(Triple(minDistance, positionToCheck, state))
+                    }
                 }
             }
         }
