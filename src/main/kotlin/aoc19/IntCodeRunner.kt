@@ -5,20 +5,24 @@ import kotlinx.collections.immutable.toPersistentMap
 
 data class ExecutionState(
     val memory: PersistentMap<Long, Long>,
-    val inputs: List<Long>,
+    val inputs: List<Long> = emptyList(),
     val outputs: List<Long> = emptyList(),
     val index: Long = 0L,
     val relativeBaseOffset: Long = 0L,
 ) {
 
     companion object {
-        fun fromList(listMem: List<Long>, inputs: List<Long>): ExecutionState {
+        fun fromList(listMem: List<Long>, inputs: List<Long> = emptyList()): ExecutionState {
             val memory = listMem.withIndex().associate { (index, value) -> index.toLong() to value }.toPersistentMap()
 
             return ExecutionState(memory, inputs)
         }
     }
 }
+
+fun ExecutionState.withInputs(vararg inputs: Long) = copy(inputs = inputs.toList())
+
+fun ExecutionState.withClearedOutputs() = copy(outputs = emptyList())
 
 class IntCodeRunner {
 

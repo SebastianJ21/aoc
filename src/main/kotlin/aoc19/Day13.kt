@@ -4,6 +4,7 @@ package aoc19
 
 import AOCYear
 import Position
+import aoc19.IntCodeRunner.Companion.executeInstructions
 import applyDirection
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
@@ -50,8 +51,8 @@ class Day13 {
 
         val instructions = rawInput.single().split(",").mapToLong()
 
-        val boardCreationSequence = generateSequence(ExecutionState.fromList(instructions, listOf())) { state ->
-            IntCodeRunner.executeInstructions(state.withoutOutputs(), 3)
+        val boardCreationSequence = generateSequence(ExecutionState.fromList(instructions)) { state ->
+            executeInstructions(state.withClearedOutputs(), 3)
         }.drop(1).takeWhile { it.outputs.isNotEmpty() }
 
         val initialGameBoard = boardCreationSequence.fold(persistentMapOf<Position, Tile>()) { board, state ->
@@ -64,8 +65,8 @@ class Day13 {
 
         val gameInstructions = instructions.toPersistentList().set(0, 2)
 
-        val startGameExecutionState = generateSequence(ExecutionState.fromList(gameInstructions, listOf())) { state ->
-            IntCodeRunner.executeInstructions(state.withoutOutputs(), 3)
+        val startGameExecutionState = generateSequence(ExecutionState.fromList(gameInstructions)) { state ->
+            executeInstructions(state.withClearedOutputs(), 3)
         }.drop(1).drop(boardCreationSequence.count()).first()
 
         val initialGameState = GameState(
@@ -77,12 +78,10 @@ class Day13 {
         )
 
         val gameSequence = generateSequence(initialGameState) { (state, board, score, ball, paddle) ->
-            val maintainDistanceInput = state.inputs.ifEmpty { listOf(getPaddleDirection(paddle.second, ball.second)) }
+            val maintainDistanceInput = state.inputs.firstOrNull() ?: getPaddleDirection(paddle.second, ball.second)
 
-            val newState = IntCodeRunner.executeInstructions(
-                state.copy(outputs = emptyList(), inputs = maintainDistanceInput),
-                6,
-            ).let { if (it.hasScoreUpdate()) IntCodeRunner.executeInstructions(it, 9) else it }
+            val newState = executeInstructions(state.withInputs(maintainDistanceInput).withClearedOutputs(), 6)
+                .let { if (it.hasScoreUpdate()) executeInstructions(it, 9) else it }
 
             if (newState.outputs.isEmpty()) return@generateSequence null
 
@@ -91,23 +90,25 @@ class Day13 {
             val newBallPosition = getNewBallPosition(ball, newBoard)
             val newPaddle = getNewPaddlePosition(paddle, newBoard)
 
-            val input = if (newBoard[ball] != Tile.BALL) {
+            val resultState = if (newBoard[ball] != Tile.BALL) {
                 val ballYMovement = newBallPosition.second - ball.second
                 val nextBallY = newBallPosition.second + ballYMovement
 
                 val willHitPaddle = paddle.first - newBallPosition.first == 1
 
                 // Ball will hit the paddle -> Don't move the paddle in prediction of the ball movement
-                if (willHitPaddle && newBallPosition.second == paddle.second) {
+                val input = if (willHitPaddle && newBallPosition.second == paddle.second) {
                     0L
                 } else {
                     getPaddleDirection(paddle.second, nextBallY)
                 }
+
+                newState.withInputs(input)
             } else {
-                null
+                newState
             }
 
-            GameState(newState.copy(inputs = listOfNotNull(input)), newBoard, newScore, newBallPosition, newPaddle)
+            GameState(resultState, newBoard, newScore, newBallPosition, newPaddle)
         }
 
         val partTwo = gameSequence.last().score
@@ -152,6 +153,4 @@ class Day13 {
         paddle < ball -> 1L
         else -> 0L
     }
-
-    private fun ExecutionState.withoutOutputs() = copy(outputs = emptyList())
 }

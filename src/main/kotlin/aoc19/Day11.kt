@@ -5,6 +5,7 @@ package aoc19
 import AOCYear
 import Direction
 import Position
+import aoc19.IntCodeRunner.Companion.executeInstructions
 import applyDirection
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
@@ -47,10 +48,7 @@ class Day11 {
 
                 val input = if (position in currentWhiteTiles) 1L else 0L
 
-                val newState = IntCodeRunner.executeInstructions(
-                    state.copy(inputs = listOf(input), outputs = emptyList()),
-                    2,
-                )
+                val newState = executeInstructions(state.withInputs(input).withClearedOutputs(), 2)
 
                 if (newState.outputs.isEmpty()) return@generateSequence null
 

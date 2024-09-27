@@ -1,6 +1,7 @@
 package aoc19
 
 import AOCYear
+import aoc19.IntCodeRunner.Companion.executeInstructions
 import mapToLong
 import printAOCAnswers
 import readInput
@@ -11,12 +12,10 @@ class Day9 {
         val rawInput = readInput("day9.txt", AOCYear.Nineteen)
 
         val instructions = rawInput.single().split(",").mapToLong()
+        val initialState = ExecutionState.fromList(instructions)
 
-        val partOneInitialState = ExecutionState.fromList(instructions, listOf(1))
-        val partOne = IntCodeRunner.executeInstructions(partOneInitialState).outputs.single()
-
-        val partTwoInitialState = ExecutionState.fromList(instructions, listOf(2))
-        val partTwo = IntCodeRunner.executeInstructions(partTwoInitialState).outputs.single()
+        val partOne = executeInstructions(initialState.withInputs(1)).outputs.single()
+        val partTwo = executeInstructions(initialState.withInputs(2)).outputs.single()
 
         printAOCAnswers(partOne, partTwo)
     }

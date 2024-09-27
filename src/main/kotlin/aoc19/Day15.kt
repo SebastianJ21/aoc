@@ -4,6 +4,7 @@ package aoc19
 
 import AOCYear
 import Position
+import aoc19.IntCodeRunner.Companion.executeInstructions
 import applyDirection
 import mapToLong
 import printAOCAnswers
@@ -88,10 +89,7 @@ class Day15 {
                 val tileDataToCheck = directions.map { (direction, input) ->
                     val positionToCheck = position.applyDirection(direction)
 
-                    val resultState = IntCodeRunner.executeInstructions(
-                        currentState.copy(outputs = listOf(), inputs = listOf(input)),
-                        1,
-                    )
+                    val resultState = executeInstructions(currentState.withInputs(input).withClearedOutputs(), 1)
 
                     val tileType = when (resultState.outputs.single()) {
                         0L -> PositionType.WALL
