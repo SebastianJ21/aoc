@@ -2,20 +2,21 @@
 
 package aoc19
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
-import printAOCAnswers
 import readInput
 import kotlin.math.ceil
 
-class Day14 {
+class Day14 : AOCSolution {
 
     data class Chemical(val index: Int, val amount: Int)
 
     fun String.parseToChemical() = split(' ').let { (amount, item) -> Pair(item, amount.toInt()) }
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day14.txt", AOCYear.Nineteen)
 
         val pairs = rawInput.map { line ->
@@ -71,7 +72,7 @@ class Day14 {
         val partOne = oreCostForOneFuel
         val partTwo = findMaxFuelSequence.last()
 
-        printAOCAnswers(partOne, partTwo)
+        return AOCAnswer(partOne, partTwo)
     }
 
     fun purchaseFuel(

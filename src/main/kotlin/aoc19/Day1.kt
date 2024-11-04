@@ -1,13 +1,14 @@
 package aoc19
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import mapToInt
-import printAOCAnswers
 import readInput
 
-class Day1 {
+class Day1 : AOCSolution {
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day1.txt", AOCYear.Nineteen)
 
         val numbers = rawInput.mapToInt()
@@ -22,6 +23,6 @@ class Day1 {
             }.sum()
         }
 
-        printAOCAnswers(partOne, partTwo)
+        return AOCAnswer(partOne, partTwo)
     }
 }

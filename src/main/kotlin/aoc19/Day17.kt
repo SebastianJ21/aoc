@@ -2,6 +2,8 @@
 
 package aoc19
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import Direction
 import Position
@@ -11,14 +13,13 @@ import getOrNull
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
 import mapToLong
-import printAOCAnswers
 import readInput
 import splitBy
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
 
-class Day17 {
+class Day17 : AOCSolution {
 
     val up: Direction = -1 to 0
     val down: Direction = 1 to 0
@@ -54,7 +55,7 @@ class Day17 {
         currentDirection.rotate(turn) == nextDirection
     }
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day17.txt", AOCYear.Nineteen)
 
         val inputInstructions = rawInput.single().split(',').mapToLong()
@@ -124,7 +125,7 @@ class Day17 {
         val initialStatePartTwo = initialState.copy(memory = initialState.memory.put(0, 2), inputs = robotInput)
         val partTwo = executeInstructions(initialStatePartTwo).outputs.last()
 
-        printAOCAnswers(partOne, partTwo)
+        return AOCAnswer(partOne, partTwo)
     }
 
     fun robotCommandsToIntCodeInput(commands: List<String>) = commands

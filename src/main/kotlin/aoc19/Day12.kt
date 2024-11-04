@@ -2,11 +2,12 @@
 
 package aoc19
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import kotlinx.collections.immutable.persistentHashSetOf
 import lcm
 import mapToInt
-import printAOCAnswers
 import readInput
 import transposed
 import java.math.BigInteger
@@ -14,9 +15,9 @@ import kotlin.math.abs
 
 typealias Position_Velocity = Pair<Int, Int>
 
-class Day12 {
+class Day12 : AOCSolution {
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day12.txt", AOCYear.Nineteen)
 
         val moonPositions = rawInput.map { line ->
@@ -42,7 +43,7 @@ class Day12 {
         // First repeating state = Period of repetition for each axis (as they are independent of each other) -> LCM
         val partTwo = moonAxesWithVelocity.map { findPeriod(it).toBigInteger() }.reduce(BigInteger::lcm)
 
-        printAOCAnswers(partOne, partTwo)
+        return AOCAnswer(partOne, partTwo)
     }
 
     fun getNextAxis(axisWithVelocity: List<Position_Velocity>) =

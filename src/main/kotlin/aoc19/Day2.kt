@@ -1,15 +1,16 @@
 package aoc19
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import aoc19.IntCodeRunner.Companion.executeInstructions
 import kotlinx.collections.immutable.toPersistentMap
 import mapToLong
-import printAOCAnswers
 import readInput
 
-class Day2 {
+class Day2 : AOCSolution {
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day2.txt", AOCYear.Nineteen)
 
         val instructions = rawInput.single().split(",").mapToLong()
@@ -36,6 +37,6 @@ class Day2 {
 
         val partTwo = 100 * resultReplacement.first + resultReplacement.second
 
-        printAOCAnswers(partOne, partTwo)
+        return AOCAnswer(partOne, partTwo)
     }
 }

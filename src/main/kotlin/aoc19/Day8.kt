@@ -1,14 +1,15 @@
 package aoc19
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
-import printAOCAnswers
 import readInput
 
-class Day8 {
+class Day8 : AOCSolution {
 
     private val imageDimensions = 25 to 6
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day8.txt", AOCYear.Nineteen)
 
         val (width, height) = imageDimensions
@@ -32,6 +33,6 @@ class Day8 {
             row.joinToString("") { if (it == 1) "#" else " " }
         }
 
-        printAOCAnswers(partOne, partTwo)
+        return AOCAnswer(partOne, partTwo)
     }
 }

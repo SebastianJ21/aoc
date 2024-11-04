@@ -166,6 +166,7 @@ fun <T> List<T>.firstAndRest() = first() to drop(1)
 
 fun String.firstAndRest() = first() to drop(1)
 
+@Deprecated(message = "Return a AOCAnswer instead", ReplaceWith("AOCAnswer", "src/main/kotlin/Main.kt/AOCAnswer"))
 fun printAOCAnswers(partOne: Any?, partTwo: Any? = null) {
     println("Part one: ${partOne ?: "not solved"}")
     println("Part two: ${partTwo ?: "not solved"}")

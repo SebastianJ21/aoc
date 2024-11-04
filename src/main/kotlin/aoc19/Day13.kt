@@ -2,6 +2,8 @@
 
 package aoc19
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import Position
 import aoc19.IntCodeRunner.Companion.executeInstructions
@@ -11,10 +13,9 @@ import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toPersistentList
 import mapToLong
 import plus
-import printAOCAnswers
 import readInput
 
-class Day13 {
+class Day13 : AOCSolution {
 
     val up = -1 to 0
     val down = 1 to 0
@@ -46,7 +47,7 @@ class Day13 {
         val paddlePosition: Position,
     )
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day13.txt", AOCYear.Nineteen)
 
         val instructions = rawInput.single().split(",").mapToLong()
@@ -113,7 +114,7 @@ class Day13 {
 
         val partTwo = gameSequence.last().score
 
-        printAOCAnswers(partOne, partTwo)
+        return AOCAnswer(partOne, partTwo)
     }
 
     val possibleBallDirections = listOf(up + left, up + right, down + left, down + right, 0 to 0)

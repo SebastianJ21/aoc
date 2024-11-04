@@ -2,17 +2,18 @@
 
 package aoc19
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import Position
 import aoc19.IntCodeRunner.Companion.executeInstructions
 import applyDirection
 import mapToLong
-import printAOCAnswers
 import readInput
 import java.util.PriorityQueue
 import kotlin.math.min
 
-class Day15 {
+class Day15 : AOCSolution {
 
     val up = -1 to 0
     val down = 1 to 0
@@ -23,7 +24,7 @@ class Day15 {
 
     enum class PositionType { WALL, TILE, OXYGEN }
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day15.txt", AOCYear.Nineteen)
 
         val inputInstructions = rawInput.single().split(",").mapToLong()
@@ -40,7 +41,7 @@ class Day15 {
             .takeWhile { (state, nextState) -> state != nextState }
             .count()
 
-        printAOCAnswers(partOne, partTwo)
+        return AOCAnswer(partOne, partTwo)
     }
 
     fun spreadOxygen(state: Map<Position, PositionType>) = buildMap {

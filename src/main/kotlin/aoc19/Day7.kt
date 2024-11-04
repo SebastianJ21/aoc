@@ -2,17 +2,18 @@
 
 package aoc19
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import aoc19.IntCodeRunner.Companion.executeInstructions
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.toPersistentMap
 import mapToLong
-import printAOCAnswers
 import readInput
 
-class Day7 {
+class Day7 : AOCSolution {
 
-    fun solve() {
+    override fun solve(): AOCAnswer  {
         val rawInput = readInput("day7.txt", AOCYear.Nineteen)
 
         val instructions = rawInput.single().split(",").mapToLong()
@@ -27,7 +28,7 @@ class Day7 {
         val loopPhaseSettings = 5..9L
         val partTwo = maxAmpLoopSignal(initialMemory, loopPhaseSettings.toList())
 
-        printAOCAnswers(partOne, partTwo)
+        return AOCAnswer(partOne, partTwo)
     }
 
     fun maxAmpLoopSignal(initialMemory: PersistentMap<Long, Long>, phaseSettings: List<Long>): Long {

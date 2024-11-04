@@ -1,15 +1,16 @@
 package aoc19
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import Position
 import applyDirection
-import printAOCAnswers
 import readInput
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class Day3 {
+class Day3 : AOCSolution {
 
     val up = -1 to 0
     val down = 1 to 0
@@ -37,7 +38,7 @@ class Day3 {
 
     fun intersects(a: LineRange, b: LineRange) = a.x.intersects(b.x) && a.y.intersects(b.y)
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day3.txt", AOCYear.Nineteen)
 
         val linePositions = rawInput.map { line ->
@@ -94,7 +95,7 @@ class Day3 {
         val partOne = validIntersections.minOf { (point) -> manhattanDistance(origin, point) }
         val partTwo = validIntersections.minOf { (_, steps) -> steps }
 
-        printAOCAnswers(partOne, partTwo)
+        return AOCAnswer(partOne, partTwo)
     }
 
     fun manhattanDistance(a: Position, b: Position) = abs(a.first - b.first) + abs(a.second - b.second)

@@ -16,6 +16,10 @@ fun main() {
 
 data class AOCAnswer(val partOne: Any, val partTwo: Any?)
 
+interface AOCSolution {
+    fun solve(): AOCAnswer
+}
+
 fun solveYear(
     year: AOCYear = AOCYear.TwentyThree,
     days: List<Int> = (1..25).toList(),

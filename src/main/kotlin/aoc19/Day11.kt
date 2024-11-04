@@ -2,6 +2,8 @@
 
 package aoc19
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import Direction
 import Position
@@ -10,10 +12,9 @@ import applyDirection
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
 import mapToLong
-import printAOCAnswers
 import readInput
 
-class Day11 {
+class Day11 : AOCSolution {
 
     val up = -1 to 0
     val down = 1 to 0
@@ -28,7 +29,7 @@ class Day11 {
         val paintedTiles: PersistentSet<Position>,
     )
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day11.txt", AOCYear.Nineteen)
 
         val inputInstructions = rawInput.single().split(",").mapToLong()
@@ -91,7 +92,7 @@ class Day11 {
             row.joinToString("") { it }
         }
 
-        printAOCAnswers(partOne, partTwo)
+        return AOCAnswer(partOne, partTwo)
     }
 
     fun turnLeft(currentDirection: Direction) = when (currentDirection) {

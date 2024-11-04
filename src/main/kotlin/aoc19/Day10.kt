@@ -2,9 +2,10 @@
 
 package aoc19
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import convertInputToCharMatrix
-import printAOCAnswers
 import readInput
 import kotlin.math.PI
 import kotlin.math.abs
@@ -12,9 +13,9 @@ import kotlin.math.atan2
 
 typealias PositionDouble = Pair<Double, Double>
 
-class Day10 {
+class Day10 : AOCSolution {
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day10.txt", AOCYear.Nineteen)
 
         val matrix = convertInputToCharMatrix(rawInput)
@@ -45,7 +46,7 @@ class Day10 {
 
         val partTwo = removalSequence.toList()[199].let { (row, col) -> row + (col * 100) }.toInt()
 
-        printAOCAnswers(seenPositions, partTwo)
+        return AOCAnswer(seenPositions, partTwo)
     }
 
     fun getFirstPositionsInSight(origin: PositionDouble, positions: List<PositionDouble>): List<PositionDouble> {

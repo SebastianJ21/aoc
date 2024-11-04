@@ -1,14 +1,15 @@
 package aoc19
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import firstAndRest
 import mapToInt
-import printAOCAnswers
 import readInput
 
-class Day4 {
+class Day4 : AOCSolution {
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day4.txt", AOCYear.Nineteen)
 
         val (from, to) = rawInput.single().split("-").mapToInt()
@@ -54,6 +55,6 @@ class Day4 {
         val partOne = range.count { isValidPartOne(it) }
         val partTwo = range.count { isValidPartTwo(it) }
 
-        printAOCAnswers(partOne, partTwo)
+        return AOCAnswer(partOne, partTwo)
     }
 }

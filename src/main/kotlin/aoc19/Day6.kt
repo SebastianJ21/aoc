@@ -2,16 +2,17 @@
 
 package aoc19
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import invertListMap
-import printAOCAnswers
 import readInput
 import java.util.PriorityQueue
 import kotlin.math.min
 
-class Day6 {
+class Day6 : AOCSolution {
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day6.txt", AOCYear.Nineteen)
 
         val planetToOrbiters = rawInput.map { line ->
@@ -35,7 +36,7 @@ class Day6 {
 
         val partTwo = shortestPaths.getValue("SAN") - 2
 
-        printAOCAnswers(partOne, partTwo)
+        return AOCAnswer(partOne, partTwo)
     }
 
     fun shortestPaths(graph: Map<String, List<String>>, start: String): Map<String, Int> {
