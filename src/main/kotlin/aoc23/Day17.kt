@@ -1,15 +1,15 @@
 package aoc23
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import applyDirection
-import convertInputToArrayMatrix
+import convertInputToMatrix
 import getOrNull
 import readInput
 import java.util.PriorityQueue
 
-private typealias Matrix = Array<Array<Int>>
-
-class Day17 {
+class Day17 : AOCSolution {
     val up = -1 to 0
     val down = 1 to 0
     val left = 0 to -1
@@ -23,46 +23,38 @@ class Day17 {
         else -> error("")
     }
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day17.txt", AOCYear.TwentyThree)
 
-        val matrix = convertInputToArrayMatrix(rawInput) { digitToInt() }
+        val matrix = convertInputToMatrix(rawInput) { value -> value.digitToInt() }
         val startPos = 0 to 0
-        val endPos = matrix.size - 1 to matrix.last().size - 1
+        val endPosition = matrix.lastIndex to matrix.last().lastIndex
 
-        val partOne =
-            allPaths(matrix, startPos, 2, 0)
-                .getValue(endPos)
-                .minOf { (_, value, _) -> value }
+        val partOne = allPaths(matrix, startPos, 2, 0)
+            .getValue(endPosition)
+            .minOf { (_, value, _) -> value }
 
-        val partTwo =
-            allPaths(matrix, startPos, 9, 3)
-                .getValue(endPos)
-                .minOf { (_, value, _) -> value }
+        val partTwo = allPaths(matrix, startPos, 9, 3)
+            .getValue(endPosition)
+            .minOf { (_, value, _) -> value }
 
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
     data class PathNode(val directionCount: Int, val pathCost: Int, val direction: Pair<Int, Int>)
 
     private fun allPaths(
-        matrix: Matrix,
+        matrix: List<List<Int>>,
         start: Position,
         maxDirCount: Int,
         minTurnCount: Int,
     ): Map<Position, List<PathNode>> {
-        val paths = matrix
-            .flatMapIndexed { rowI, row ->
-                row.mapIndexed { colI, _ -> (rowI to colI) to listOf<PathNode>() }
-            }
-            .toMap()
-            .toMutableMap()
+        val turnCountRange = minTurnCount..maxDirCount
 
-        val compareFunc = { a: Pair<Position, PathNode>, b: Pair<Position, PathNode> ->
-            a.second.pathCost.compareTo(
-                b.second.pathCost,
-            )
+        val paths = hashMapOf<Pair<Int, Int>, List<PathNode>>()
+
+        val compareFunc = { (_, aNode): Pair<Position, PathNode>, (_, bNode): Pair<Position, PathNode> ->
+            aNode.pathCost.compareTo(bNode.pathCost)
         }
         val queue = PriorityQueue(compareFunc)
         queue.add(start to PathNode(0, 0, right))
@@ -72,45 +64,37 @@ class Day17 {
             val (currentPosition, pathNode) = queue.poll()
             val (sameDirectionCount, current, directionVector) = pathNode
 
-            val (leftDirVec, rightDirVec) = listOf(left, right).map { turnDirection(directionVector, it) }
+            val (leftTurn, rightTurn, noTurn) =
+                listOf(left, right).map { turnDirection(directionVector, it) }.plus(directionVector)
 
-            val (leftPos, rightPos, continuePos) =
-                listOf(leftDirVec, rightDirVec, directionVector).map { currentPosition.applyDirection(it) }
+            fun checkTurn(turn: Pair<Int, Int>, directionCount: Int) {
+                val position = currentPosition.applyDirection(turn)
+                val value = matrix.getOrNull(position) ?: return
 
-            val (left, right, continued) =
-                with(matrix) {
-                    listOf(
-                        getOrNull(leftPos),
-                        getOrNull(rightPos),
-                        getOrNull(continuePos),
-                    )
+                val pathCost = current + value
+                val currentPaths = paths[position] ?: emptyList()
+
+                val isBestOption = currentPaths.none { node ->
+                    node.directionCount == directionCount && node.pathCost <= pathCost && node.direction == turn
                 }
 
-            fun Int.checkDirection(position: Position, direction: Pair<Int, Int>, directionCount: Int) {
-                val pathCost = current + this
-                val currentPaths = paths.getValue(position)
-
-                val isBestOption =
-                    currentPaths.none { (dirCount, value, dir) ->
-                        dirCount == directionCount && value <= pathCost && dir == direction
-                    }
-
                 if (!isBestOption) return
+                val newNode = PathNode(directionCount, pathCost, turn)
 
-                val newPaths = currentPaths + PathNode(directionCount, pathCost, direction)
+                val newPaths = currentPaths + newNode
 
                 paths[position] = newPaths
-                queue.offer(position to PathNode(directionCount, pathCost, direction))
+                queue.offer(position to newNode)
             }
 
-            left?.takeIf { sameDirectionCount in minTurnCount..maxDirCount }
-                ?.checkDirection(leftPos, leftDirVec, 0)
+            if (sameDirectionCount in turnCountRange) {
+                checkTurn(leftTurn, 0)
+                checkTurn(rightTurn, 0)
+            }
 
-            right?.takeIf { sameDirectionCount in minTurnCount..maxDirCount }
-                ?.checkDirection(rightPos, rightDirVec, 0)
-
-            continued?.takeIf { sameDirectionCount < maxDirCount }
-                ?.checkDirection(continuePos, directionVector, sameDirectionCount + 1)
+            if (sameDirectionCount < maxDirCount) {
+                checkTurn(noTurn, sameDirectionCount + 1)
+            }
         }
 
         return paths
