@@ -1,16 +1,20 @@
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.runInterruptible
-import kotlinx.coroutines.withTimeoutOrNull
 import org.reflections.Reflections
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.functions
+import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.full.valueParameters
 
 fun main() {
     solveYear(AOCYear.Twenty, days = listOf(19, 1), timeout = 1000)
 }
+
+data class AOCAnswer(val partOne: Any, val partTwo: Any?)
 
 fun solveYear(
     year: AOCYear = AOCYear.TwentyThree,
@@ -47,19 +51,59 @@ fun solveYear(
         }
 
         val classInstance = klazz.createInstance()
+        val executor = Executors.newVirtualThreadPerTaskExecutor()
         val start = System.currentTimeMillis()
 
         println("Day $dayNumber:")
 
-        if (timeout != null) {
-            runBlocking(Dispatchers.IO) {
-                withTimeoutOrNull(timeout) {
-                    runInterruptible { solveMethod.call(classInstance) }
-                }
-            }
-        } else {
-            solveMethod.call(classInstance)
+        val hasIncorrectReturnType = solveMethod.returnType != AOCAnswer::class.starProjectedType
+
+        if (hasIncorrectReturnType) {
+            val warningColor = "\u001B[33m"
+            val resetColor = "\u001B[0m"
+
+            log(warningColor + "Solve method does not return the expected AOCAnswer type!" + resetColor)
+
+            if (quietlySkipMissing) return@mapNotNull null
         }
+
+        val callableSolve = Callable { solveMethod.call(classInstance) }
+        val task = executor.submit(callableSolve)
+
+        val result = runCatching {
+            if (timeout != null) {
+                task.get(timeout, TimeUnit.MILLISECONDS)
+            } else {
+                task.get()
+            }
+        }
+
+        result.onFailure { exception ->
+            when (exception) {
+                is ExecutionException -> {
+                    // TODO: Get the lowest level cause (the actual error in the solving code)?
+
+                    // Possibly make this configurable? Currently, an error from one day halts the entire execution
+                    throw exception.cause ?: exception
+                }
+                is InterruptedException, is TimeoutException -> {
+                    executor.shutdownNow()
+
+                    println("Timeout out...")
+                }
+                else -> error("Unknown exception type in result: $exception")
+            }
+        }
+
+        result.onSuccess { answer ->
+            if (!hasIncorrectReturnType) {
+                val (partOne, partTwo) = answer as AOCAnswer
+
+                printAOCAnswers(partOne, partTwo)
+            }
+        }
+
+        // TODO: Handling of performance on timed-out tasks
         System.currentTimeMillis() - start
     }
 
