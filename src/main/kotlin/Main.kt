@@ -20,6 +20,8 @@ interface AOCSolution {
     fun solve(): AOCAnswer
 }
 
+enum class ErrorPropagation { CAUSE, FULL, NONE }
+
 fun solveYear(
     year: AOCYear = AOCYear.TwentyThree,
     days: List<Int> = (1..25).toList(),
@@ -27,6 +29,7 @@ fun solveYear(
     timeout: Long? = null,
     quietlySkipMissing: Boolean = false,
     logTotalPerformance: Boolean = true,
+    errorPropagation: ErrorPropagation = ErrorPropagation.CAUSE,
 ) {
     val prefix = year.getSuffix()
     val reflections = Reflections(prefix)
@@ -88,7 +91,13 @@ fun solveYear(
                     // TODO: Get the lowest level cause (the actual error in the solving code)?
 
                     // Possibly make this configurable? Currently, an error from one day halts the entire execution
-                    throw exception.cause ?: exception
+                    when (errorPropagation) {
+                        ErrorPropagation.FULL -> throw exception
+                        ErrorPropagation.CAUSE -> throw exception.lowestLevelCause()
+                        ErrorPropagation.NONE -> {
+                            println("${exception.lowestLevelCause()}")
+                        }
+                    }
                 }
                 is InterruptedException, is TimeoutException -> {
                     executor.shutdownNow()
@@ -115,3 +124,5 @@ fun solveYear(
         println("Performance: ${timings.sum()} ms")
     }
 }
+
+fun Throwable.lowestLevelCause(): Throwable = cause?.lowestLevelCause() ?: this
