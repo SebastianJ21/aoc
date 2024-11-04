@@ -46,13 +46,6 @@ operator fun <T> List<List<T>>.get(position: Position) = this[position.first][po
 
 fun <T> List<List<T>>.getOrNull(position: Position) = getOrNull(position.first)?.getOrNull(position.second)
 
-inline fun <reified T : Any> convertInputToArrayMatrix(input: List<String>, transform: Char.() -> T): Array<Array<T>> =
-    Array(input.size) { i ->
-        Array(input[i].length) { j ->
-            transform(input[i][j])
-        }
-    }
-
 fun convertInputToCharMatrix(input: List<String>): List<List<Char>> = input.map { it.toList() }
 
 fun convertInputToCharArrayMatrix(input: List<String>): Array<Array<Char>> = Array(input.size) { i ->
@@ -80,15 +73,6 @@ inline fun <reified T> Array<Array<T>>.transposed(): Array<Array<T>> {
 }
 
 fun Iterable<Int>.maxOrZero() = maxOrNull() ?: 0
-
-// Note: Creates a pair for each element, which might lead to performance issues when used very frequently
-inline fun <reified T> Array<Array<T>>.executeBlockOnEach(block: (T, Pair<Int, Int>) -> Unit) {
-    forEachIndexed { rowI, row ->
-        row.forEachIndexed { colI, value ->
-            block(value, rowI to colI)
-        }
-    }
-}
 
 fun <T> List<List<T>>.transposed(): List<List<T>> {
     val rowSize = first().size

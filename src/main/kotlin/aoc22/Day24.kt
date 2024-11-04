@@ -1,17 +1,18 @@
 package aoc22
 
+import AOCAnswer
+import AOCSolution
 import Position
-import convertInputToArrayMatrix
-import executeBlockOnEach
+import convertInputToMatrix
 import getOrNull
 import plus
 import readInput
 import kotlin.math.abs
 import kotlin.math.min
 
-typealias TileMatrix = Array<Array<List<Day24.TileType>>>
+typealias TileMatrix = List<List<List<Day24.TileType>>>
 
-class Day24 {
+class Day24 : AOCSolution {
     enum class TileType {
         UP,
         DOWN,
@@ -28,11 +29,11 @@ class Day24 {
 
     private val moves = listOf(up, down, left, right, wait)
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day24.txt")
 
-        val matrix = convertInputToArrayMatrix(rawInput) {
-            val tileType = when (this) {
+        val matrix = convertInputToMatrix(rawInput) { value ->
+            val tileType = when (value) {
                 '#' -> TileType.WALL
                 '>' -> TileType.RIGHT
                 '<' -> TileType.LEFT
@@ -58,8 +59,7 @@ class Day24 {
             pathLength + pathBackLength + finalPathLength
         }
 
-        println("Part One: ${partOne.first}")
-        println("Part Two: $partTwo")
+        return AOCAnswer(partOne.first, partTwo)
     }
 
     private fun manhattanDistance(a: Position, b: Position) = abs(a.first - b.first) + abs(a.second - b.second)
@@ -100,64 +100,68 @@ class Day24 {
     }
 
     private fun constructMatrixSequence(fromMatrix: TileMatrix): List<TileMatrix> {
-        val firstHash = fromMatrix.contentDeepHashCode()
+        val firstHash = fromMatrix.hashCode()
 
         val sequence = generateSequence(fromMatrix) { matrix ->
-            matrix.constructNext().takeIf { it.contentDeepHashCode() != firstHash }
+            matrix.constructNext().takeIf { it.hashCode() != firstHash }
         }
 
         return sequence.toList()
     }
 
     private fun TileMatrix.constructNext(): TileMatrix {
-        val rowSize = first().size
-        val colSize = size
+        val lastRowIndex = first().lastIndex
+        val lastColIndex = lastIndex
+
+        val matrix = this
 
         val positionToTiles = buildList {
-            executeBlockOnEach { tiles, (rowIndex, colIndex) ->
-                tiles.forEach { tileType ->
-                    when (tileType) {
-                        TileType.LEFT -> {
-                            if (colIndex == 1) {
-                                add(Position(rowIndex, rowSize - 2) to TileType.LEFT)
-                            } else {
-                                add(Position(rowIndex, colIndex - 1) to TileType.LEFT)
+            matrix.forEachIndexed { rowIndex, row ->
+                row.forEachIndexed { colIndex, tiles ->
+                    tiles.forEach { tileType ->
+                        when (tileType) {
+                            TileType.LEFT -> {
+                                if (colIndex == 1) {
+                                    add(Position(rowIndex, lastRowIndex - 1) to TileType.LEFT)
+                                } else {
+                                    add(Position(rowIndex, colIndex - 1) to TileType.LEFT)
+                                }
                             }
-                        }
-                        TileType.RIGHT -> {
-                            if (colIndex == rowSize - 2) {
-                                add(Position(rowIndex, 1) to TileType.RIGHT)
-                            } else {
-                                add(Position(rowIndex, colIndex + 1) to TileType.RIGHT)
+                            TileType.RIGHT -> {
+                                if (colIndex == lastRowIndex - 1) {
+                                    add(Position(rowIndex, 1) to TileType.RIGHT)
+                                } else {
+                                    add(Position(rowIndex, colIndex + 1) to TileType.RIGHT)
+                                }
                             }
-                        }
-                        TileType.UP -> {
-                            if (rowIndex == 1) {
-                                add(Position(colSize - 2, colIndex) to TileType.UP)
-                            } else {
-                                add(Position(rowIndex - 1, colIndex) to TileType.UP)
+                            TileType.UP -> {
+                                if (rowIndex == 1) {
+                                    add(Position(lastColIndex - 1, colIndex) to TileType.UP)
+                                } else {
+                                    add(Position(rowIndex - 1, colIndex) to TileType.UP)
+                                }
                             }
-                        }
 
-                        TileType.DOWN -> {
-                            if (rowIndex == colSize - 2) {
-                                add(Position(1, colIndex) to TileType.DOWN)
-                            } else {
-                                add(Position(rowIndex + 1, colIndex) to TileType.DOWN)
+                            TileType.DOWN -> {
+                                if (rowIndex == lastColIndex - 1) {
+                                    add(Position(1, colIndex) to TileType.DOWN)
+                                } else {
+                                    add(Position(rowIndex + 1, colIndex) to TileType.DOWN)
+                                }
                             }
-                        }
 
-                        TileType.WALL -> {
-                            add(Position(rowIndex, colIndex) to TileType.WALL)
+                            TileType.WALL -> {
+                                add(Position(rowIndex, colIndex) to TileType.WALL)
+                            }
                         }
                     }
                 }
             }
         }.groupBy({ it.first }, { it.second })
 
-        return Array(colSize) { row ->
-            Array(rowSize) { col ->
-                positionToTiles[row to col] ?: emptyList()
+        return mapIndexed { rowI, row ->
+            List(row.size) { colI ->
+                positionToTiles[rowI to colI] ?: emptyList()
             }
         }
     }
