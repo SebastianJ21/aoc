@@ -101,14 +101,16 @@ fun <T> List<List<T>>.transposed(): List<List<T>> {
     }
 }
 
-fun Iterable<Int>.median(): Double = sorted()
-    .run {
-        if (size % 2 == 0) {
-            this[size / 2].toDouble()
-        } else {
-            ((this[size / 2] + this[size / 2 + 1])) / 2.0
-        }
+fun Collection<Int>.median(): Double {
+    val sorted = sorted()
+    val mid = size / 2
+
+    return if (size % 2 == 0) {
+        sorted[mid].toDouble()
+    } else {
+        (sorted[mid] + sorted[mid + 1]) / 2.0
     }
+}
 
 fun Iterable<String>.mapToInt() = map(String::toInt)
 
