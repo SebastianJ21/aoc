@@ -1,15 +1,19 @@
 package aoc21
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import Position
 import applyDirection
-import convertInputToArrayMatrix
+import convertInputToMatrix
 import get
 import getOrNull
+import kotlinx.collections.immutable.PersistentSet
+import kotlinx.collections.immutable.persistentHashSetOf
 import product
 import readInput
 
-class Day9 {
+class Day9 : AOCSolution {
     val up = -1 to 0
     val down = 1 to 0
     val left = 0 to -1
@@ -17,36 +21,28 @@ class Day9 {
 
     val directions = listOf(up, down, left, right)
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day9.txt", AOCYear.TwentyOne)
-        val matrix = convertInputToArrayMatrix(rawInput) { digitToInt() }
+        val matrix = convertInputToMatrix(rawInput) { value -> value.digitToInt() }
 
         // low points - the locations that are lower than any of its adjacent locations
-        val lowPoints = matrix.flatMapIndexed { rowI, row ->
-            row.filterIndexed { colI, current ->
-                val currentPosition = rowI to colI
-
-                val adjacentValues = directions.mapNotNull {
-                    matrix.getOrNull(currentPosition.applyDirection(it))
-                }
-
-                adjacentValues.all { current < it }
-            }
-        }
-
-        val partOne = lowPoints.sumOf { it + 1 }
-
         val lowPointsPositions = matrix.flatMapIndexed { rowI, row ->
             row.mapIndexedNotNull { colI, current ->
                 val currentPosition = rowI to colI
 
-                val adjacentValues = directions.mapNotNull {
-                    matrix.getOrNull(currentPosition.applyDirection(it))
+                val isLowPoint = directions.all { direction ->
+                    val adjacent = matrix.getOrNull(currentPosition.applyDirection(direction))
+
+                    adjacent == null || current < adjacent
                 }
 
-                currentPosition.takeIf { adjacentValues.all { current < it } }
+                currentPosition.takeIf { isLowPoint }
             }
         }
+
+        val lowPoints = lowPointsPositions.map { matrix[it] }
+
+        val partOne = lowPoints.sumOf { it + 1 }
 
         val partTwo = lowPointsPositions
             .map { exploreBasin(it, matrix) }
@@ -54,28 +50,27 @@ class Day9 {
             .take(3)
             .product()
 
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
-    private fun exploreBasin(position: Pair<Int, Int>, matrix: Array<Array<Int>>): Int {
-        val seen = mutableSetOf<Position>()
-
-        fun Position.dfsExploreBasin(): Int {
+    private fun exploreBasin(position: Pair<Int, Int>, matrix: List<List<Int>>): Int {
+        fun Position.dfsExploreBasin(seen: PersistentSet<Position>): Int {
             val value = matrix[this]
 
-            if (!seen.add(this) || value == 9) return 0
+            if (this in seen || value == 9) return 0
 
-            val adjacentPositions = directions.map { applyDirection(it) }
-                .filter { position ->
-                    matrix.getOrNull(position)?.let { it >= value } ?: false
-                }
+            val adjacentPositions = directions.mapNotNull { direction ->
+                val adjacent = applyDirection(direction)
+                val adjacentValue = matrix.getOrNull(adjacent)
 
-            val discoveredSize = adjacentPositions.sumOf { it.dfsExploreBasin() }
+                adjacent.takeIf { adjacentValue != null && adjacentValue >= value }
+            }
+
+            val discoveredSize = adjacentPositions.sumOf { it.dfsExploreBasin(seen.add(this)) }
 
             return discoveredSize + 1
         }
 
-        return position.dfsExploreBasin()
+        return position.dfsExploreBasin(persistentHashSetOf())
     }
 }
