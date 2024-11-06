@@ -1,29 +1,26 @@
 package aoc23
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
+import Direction
+import Position
 import applyDirection
-import convertInputToCharArrayMatrix
+import convertInputToCharMatrix
 import getOrNull
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
 import readInput
-import java.util.concurrent.Executors
 
-typealias Position = Pair<Int, Int>
-
-class Day16 {
+class Day16 : AOCSolution {
     val up = -1 to 0
     val down = 1 to 0
     val left = 0 to -1
     val right = 0 to 1
 
-    data class Beam(val position: Position, val direction: Pair<Int, Int>)
+    data class Beam(val position: Position, val direction: Direction)
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day16.txt", AOCYear.TwentyThree)
-        val matrix = convertInputToCharArrayMatrix(rawInput)
+        val matrix = convertInputToCharMatrix(rawInput)
 
         val (rows, cols) = matrix.indices to matrix[0].indices
         val (leftSide, rightSide) = with(cols) { map { Beam(-1 to it, down) } to map { Beam((last + 1) to it, up) } }
@@ -31,55 +28,71 @@ class Day16 {
 
         val startingBeamsPartTwo = leftSide + rightSide + topSide + bottomSide
 
-        fun getEnergizedCount(startingBeam: Beam) = buildSet {
-            generateSequence(listOf(startingBeam)) { currentBeams ->
-                currentBeams.flatMap { getNextBeams(it, matrix) }
-                    .filter { add(it) }
-                    .ifEmpty { null }
-            }.toList()
-        }.distinctBy { it.position }.size
+        fun getEnergizedCount(startingBeam: Beam): Int {
+            val seen = hashSetOf<Beam>()
+
+            val beamSequence = generateSequence(listOf(startingBeam)) { currentBeams ->
+                val newBeams = currentBeams
+                    .flatMap { getNextBeams(it, matrix) }
+                    .filter { seen.add(it) }
+
+                newBeams
+            }
+
+            return beamSequence.takeWhile { beams -> beams.isNotEmpty() }.flatten().map { it.position }.toSet().size
+        }
 
         val partOne = getEnergizedCount(Beam(Position(0, -1), right))
+        val partTwo = startingBeamsPartTwo.maxOf { getEnergizedCount(it) }
 
-        val virtualThreadDispatcher = Executors.newVirtualThreadPerTaskExecutor().asCoroutineDispatcher()
-        val partTwo = runBlocking(virtualThreadDispatcher) {
-            startingBeamsPartTwo
-                .map { async { getEnergizedCount(it) } }
-                .awaitAll()
-                .max()
-        }
-
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
-    fun getNextBeams(beam: Beam, matrix: Array<Array<Char>>): List<Beam> {
-        val currentDir = beam.direction
-        val nextPosition = beam.position.applyDirection(currentDir)
+    fun getNextBeams(beam: Beam, matrix: List<List<Char>>): List<Beam> {
+        val direction = beam.direction
+        val nextPosition = beam.position.applyDirection(direction)
 
-        val newDirections = when (matrix.getOrNull(nextPosition)) {
-            '.' -> listOf(currentDir)
-            '-' -> if (currentDir in listOf(left, right)) listOf(currentDir) else listOf(left, right)
-            '|' -> if (currentDir in listOf(up, down)) listOf(currentDir) else listOf(up, down)
-            '/' -> when (currentDir) {
-                up -> right
-                down -> left
-                left -> down
-                right -> up
-                else -> error("Illegal direction")
-            }.let { listOf(it) }
+        return when (matrix.getOrNull(nextPosition)) {
+            '.' -> listOf(Beam(nextPosition, direction))
+            '-' -> {
+                if (direction == left || direction == right) {
+                    listOf(Beam(nextPosition, direction))
+                } else {
+                    listOf(Beam(nextPosition, left), Beam(nextPosition, right))
+                }
+            }
+            '|' -> {
+                if (direction == up || direction == down) {
+                    listOf(Beam(nextPosition, direction))
+                } else {
+                    listOf(Beam(nextPosition, up), Beam(nextPosition, down))
+                }
+            }
+            '/' -> {
+                val nextDirection = when (direction) {
+                    up -> right
+                    down -> left
+                    left -> down
+                    right -> up
+                    else -> error("Invalid direction")
+                }
 
-            '\\' -> when (currentDir) {
-                up -> left
-                down -> right
-                left -> up
-                right -> down
-                else -> error("Illegal direction")
-            }.let { listOf(it) }
+                listOf(Beam(nextPosition, nextDirection))
+            }
 
+            '\\' -> {
+                val nextDirection = when (direction) {
+                    up -> left
+                    down -> right
+                    left -> up
+                    right -> down
+                    else -> error("Invalid direction")
+                }
+
+                listOf(Beam(nextPosition, nextDirection))
+            }
             null -> emptyList()
-            else -> error("Illegal char")
+            else -> error("Invalid matrix element")
         }
-        return newDirections.map { Beam(nextPosition, it) }
     }
 }

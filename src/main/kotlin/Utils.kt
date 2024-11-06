@@ -48,10 +48,6 @@ fun <T> List<List<T>>.getOrNull(position: Position) = getOrNull(position.first)?
 
 fun convertInputToCharMatrix(input: List<String>): List<List<Char>> = input.map { it.toList() }
 
-fun convertInputToCharArrayMatrix(input: List<String>): Array<Array<Char>> = Array(input.size) { i ->
-    Array(input[i].length) { j -> input[i][j] }
-}
-
 operator fun <T> Array<Array<T>>.get(position: Position) = this[position.first][position.second]
 
 operator fun <T> Array<Array<T>>.set(position: Pair<Int, Int>, value: T) {
