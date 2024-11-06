@@ -4,7 +4,6 @@ package aoc22
 
 import Position
 import applyDirection
-import convertInputToMatrix
 import getOrNull
 import mapToInt
 import readInput
@@ -13,10 +12,7 @@ import transposed
 
 class Day22 {
 
-    data class CellConnection(
-        val toCell: Cell.Active,
-        val newDirection: String? = null,
-    )
+    data class CellConnection(val toCell: Cell.Active, val newDirection: String? = null)
 
     sealed class Cell {
         abstract val row: Int
@@ -71,13 +67,13 @@ class Day22 {
         val (matrixInput, instructions) = rawInput.splitBy { isEmpty() }
 
         val longestRowLength = matrixInput.maxOf { it.length }
-        val normalizedMatrixInput = matrixInput.map { it.padEnd(longestRowLength, ' ') }
+        val normalizedInput = matrixInput.map { it.padEnd(longestRowLength, ' ') }
 
-        val baseCells = convertInputToMatrix(normalizedMatrixInput) { value, (rowI, colI) ->
-            when {
-                value.isWhitespace() -> Cell.Void(rowI + 1, colI + 1)
-
-                else -> {
+        val baseCells = normalizedInput.mapIndexed { rowI, row ->
+            row.mapIndexed { colI, value ->
+                if (value.isWhitespace()) {
+                    Cell.Void(rowI + 1, colI + 1)
+                } else {
                     val (normalizedPos, cubeSection) = labelCellWithSection(rowI + 1, colI + 1)
 
                     Cell.Active(
@@ -139,8 +135,7 @@ class Day22 {
         initialCell: Cell.Active,
         initialDirection: String,
     ): Pair<Cell.Active, String> {
-        val result = commands.fold(initialCell to initialDirection) {
-                (cell, direction), (movement, steps) ->
+        val result = commands.fold(initialCell to initialDirection) { (cell, direction), (movement, steps) ->
 
             val (movementFn, newDirection) = getMovementFuncByDirection(direction, movement)
 

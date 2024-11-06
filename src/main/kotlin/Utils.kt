@@ -39,9 +39,6 @@ operator fun Pair<Int, Int>.plus(other: Pair<Int, Int>) = first.plus(other.first
 inline fun <T> convertInputToMatrix(input: List<String>, transform: (Char) -> T): List<List<T>> =
     input.map { row -> row.map(transform) }
 
-inline fun <T> convertInputToMatrix(input: List<String>, transform: (Char, Position) -> T): List<List<T>> =
-    input.mapIndexed { rowI, row -> row.mapIndexed { colI, char -> transform(char, rowI to colI) } }
-
 operator fun <T> List<List<T>>.get(position: Position) = this[position.first][position.second]
 
 fun <T> List<List<T>>.getOrNull(position: Position) = getOrNull(position.first)?.getOrNull(position.second)
