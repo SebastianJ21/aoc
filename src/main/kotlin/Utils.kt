@@ -45,26 +45,6 @@ fun <T> List<List<T>>.getOrNull(position: Position) = getOrNull(position.first)?
 
 fun convertInputToCharMatrix(input: List<String>): List<List<Char>> = input.map { it.toList() }
 
-operator fun <T> Array<Array<T>>.get(position: Position) = this[position.first][position.second]
-
-operator fun <T> Array<Array<T>>.set(position: Pair<Int, Int>, value: T) {
-    this[position.first][position.second] = value
-}
-
-fun <T> Array<Array<T>>.getOrNull(position: Position) = getOrNull(position.first)?.getOrNull(position.second)
-
-inline fun <reified T> Array<Array<T>>.transposed(): Array<Array<T>> {
-    val rowSize = first().size
-
-    return Array(rowSize) { rowI ->
-        check(this[rowI].size == rowSize) { "Array to be transposed is not a matrix" }
-
-        Array(this.size) { colI ->
-            this[colI][rowI]
-        }
-    }
-}
-
 fun Iterable<Int>.maxOrZero() = maxOrNull() ?: 0
 
 fun <T> List<List<T>>.transposed(): List<List<T>> {
