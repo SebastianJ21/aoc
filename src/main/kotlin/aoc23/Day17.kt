@@ -3,6 +3,7 @@ package aoc23
 import AOCAnswer
 import AOCSolution
 import AOCYear
+import Position
 import applyDirection
 import convertInputToMatrix
 import getOrNull
