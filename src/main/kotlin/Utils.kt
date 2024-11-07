@@ -76,26 +76,46 @@ fun Iterable<String>.mapToLong() = map(String::toLong)
 /**
  * Splits List of [T] into sublists by specified [predicate]. An equivalent of [split] but for Lists.
  */
-inline fun <T> List<T>.splitBy(predicate: T.() -> Boolean) =
-    foldIndexed(listOf<T>() to listOf<List<T>>()) { index, (localCollected, globalCollected), line ->
+inline fun <T> List<T>.splitBy(predicate: T.() -> Boolean): List<List<T>> {
+    val (_, result) = foldIndexed(listOf<T>() to listOf<List<T>>()) { index, (localCollected, globalCollected), line ->
         when {
+            index == lastIndex -> {
+                // Split on the last element should yield and empty list
+                if (predicate(line)) {
+                    listOf<T>() to globalCollected.plusElement(localCollected).plusElement(emptyList())
+                } else {
+                    listOf<T>() to globalCollected.plusElement(localCollected + line)
+                }
+            }
             predicate(line) -> listOf<T>() to globalCollected.plusElement(localCollected)
-            index == lastIndex -> listOf<T>() to globalCollected.plusElement(localCollected + line)
             else -> localCollected + line to globalCollected
         }
-    }.second
+    }
+
+    return result
+}
 
 /**
  * Splits List of [T] into sublists by specified [predicate] and applies [transform] on each element. An equivalent of [split] but for Lists.
  */
-inline fun <T, K> List<T>.splitBy(predicate: T.() -> Boolean, transform: (T) -> K) =
-    foldIndexed(listOf<K>() to listOf<List<K>>()) { index, (localCollected, globalCollected), line ->
+inline fun <T, K> List<T>.splitBy(predicate: T.() -> Boolean, transform: (T) -> K): List<List<K>> {
+    val (_, result) = foldIndexed(listOf<K>() to listOf<List<K>>()) { index, (localCollected, globalCollected), line ->
         when {
+            index == lastIndex -> {
+                // Split on the last element should yield and empty list
+                if (predicate(line)) {
+                    listOf<K>() to globalCollected.plusElement(localCollected).plusElement(emptyList())
+                } else {
+                    listOf<K>() to globalCollected.plusElement(localCollected + transform(line))
+                }
+            }
             predicate(line) -> listOf<K>() to globalCollected.plusElement(localCollected)
-            index == lastIndex -> listOf<K>() to globalCollected.plusElement(localCollected + transform(line))
             else -> localCollected + transform(line) to globalCollected
         }
-    }.second
+    }
+
+    return result
+}
 
 inline fun <T> T.alsoPrintLn(before: String = "", transform: T.() -> Any? = { }) = also {
     val delim = if (before.isEmpty()) "" else " "
