@@ -2,6 +2,9 @@
 
 package aoc22
 
+import AOCAnswer
+import AOCSolution
+import Direction
 import Position
 import applyDirection
 import getOrNull
@@ -10,9 +13,9 @@ import readInput
 import splitBy
 import transposed
 
-class Day22 {
+class Day22 : AOCSolution {
 
-    data class CellConnection(val toCell: Cell.Active, val newDirection: String? = null)
+    data class CellConnection(val toCell: Cell.Active, val newDirection: Direction? = null)
 
     sealed class Cell {
         abstract val row: Int
@@ -30,21 +33,18 @@ class Day22 {
             val normalizedRow: Int,
             val normalizedCol: Int,
         ) : Cell() {
-            lateinit var left: CellConnection
-            lateinit var right: CellConnection
-            lateinit var up: CellConnection
-            lateinit var down: CellConnection
+            val cellConnections = mutableMapOf<Direction, CellConnection>()
         }
     }
 
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+    val up: Direction = -1 to 0
+    val down: Direction = 1 to 0
+    val left: Direction = 0 to -1
+    val right: Direction = 0 to 1
 
-    private val directions = listOf(up, down, left, right)
+    val directions = listOf(up, down, left, right)
 
-    private fun labelCellWithSection(row: Int, column: Int): Pair<Position, Int> {
+    fun labelCellWithSection(row: Int, column: Int): Pair<Position, Int> {
         val cubeSection = when {
             row in 1..50 && column in 51..100 -> 1
             row in 1..50 && column in 101..150 -> 2
@@ -61,7 +61,7 @@ class Day22 {
         return (normalizedRow to normalizedCol) to cubeSection
     }
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day22.txt", AOCYear.TwentyTwo)
 
         val (matrixInput, instructions) = rawInput.splitBy { isEmpty() }
@@ -103,45 +103,30 @@ class Day22 {
             addSimpleWarpConnections()
         }
 
-        val commands = parseInstructions(instructions.single())
+        val commands = parseInstructions(instructions.single(), right)
 
-        val (initialDirection, initialMovement) = "R" to 31
-        val initialCommand = directionToFunction(initialDirection)
-
-        val initialCell = cubeCells.first().first { it is Cell.Active } as Cell.Active
-
-        val firstExec = executeCommand(initialCell, initialCommand, initialMovement)
-
-        // The first exec should not change direction mid-execution
-        check(firstExec.second == null)
-
-        val initialCellSimple = simpleCells.first().first { it is Cell.Active } as Cell.Active
-
-        val (resultCellSimple, resultDirectionSimple) = executeCommands(commands, initialCellSimple, initialDirection)
+        val initialSimpleCell = simpleCells.first().first { it is Cell.Active } as Cell.Active
+        val (resultCellSimple, resultDirectionSimple) = executeCommands(commands, initialSimpleCell)
 
         val partOne = (resultCellSimple.row * 1000) + (4 * resultCellSimple.column) +
             directionToResultValue(resultDirectionSimple)
 
-        val (resultCell, resultDirection) = executeCommands(commands, firstExec.first, initialDirection)
+        val initialCubeCell = cubeCells.first().first { it is Cell.Active } as Cell.Active
+        val (resultCell, resultDirection) = executeCommands(commands, initialCubeCell)
 
         val partTwo = (resultCell.row * 1000) + (4 * resultCell.column) + directionToResultValue(resultDirection)
 
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
-    fun executeCommands(
-        commands: List<Pair<String, Int>>,
-        initialCell: Cell.Active,
-        initialDirection: String,
-    ): Pair<Cell.Active, String> {
-        val result = commands.fold(initialCell to initialDirection) { (cell, direction), (movement, steps) ->
+    fun executeCommands(commands: List<Pair<Direction, Int>>, initialCell: Cell.Active): Pair<Cell.Active, Direction> {
+        val (initialDirection, firstSteps) = commands.first()
+        val initial = executeCommand(initialCell, initialDirection, firstSteps)
 
-            val (movementFn, newDirection) = getMovementFuncByDirection(direction, movement)
+        val result = commands.drop(1).fold(initial) { (cell, direction), (directionCommand, steps) ->
+            val newDirection = makeTurnByDirectionCommand(direction, directionCommand)
 
-            val (newNode, changedDirection) = executeCommand(cell, movementFn, steps)
-
-            newNode to (changedDirection ?: newDirection)
+            executeCommand(cell, newDirection, steps)
         }
 
         return result
@@ -153,66 +138,73 @@ class Day22 {
     }
 
     fun List<List<Cell>>.addCubeWarpConnections() {
-        val cubeSectionToCubes = flatten().filterIsInstance<Cell.Active>().groupBy { it.cubeSection }
+        val cubeSectionToCubes = flatMap { cells -> cells.filterIsInstance<Cell.Active>() }.groupBy { it.cubeSection }
 
         cubeSectionToCubes.getValue(1).filter { it.row == 1 }.forEach { cell ->
             val new = cubeSectionToCubes[6]!!.first { it.column == 1 && it.row == cell.column + 100 }
-            cell.up = CellConnection(new, "R")
-            new.left = CellConnection(cell, "D")
+
+            cell.cellConnections[up] = CellConnection(new, right)
+            new.cellConnections[left] = CellConnection(cell, down)
         }
 
         cubeSectionToCubes.getValue(2).filter { it.row == 1 }.forEach { cell ->
             val new = cubeSectionToCubes[6]!!.first { it.row == 200 && it.column == cell.column - 100 }
-            cell.up = CellConnection(new, "U")
-            new.down = CellConnection(cell, "D")
+
+            cell.cellConnections[up] = CellConnection(new, up)
+            new.cellConnections[down] = CellConnection(cell, down)
         }
 
         cubeSectionToCubes.getValue(2).filter { it.column == 150 }.forEach { cell ->
             val new = cubeSectionToCubes[5]!!.first { it.column == 100 && it.row == 151 - cell.row }
-            cell.right = CellConnection(new, "L")
-            new.right = CellConnection(cell, "L")
+
+            cell.cellConnections[right] = CellConnection(new, left)
+            new.cellConnections[right] = CellConnection(cell, left)
         }
 
         cubeSectionToCubes.getValue(2).filter { it.row == 50 }.forEach { cell ->
             val new = cubeSectionToCubes[3]!!.first { it.column == 100 && it.row == cell.column - 50 }
-            cell.down = CellConnection(new, "L")
-            new.right = CellConnection(cell, "U")
+
+            cell.cellConnections[down] = CellConnection(new, left)
+            new.cellConnections[right] = CellConnection(cell, up)
         }
 
         cubeSectionToCubes.getValue(5).filter { it.row == 150 }.forEach { cell ->
             val new = cubeSectionToCubes[6]!!.first { it.normalizedCol == 50 && it.row == cell.column + 100 }
-            cell.down = CellConnection(new, "L")
-            new.right = CellConnection(cell, "U")
+
+            cell.cellConnections[down] = CellConnection(new, left)
+            new.cellConnections[right] = CellConnection(cell, up)
         }
 
         cubeSectionToCubes.getValue(3).filter { it.column == 51 }.forEach { cell ->
             val new = cubeSectionToCubes[4]!!.first { it.normalizedRow == 1 && it.column == cell.row - 50 }
-            cell.left = CellConnection(new, "D")
-            new.up = CellConnection(cell, "R")
+
+            cell.cellConnections[left] = CellConnection(new, down)
+            new.cellConnections[up] = CellConnection(cell, right)
         }
 
         cubeSectionToCubes.getValue(1).filter { it.column == 51 }.forEach { cell ->
             val new = cubeSectionToCubes[4]!!.first { it.column == 1 && it.row == 151 - cell.row }
-            cell.left = CellConnection(new, "R")
-            new.left = CellConnection(cell, "R")
+
+            cell.cellConnections[left] = CellConnection(new, right)
+            new.cellConnections[left] = CellConnection(cell, right)
         }
     }
 
     fun List<List<Cell>>.addSimpleWarpConnections() {
         forEach { row ->
-            val firstActive = row.first { it is Cell.Active } as Cell.Active
-            val lastActive = row.last { it is Cell.Active } as Cell.Active
+            val firstActiveRow = row.first { it is Cell.Active } as Cell.Active
+            val lastActiveRow = row.last { it is Cell.Active } as Cell.Active
 
-            firstActive.left = CellConnection(lastActive)
-            lastActive.right = CellConnection(firstActive)
+            firstActiveRow.cellConnections[left] = CellConnection(lastActiveRow)
+            lastActiveRow.cellConnections[right] = CellConnection(firstActiveRow)
         }
 
-        transposed().forEach { row ->
-            val firstActive = row.first { it is Cell.Active } as Cell.Active
-            val lastActive = row.last { it is Cell.Active } as Cell.Active
+        transposed().forEach { col ->
+            val firstActiveCol = col.first { it is Cell.Active } as Cell.Active
+            val lastActiveCol = col.last { it is Cell.Active } as Cell.Active
 
-            firstActive.up = CellConnection(lastActive)
-            lastActive.down = CellConnection(firstActive)
+            firstActiveCol.cellConnections[up] = CellConnection(lastActiveCol)
+            lastActiveCol.cellConnections[down] = CellConnection(firstActiveCol)
         }
     }
 
@@ -223,96 +215,75 @@ class Day22 {
                 if (cell !is Cell.Active) return@forEachIndexed
                 val position = rowIndex to colIndex
 
-                val (up, down, left, right) = directions.map { direction ->
+                directions.forEach { direction ->
                     val newPosition = position.applyDirection(direction)
+                    val connectedCell = getOrNull(newPosition) ?: return@forEach
 
-                    getOrNull(newPosition)
-                        ?.takeIf { it is Cell.Active }
-                        ?.let { CellConnection(it as Cell.Active) }
+                    if (connectedCell is Cell.Active) {
+                        cell.cellConnections[direction] = CellConnection(connectedCell)
+                    }
                 }
-
-                up?.let { cell.up = it }
-                down?.let { cell.down = it }
-                left?.let { cell.left = it }
-                right?.let { cell.right = it }
             }
         }
     }
 
-    private fun directionToResultValue(direction: String) = when (direction) {
-        "R" -> 0
-        "D" -> 1
-        "L" -> 2
-        "U" -> 3
-        else -> error("Illegal direction $direction")
-    }
+    tailrec fun executeCommand(cell: Cell.Active, direction: Direction, steps: Int): Pair<Cell.Active, Direction> =
+        if (steps == 0) {
+            cell to direction
+        } else {
+            val (targetCell, changedDirection) = cell.cellConnections[direction]!!
 
-    tailrec fun executeCommand(
-        cell: Cell.Active,
-        movement: (Cell.Active) -> CellConnection,
-        steps: Int,
-        newDirection: String? = null,
-    ): Pair<Cell.Active, String?> = when (steps) {
-        0 -> cell to newDirection
-        else -> {
-            val (targetCell, changedDirection) = movement(cell)
-
-            when {
-                targetCell.isWall -> cell to newDirection
-                changedDirection != null -> {
-                    val newMovementFn = directionToFunction(changedDirection)
-
-                    executeCommand(targetCell, newMovementFn, steps - 1, changedDirection)
-                }
-                else -> executeCommand(targetCell, movement, steps - 1, newDirection)
+            if (targetCell.isWall) {
+                cell to direction
+            } else {
+                executeCommand(targetCell, changedDirection ?: direction, steps - 1)
             }
         }
+
+    fun parseInstructions(line: String, startDirection: Direction): List<Pair<Direction, Int>> {
+        val values = line.split(Regex("\\D")).mapToInt()
+        val directions = line.filter { !it.isDigit() }.map { turnToDirection(it) }
+
+        check(values.size > directions.size) { "Failed to assert missing start direction in instructions" }
+
+        return listOf(startDirection).plus(directions).zip(values)
     }
 
-    private fun directionToFunction(direction: String) = when (direction) {
-        "U" -> { cell: Cell.Active -> cell.up }
-        "D" -> { cell: Cell.Active -> cell.down }
-        "L" -> { cell: Cell.Active -> cell.left }
-        "R" -> { cell: Cell.Active -> cell.right }
-        else -> error("Illegal direction $direction")
+    fun turnToDirection(turn: Char) = when (turn) {
+        'L' -> left
+        'R' -> right
+        else -> error("Invalid turn $turn")
     }
 
-    private fun parseInstructions(line: String): List<Pair<String, Int>> {
-        val values = line
-            .map { if (it.isDigit()) it else ',' }
-            .joinToString("")
-            .split(",")
-            .mapToInt()
-
-        val directions = line
-            .filter { !it.isDigit() }
-            .map { it.toString() }
-
-        return directions.zip(values.drop(1))
-    }
-
-    private fun getMovementFuncByDirection(currentDirection: String, directionCommand: String) =
-        when (currentDirection) {
-            "L" -> when (directionCommand) {
-                "L" -> (directionToFunction("D") to "D")
-                "R" -> (directionToFunction("U") to "U")
-                else -> error("")
-            }
-            "R" -> when (directionCommand) {
-                "L" -> (directionToFunction("U") to "U")
-                "R" -> (directionToFunction("D") to "D")
-                else -> error("")
-            }
-            "D" -> when (directionCommand) {
-                "L" -> (directionToFunction("R") to "R")
-                "R" -> (directionToFunction("L") to "L")
-                else -> error("")
-            }
-            "U" -> when (directionCommand) {
-                "L" -> (directionToFunction("L") to "L")
-                "R" -> (directionToFunction("R") to "R")
-                else -> error("")
-            }
-            else -> error("Illegal operation")
+    fun makeTurnByDirectionCommand(currentDirection: Direction, directionCommand: Direction) = when (currentDirection) {
+        left -> when (directionCommand) {
+            left -> (down)
+            right -> (up)
+            else -> error("")
         }
+        right -> when (directionCommand) {
+            left -> (up)
+            right -> (down)
+            else -> error("")
+        }
+        down -> when (directionCommand) {
+            left -> (right)
+            right -> (left)
+            else -> error("")
+        }
+        up -> when (directionCommand) {
+            left -> (left)
+            right -> (right)
+            else -> error("")
+        }
+        else -> error("Unknown direction $currentDirection")
+    }
+
+    fun directionToResultValue(direction: Direction) = when (direction) {
+        right -> 0
+        down -> 1
+        left -> 2
+        up -> 3
+        else -> error("Invalid direction $direction")
+    }
 }
