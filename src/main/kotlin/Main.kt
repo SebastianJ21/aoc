@@ -11,7 +11,7 @@ import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.full.valueParameters
 
 fun main() {
-    solveYear(AOCYear.Twenty, days = listOf(19, 1), timeout = 1000)
+    solveYear(AOCYear.TwentyFour, days = listOf(1))
 }
 
 data class AOCAnswer(val partOne: Any, val partTwo: Any?)

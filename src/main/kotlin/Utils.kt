@@ -2,6 +2,7 @@ import java.io.File
 import java.math.BigInteger
 
 enum class AOCYear {
+    TwentyFour,
     TwentyThree,
     TwentyTwo,
     TwentyOne,
@@ -18,6 +19,7 @@ fun readInput(name: String, year: AOCYear = AOCYear.TwentyTwo) =
     File("$RESOURCES_PATH/${year.getSuffix()}/$name").readLines()
 
 fun AOCYear.getSuffix() = when (this) {
+    AOCYear.TwentyFour -> "aoc24"
     AOCYear.TwentyThree -> "aoc23"
     AOCYear.TwentyTwo -> "aoc22"
     AOCYear.TwentyOne -> "aoc21"
