@@ -42,7 +42,7 @@ fun solveYear(
         val klazz = reflections.forClass("$prefix.Day$dayNumber")?.kotlin
 
         if (klazz == null) {
-            log("Unable to find Day $dayNumber for $prefix. Has it been solved?")
+            log("Unable to find Day$dayNumber for $prefix. Has it been solved?")
             log("Make sure class Day$dayNumber is present in package $prefix")
             return@mapNotNull null
         }
@@ -59,7 +59,6 @@ fun solveYear(
 
         val classInstance = klazz.createInstance()
         val executor = Executors.newVirtualThreadPerTaskExecutor()
-        val start = System.currentTimeMillis()
 
         println("Day $dayNumber:")
 
@@ -74,6 +73,7 @@ fun solveYear(
             if (quietlySkipMissing) return@mapNotNull null
         }
 
+        val start = System.currentTimeMillis()
         val callableSolve = Callable { solveMethod.call(classInstance) }
         val task = executor.submit(callableSolve)
 
@@ -125,4 +125,9 @@ fun solveYear(
     }
 }
 
-fun Throwable.lowestLevelCause(): Throwable = cause?.lowestLevelCause() ?: this
+private fun Throwable.lowestLevelCause(): Throwable = cause?.lowestLevelCause() ?: this
+
+private fun printAOCAnswers(partOne: Any?, partTwo: Any?) {
+    println("Part one: ${partOne ?: "not solved"}")
+    println("Part two: ${partTwo ?: "not solved"}")
+}
