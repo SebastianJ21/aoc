@@ -147,7 +147,7 @@ fun <T> List<T>.firstAndRest() = first() to drop(1)
 
 fun String.firstAndRest() = first() to drop(1)
 
-fun Iterable<Iterable<Any?>>.positionsSequence() = this
+fun <T> Iterable<Iterable<T>>.positionsSequence(): Sequence<Position> = this
     .asSequence()
     .flatMapIndexed { rowI, row ->
         row.asSequence().mapIndexed { colI, _ -> Position(rowI, colI) }

@@ -1,40 +1,41 @@
 package aoc23
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
+import Position
 import applyDirection
-import convertInputToCharMatrix
+import get
 import getOrNull
+import positionsSequence
 import readInput
 import kotlin.math.pow
 
-class Day21 {
+class Day21 : AOCSolution {
+
     val up = -1 to 0
     val down = 1 to 0
     val left = 0 to -1
     val right = 0 to 1
 
-    data class GraphNode(
-        val position: Position,
-        val isWall: Boolean,
-        val neighbours: List<Position>,
-    )
+    val directions = listOf(up, down, left, right)
+
+    data class GraphNode(val position: Position, val isWall: Boolean, val neighbours: List<Position>)
 
     private val partOneSteps = 64
     private val partTwoSteps = 26501365
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day21.txt", AOCYear.TwentyThree)
         val matrix = convertInputToCharMatrix(rawInput)
 
-        val start: Position = matrix.indices.firstNotNullOf { rowI ->
-            matrix[rowI].indices.find { colI -> matrix[rowI][colI] == 'S' }?.let { rowI to it }
-        }
+        val start: Position = matrix.positionsSequence().first { matrix[it] == 'S' }
 
         val nodes = matrix.flatMapIndexed { rowI, row ->
             row.mapIndexed { colI, value ->
                 val position = rowI to colI
 
-                val neighbours = listOf(up, down, left, right).mapNotNull { direction ->
+                val neighbours = directions.mapNotNull { direction ->
                     position.applyDirection(direction).takeIf { matrix.getOrNull(it) != null }
                 }
 
@@ -62,7 +63,7 @@ class Day21 {
         val oddDistances = reachableShortestDistances.count(isOdd)
         val evenDistances = reachableShortestDistances.size - oddDistances
 
-        val (oddSquares, evenSquares) = maxMapsVisited.run { inc().pow(2) to pow(2) }
+        val (oddSquares, evenSquares) = maxMapsVisited.let { it.inc().pow(2) to it.pow(2) }
 
         val oddCornersDistances = reachableShortestDistances.count { isOdd(it) && it > 65 }
         val evenCornersDistances = reachableShortestDistances.count { !isOdd(it) && it > 65 }
@@ -71,17 +72,16 @@ class Day21 {
         val cornersToRemove = (maxMapsVisited.inc() * oddCornersDistances) + (maxMapsVisited * evenCornersDistances)
         val partTwo = resultWithCorners - cornersToRemove
 
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
     private val isOdd = { num: Int -> num % 2 == 1 }
 
     private fun Long.pow(n: Int) = toDouble().pow(n).toLong()
 
-    private fun shortestDistances(graph: Map<Position, GraphNode>, start: Position): MutableMap<Position, Int> {
-        val posToShortestDist = graph.keys.associateWith { Int.MAX_VALUE }.toMutableMap()
-        posToShortestDist[start] = 0
+    private fun shortestDistances(graph: Map<Position, GraphNode>, start: Position): Map<Position, Int> {
+        val positionToShortestDist = graph.keys.associateWith { Int.MAX_VALUE }.toMutableMap()
+        positionToShortestDist[start] = 0
 
         val seen = mutableSetOf<Position>()
         val queue = ArrayDeque<GraphNode>()
@@ -90,20 +90,20 @@ class Day21 {
         while (queue.isNotEmpty()) {
             val current = queue.removeFirst()
 
-            val currentShortest = posToShortestDist.getValue(current.position)
+            val currentShortest = positionToShortestDist.getValue(current.position)
 
             if (!seen.add(current.position)) continue
 
             current.neighbours
-                .filter { posToShortestDist.getValue(it) > currentShortest + 1 }
+                .filter { positionToShortestDist.getValue(it) > currentShortest + 1 }
                 .map { graph.getValue(it) }
                 .filterNot { it.isWall }
                 .forEach { neighbour ->
-                    posToShortestDist[neighbour.position] = currentShortest + 1
+                    positionToShortestDist[neighbour.position] = currentShortest + 1
                     queue.addLast(neighbour)
                 }
         }
 
-        return posToShortestDist
+        return positionToShortestDist
     }
 }
