@@ -1,7 +1,7 @@
 package aoc21
 
-import convertInputToMatrix
 import readInput
+import toMatrix
 import transposed
 import kotlin.math.pow
 
@@ -10,7 +10,7 @@ class Day3 {
     fun solve() {
         val rawInput = readInput("day3.txt", AOCYear.TwentyOne)
 
-        val matrix = convertInputToMatrix(rawInput) { value -> value.digitToInt() }
+        val matrix = rawInput.toMatrix { value -> value.digitToInt() }
 
         val (mostCommonBits, leastCommonBits) = matrix.transposed().run {
             map { it.mostCommonBit() } to map { it.leastCommonBit() }

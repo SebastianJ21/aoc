@@ -10,6 +10,7 @@ import getOrNull
 import plus
 import positionsSequence
 import readInput
+import toCharMatrix
 
 class Day4 : AOCSolution {
 
@@ -37,7 +38,7 @@ class Day4 : AOCSolution {
 
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day4.txt", AOCYear.TwentyFour)
-        val charMatrix = rawInput.map { line -> line.toList() }
+        val charMatrix = rawInput.toCharMatrix()
 
         val positionSequence = charMatrix.positionsSequence()
 

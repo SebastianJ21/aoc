@@ -3,10 +3,10 @@ package aoc22
 import AOCAnswer
 import AOCSolution
 import Position
-import convertInputToMatrix
 import getOrNull
 import plus
 import readInput
+import toMatrix
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -32,7 +32,7 @@ class Day24 : AOCSolution {
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day24.txt")
 
-        val matrix = convertInputToMatrix(rawInput) { value ->
+        val matrix = rawInput.toMatrix { value ->
             val tileType = when (value) {
                 '#' -> TileType.WALL
                 '>' -> TileType.RIGHT
