@@ -146,3 +146,9 @@ fun <T, K, V : Iterable<T>> invertListMap(map: Map<K, V>): Map<T, List<K>> =
 fun <T> List<T>.firstAndRest() = first() to drop(1)
 
 fun String.firstAndRest() = first() to drop(1)
+
+fun Iterable<Iterable<Any?>>.positionsSequence() = this
+    .asSequence()
+    .flatMapIndexed { rowI, row ->
+        row.asSequence().mapIndexed { colI, _ -> Position(rowI, colI) }
+    }
