@@ -6,9 +6,9 @@ import AOCYear
 import Direction
 import Position
 import applyDirection
-import convertInputToCharMatrix
 import getOrNull
 import readInput
+import toCharMatrix
 
 class Day16 : AOCSolution {
     val up = -1 to 0
@@ -20,7 +20,7 @@ class Day16 : AOCSolution {
 
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day16.txt", AOCYear.TwentyThree)
-        val matrix = convertInputToCharMatrix(rawInput)
+        val matrix = rawInput.toCharMatrix()
 
         val (rows, cols) = matrix.indices to matrix[0].indices
         val (leftSide, rightSide) = with(cols) { map { Beam(-1 to it, down) } to map { Beam((last + 1) to it, up) } }

@@ -5,8 +5,8 @@ package aoc19
 import AOCAnswer
 import AOCSolution
 import AOCYear
-import convertInputToCharMatrix
 import readInput
+import toCharMatrix
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -17,8 +17,7 @@ class Day10 : AOCSolution {
 
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day10.txt", AOCYear.Nineteen)
-
-        val matrix = convertInputToCharMatrix(rawInput)
+        val matrix = rawInput.toCharMatrix()
 
         val positions = matrix.flatMapIndexed { rowI, row ->
             row.mapIndexedNotNull { colI, value ->

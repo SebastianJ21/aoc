@@ -4,10 +4,10 @@ package aoc22
 
 import Position
 import applyDirection
-import convertInputToMatrix
 import get
 import getOrNull
 import readInput
+import toMatrix
 import java.util.PriorityQueue
 import kotlin.math.min
 
@@ -22,10 +22,8 @@ class Day12 {
 
     val directions = listOf(up, down, left, right)
 
-    fun List<String>.matchingPositions(value: Char): List<Position> {
-        return flatMapIndexed { rowI, row ->
-            row.mapIndexedNotNull { colI, char -> if (char == value) rowI to colI else null }
-        }
+    fun List<String>.matchingPositions(value: Char): List<Position> = flatMapIndexed { rowI, row ->
+        row.mapIndexedNotNull { colI, char -> if (char == value) rowI to colI else null }
     }
 
     fun solve() {
@@ -34,7 +32,7 @@ class Day12 {
         val startPosition = rawInput.matchingPositions('S').single()
         val endPosition = rawInput.matchingPositions('E').single()
 
-        val inputMatrix = convertInputToMatrix(rawInput) { value ->
+        val inputMatrix = rawInput.toMatrix { value ->
             // Convert to height
             when {
                 value.isLowerCase() -> value.code - 'a'.code

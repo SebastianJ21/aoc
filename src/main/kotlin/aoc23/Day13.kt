@@ -3,9 +3,9 @@
 package aoc23
 
 import AOCYear
-import convertInputToCharMatrix
 import readInput
 import splitBy
+import toCharMatrix
 import transposed
 
 class Day13 {
@@ -60,7 +60,7 @@ class Day13 {
         }
 
     fun List<String>.findRowSmudge(): List<Pair<Int, Int>> {
-        val matrix = convertInputToCharMatrix(this)
+        val matrix = this.toCharMatrix()
 
         val rowIndex = matrix
             .potentialSymmetryStart(1)
@@ -81,7 +81,7 @@ class Day13 {
     }
 
     fun List<String>.findColSmudge(): List<Pair<Int, Int>> {
-        val transposed = convertInputToCharMatrix(this).transposed()
+        val transposed = this.toCharMatrix().transposed()
 
         val colIndex = transposed
             .potentialSymmetryStart(1)
@@ -102,7 +102,7 @@ class Day13 {
     }
 
     fun List<String>.calcNumber(ignoreIndex: Pair<Int?, Int?>? = null): Pair<Int?, Int?> {
-        val matrix = convertInputToCharMatrix(this)
+        val matrix = this.toCharMatrix()
 
         val rowIndices = matrix
             .potentialSymmetryStart()

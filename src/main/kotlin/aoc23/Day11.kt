@@ -1,8 +1,8 @@
 package aoc23
 
 import AOCYear
-import convertInputToCharMatrix
 import readInput
+import toCharMatrix
 import transposed
 import kotlin.math.max
 import kotlin.math.min
@@ -11,7 +11,7 @@ class Day11 {
 
     fun solve() {
         val input = readInput("day11.txt", AOCYear.TwentyThree)
-        val transposedMatrix = convertInputToCharMatrix(input).transposed()
+        val transposedMatrix = input.toCharMatrix().transposed()
 
         val emptyRows = input.mapIndexedNotNull { rowI, row -> rowI.takeIf { row.all { it == '.' } } }
         val emptyCols = transposedMatrix.mapIndexedNotNull { rowI, row -> rowI.takeIf { row.all { it == '.' } } }

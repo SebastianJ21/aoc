@@ -5,9 +5,9 @@ import AOCSolution
 import AOCYear
 import Position
 import applyDirection
-import convertInputToMatrix
 import getOrNull
 import readInput
+import toMatrix
 import java.util.PriorityQueue
 
 class Day17 : AOCSolution {
@@ -27,7 +27,7 @@ class Day17 : AOCSolution {
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day17.txt", AOCYear.TwentyThree)
 
-        val matrix = convertInputToMatrix(rawInput) { value -> value.digitToInt() }
+        val matrix = rawInput.toMatrix { value -> value.digitToInt() }
         val startPos = 0 to 0
         val endPosition = matrix.lastIndex to matrix.last().lastIndex
 

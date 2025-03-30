@@ -1,10 +1,10 @@
 package aoc21
 
 import Position
-import convertInputToMatrix
 import get
 import getOrNull
 import readInput
+import toMatrix
 
 private typealias Matrix = List<List<Int>>
 private const val FLASH_THRESHOLD = 10
@@ -13,7 +13,7 @@ class Day11 {
 
     fun solve() {
         val rawInput = readInput("day11.txt", AOCYear.TwentyOne)
-        val matrix = convertInputToMatrix(rawInput) { value -> value.digitToInt() }
+        val matrix = rawInput.toMatrix { value -> value.digitToInt() }
 
         val partOne = (1..100).fold(matrix to 0) { (matrix, score), _ ->
             val (newMatrix, stepScore) = performStep(matrix)

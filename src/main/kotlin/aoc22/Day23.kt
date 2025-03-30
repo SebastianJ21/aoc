@@ -3,9 +3,9 @@
 package aoc22
 
 import Position
-import convertInputToCharMatrix
 import plus
 import readInput
+import toCharMatrix
 import transposed
 
 private const val EMPTY_POSITION = '.'
@@ -37,7 +37,7 @@ class Day23 {
 
     fun solve() {
         val rawInput = readInput("day23.txt")
-        val matrix = convertInputToCharMatrix(rawInput)
+        val matrix = rawInput.toCharMatrix()
 
         tailrec fun perform(
             positions: Set<Position>,

@@ -2,9 +2,9 @@ package aoc20
 
 import AOCYear
 import applyDirection
-import convertInputToCharMatrix
 import product
 import readInput
+import toCharMatrix
 
 class Day3 {
 
@@ -13,7 +13,7 @@ class Day3 {
     fun solve() {
         val rawInput = readInput("day3.txt", AOCYear.Twenty)
 
-        val matrix = convertInputToCharMatrix(rawInput)
+        val matrix = rawInput.toCharMatrix()
 
         val movementSequences = slopes.map { slope ->
             generateSequence(0 to 0) { position ->

@@ -4,14 +4,14 @@ import AOCYear
 import Position
 import alsoPrintLn
 import applyDirection
-import convertInputToCharMatrix
 import readInput
+import toCharMatrix
 
 class Day25 {
 
     fun solve() {
         val rawInput = readInput("day25.txt", AOCYear.TwentyOne)
-        val matrix = convertInputToCharMatrix(rawInput)
+        val matrix = rawInput.toCharMatrix()
 
         val rows = matrix.size
         val cols = matrix.first().size

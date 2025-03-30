@@ -5,9 +5,9 @@ package aoc21
 import AOCYear
 import Position
 import applyDirection
-import convertInputToCharMatrix
 import getOrNull
 import readInput
+import toCharMatrix
 import transposed
 
 class Day20 {
@@ -37,9 +37,10 @@ class Day20 {
 
     fun solve() {
         val rawInput = readInput("day20.txt", AOCYear.TwentyOne)
+        val charMatrix = rawInput.toCharMatrix()
 
-        val pixels = rawInput.first().toList()
-        val inputMatrix = convertInputToCharMatrix(rawInput.drop(2))
+        val pixels = charMatrix.first()
+        val inputMatrix = charMatrix.drop(2)
 
         val initialVoidPixel = '.'
 

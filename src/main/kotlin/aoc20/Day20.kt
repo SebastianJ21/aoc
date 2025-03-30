@@ -3,10 +3,10 @@
 package aoc20
 
 import AOCYear
-import convertInputToCharMatrix
 import product
 import readInput
 import splitBy
+import toCharMatrix
 import transposed
 
 private typealias Tile = List<List<Char>>
@@ -19,7 +19,7 @@ class Day20 {
         val idToMatrix = rawInput.splitBy { isEmpty() }.associate { lines ->
             val id = lines.first().dropWhile { !it.isDigit() }.takeWhile { it.isDigit() }.toInt()
 
-            val matrix = convertInputToCharMatrix(lines.drop(1))
+            val matrix = lines.drop(1).toCharMatrix()
 
             id to matrix
         }

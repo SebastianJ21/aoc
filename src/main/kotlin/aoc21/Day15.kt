@@ -3,9 +3,9 @@ package aoc21
 import AOCYear
 import Position
 import applyDirection
-import convertInputToMatrix
 import getOrNull
 import readInput
+import toMatrix
 import transposed
 import java.util.PriorityQueue
 import kotlin.math.min
@@ -21,7 +21,7 @@ class Day15 {
 
     fun solve() {
         val rawInput = readInput("day15.txt", AOCYear.TwentyOne)
-        val matrix = convertInputToMatrix(rawInput) { value -> value.digitToInt() }
+        val matrix = rawInput.toMatrix { value -> value.digitToInt() }
 
         val startPosition = 0 to 0
         val targetPartOne = matrix.lastIndex to matrix.first().lastIndex

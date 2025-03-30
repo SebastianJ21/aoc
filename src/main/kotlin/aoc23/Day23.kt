@@ -4,11 +4,11 @@ package aoc23
 
 import Position
 import applyDirection
-import convertInputToCharMatrix
 import getOrNull
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
 import readInput
+import toCharMatrix
 
 class Day23 {
     val up = -1 to 0
@@ -27,7 +27,7 @@ class Day23 {
 
     fun solve() {
         val rawInput = readInput("day23.txt", AOCYear.TwentyThree)
-        val matrix = convertInputToCharMatrix(rawInput)
+        val matrix = rawInput.toCharMatrix()
 
         val (start, end) = Position(0, 1) to (matrix.lastIndex to matrix.last().lastIndex - 1)
 

@@ -4,11 +4,11 @@ package aoc22
 
 import Position
 import applyDirection
-import convertInputToMatrix
 import get
 import getOrNull
 import product
 import readInput
+import toMatrix
 import kotlin.math.max
 
 class Day8 {
@@ -22,7 +22,7 @@ class Day8 {
 
     fun solve() {
         val input = readInput("day8.txt", AOCYear.TwentyTwo)
-        val matrix = convertInputToMatrix(input) { value -> value.digitToInt() }
+        val matrix = input.toMatrix { value -> value.digitToInt() }
 
         val (visibleCount, scenicMax) = matrix.foldIndexed(0 to 0) { rowI, acc, row ->
             row.foldIndexed(acc) { colI, (visibleCount, scenicMax), _ ->

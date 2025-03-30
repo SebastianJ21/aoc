@@ -38,14 +38,13 @@ fun Position.applyDirection(direction: Direction): Position = this + direction
 
 operator fun Pair<Int, Int>.plus(other: Pair<Int, Int>) = first.plus(other.first) to second.plus(other.second)
 
-inline fun <T> convertInputToMatrix(input: List<String>, transform: (Char) -> T): List<List<T>> =
-    input.map { row -> row.map(transform) }
-
 operator fun <T> List<List<T>>.get(position: Position) = this[position.first][position.second]
 
 fun <T> List<List<T>>.getOrNull(position: Position) = getOrNull(position.first)?.getOrNull(position.second)
 
-fun convertInputToCharMatrix(input: List<String>): List<List<Char>> = input.map { it.toList() }
+fun List<String>.toCharMatrix() = map { it.toList() }
+
+inline fun <T> List<String>.toMatrix(transform: (Char) -> T): List<List<T>> = this.map { row -> row.map(transform) }
 
 fun Iterable<Int>.maxOrZero() = maxOrNull() ?: 0
 

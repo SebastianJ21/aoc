@@ -9,6 +9,7 @@ import get
 import getOrNull
 import positionsSequence
 import readInput
+import toCharMatrix
 import kotlin.math.pow
 
 class Day21 : AOCSolution {
@@ -27,7 +28,7 @@ class Day21 : AOCSolution {
 
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day21.txt", AOCYear.TwentyThree)
-        val matrix = convertInputToCharMatrix(rawInput)
+        val matrix = rawInput.toCharMatrix()
 
         val start: Position = matrix.positionsSequence().first { matrix[it] == 'S' }
 
