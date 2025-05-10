@@ -1,37 +1,40 @@
 package aoc21
 
+import AOCAnswer
+import AOCSolution
 import mapToInt
 import median
 import readInput
 import kotlin.math.abs
-import kotlin.math.round
+import kotlin.math.roundToInt
 
-class Day7 {
+class Day7 : AOCSolution {
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day7.txt", AOCYear.TwentyOne)
         val positions = rawInput.single().split(",").mapToInt()
 
-        val partOne = positions.run {
-            val desiredPos = round(median()).toInt()
-            sumOf { position -> abs(position - desiredPos) }
+        val partOne = positions.let { _ ->
+            val desiredPosition = positions.median().roundToInt()
+
+            positions.sumOf { position -> abs(position - desiredPosition) }
         }
 
-        val partTwo = positions.run {
-            val minPosition = minOf { it }
-            val maxPosition = maxOf { it }
+        val partTwo = positions.let { _ ->
+            val minPosition = positions.min()
+            val maxPosition = positions.max()
 
             val lowestScore = (minPosition..maxPosition).minOf { testingPosition ->
-                sumOf { position ->
+                positions.sumOf { position ->
                     val requiredToMove = abs(position - testingPosition)
                     // Sum of natural numbers formula
                     (requiredToMove * (requiredToMove + 1)) / 2
                 }
             }
+
             lowestScore
         }
 
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 }

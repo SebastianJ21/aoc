@@ -60,13 +60,15 @@ fun <T> List<List<T>>.transposed(): List<List<T>> {
 }
 
 fun Collection<Int>.median(): Double {
+    if (size == 1) return first().toDouble()
+
     val sorted = sorted()
     val mid = size / 2
 
     return if (size % 2 == 0) {
-        sorted[mid].toDouble()
+        (sorted[mid - 1] + sorted[mid]) / 2.0
     } else {
-        (sorted[mid] + sorted[mid + 1]) / 2.0
+        sorted[mid].toDouble()
     }
 }
 
