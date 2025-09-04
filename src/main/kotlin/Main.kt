@@ -1,5 +1,6 @@
 
 import org.reflections.Reflections
+import org.reflections.scanners.Scanners
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
@@ -13,7 +14,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
-    solveYear(AOCYear.TwentyFour, days = listOf(1))
+    solveYear(AOCYear.TwentyFour, listOf(latestDay(AOCYear.TwentyFour)), logTotalPerformance = true)
 }
 
 interface AOCSolution {
@@ -140,4 +141,18 @@ private fun Throwable.lowestLevelCause(): Throwable = cause?.lowestLevelCause() 
 private fun printAOCAnswers(partOne: Any?, partTwo: Any?) {
     println("Part one: ${partOne ?: "not solved"}")
     println("Part two: ${partTwo ?: "not solved"}")
+}
+
+private fun latestDay(year: AOCYear): Int {
+    val suffix = year.getSuffix()
+    val reflections = Reflections(suffix)
+
+    val existingDays = reflections.getAll(Scanners.SubTypes)
+        .mapNotNull { subType ->
+            subType.split(".")
+                .takeIf { it.size == 2 && it.first() == suffix }
+                ?.let { (_, second) -> second.removePrefix("Day").toIntOrNull() }
+        }
+
+    return existingDays.max()
 }
