@@ -7,7 +7,7 @@ import Position
 import applyDirection
 import get
 import getOrNull
-import positionsSequence
+import positionsOf
 import readInput
 import toCharMatrix
 import kotlin.math.absoluteValue
@@ -34,7 +34,7 @@ class Day10 : AOCSolution {
     val matrix = rawInput.toCharMatrix()
 
     override fun solve(): AOCAnswer {
-        val start = matrix.positionsSequence().first { matrix[it] == 'S' }
+        val start = matrix.positionsOf { it == 'S' }.first()
 
         val nextAfterStart = directions
             .map { start.applyDirection(it) }

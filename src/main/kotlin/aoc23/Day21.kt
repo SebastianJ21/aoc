@@ -5,9 +5,8 @@ import AOCSolution
 import AOCYear
 import Position
 import applyDirection
-import get
 import getOrNull
-import positionsSequence
+import positionsOf
 import readInput
 import toCharMatrix
 import kotlin.math.pow
@@ -30,7 +29,7 @@ class Day21 : AOCSolution {
         val rawInput = readInput("day21.txt", AOCYear.TwentyThree)
         val matrix = rawInput.toCharMatrix()
 
-        val start: Position = matrix.positionsSequence().first { matrix[it] == 'S' }
+        val start = matrix.positionsOf { it == 'S' }.first()
 
         val nodes = matrix.flatMapIndexed { rowI, row ->
             row.mapIndexed { colI, value ->
@@ -82,11 +81,12 @@ class Day21 : AOCSolution {
 
     private fun shortestDistances(graph: Map<Position, GraphNode>, start: Position): Map<Position, Int> {
         val positionToShortestDist = graph.keys.associateWith { Int.MAX_VALUE }.toMutableMap()
-        positionToShortestDist[start] = 0
 
-        val seen = mutableSetOf<Position>()
-        val queue = ArrayDeque<GraphNode>()
-        queue.add(graph.getValue(start))
+        positionToShortestDist[start] = 0
+        val startNode = graph.getValue(start)
+
+        val queue = ArrayDeque(listOf(startNode))
+        val seen = hashSetOf<Position>()
 
         while (queue.isNotEmpty()) {
             val current = queue.removeFirst()
@@ -98,7 +98,7 @@ class Day21 : AOCSolution {
             current.neighbours
                 .filter { positionToShortestDist.getValue(it) > currentShortest + 1 }
                 .map { graph.getValue(it) }
-                .filterNot { it.isWall }
+                .filter { !it.isWall }
                 .forEach { neighbour ->
                     positionToShortestDist[neighbour.position] = currentShortest + 1
                     queue.addLast(neighbour)
