@@ -93,14 +93,13 @@ class Day17 : AOCSolution {
 
         val connectionPaths = findLongestWalksForConnectionNodes(positionToNeighbors, startPosition)
 
-        val resultCommands =
-            collectWalkCommands(
-                startPosition,
-                startDirection,
-                emptyList(),
-                persistentHashSetOf(startPosition),
-                connectionPaths,
-            )
+        val resultCommands = collectWalkCommands(
+            startPosition,
+            startDirection,
+            emptyList(),
+            persistentHashSetOf(startPosition),
+            connectionPaths,
+        )
 
         val commandGroups = compressCommandsIntoGroups(resultCommands)
 

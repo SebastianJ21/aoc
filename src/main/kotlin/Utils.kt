@@ -148,8 +148,16 @@ fun <T> List<T>.firstAndRest() = first() to drop(1)
 
 fun String.firstAndRest() = first() to drop(1)
 
-fun <T> Iterable<Iterable<T>>.positionsSequence(): Sequence<Position> = this
+fun <T> Iterable<Iterable<T>>.positions(): Sequence<Position> = this
     .asSequence()
     .flatMapIndexed { rowI, row ->
         row.asSequence().mapIndexed { colI, _ -> Position(rowI, colI) }
+    }
+
+fun <T> Iterable<Iterable<T>>.positionsOf(predicate: (T) -> Boolean): Sequence<Position> = this
+    .asSequence()
+    .flatMapIndexed { rowI, row ->
+        row.asSequence().mapIndexedNotNull { colI, value ->
+            if (predicate(value)) Position(rowI, colI) else null
+        }
     }

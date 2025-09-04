@@ -10,19 +10,18 @@ class Day1 : AOCSolution {
 
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day1.txt", AOCYear.Nineteen)
-
         val numbers = rawInput.mapToInt()
-
-        fun calculateFuel(value: Int) = value.floorDiv(3) - 2
 
         val partOne = numbers.sumOf { calculateFuel(it) }
 
         val partTwo = numbers.sumOf { mass ->
-            generateSequence(calculateFuel(mass)) { fuel ->
-                calculateFuel(fuel).takeIf { it > 0 }
-            }.sum()
+            val fuelSequence = generateSequence(calculateFuel(mass)) { fuel -> calculateFuel(fuel) }
+
+            fuelSequence.takeWhile { it > 0 }.sum()
         }
 
         return AOCAnswer(partOne, partTwo)
     }
+
+    private fun calculateFuel(value: Int) = value.floorDiv(3) - 2
 }

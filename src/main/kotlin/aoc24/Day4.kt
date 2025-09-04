@@ -8,7 +8,7 @@ import applyDirection
 import get
 import getOrNull
 import plus
-import positionsSequence
+import positions
 import readInput
 import toCharMatrix
 
@@ -40,10 +40,10 @@ class Day4 : AOCSolution {
         val rawInput = readInput("day4.txt", AOCYear.TwentyFour)
         val charMatrix = rawInput.toCharMatrix()
 
-        val positionSequence = charMatrix.positionsSequence()
+        val positions = charMatrix.positions()
 
-        val partOne = positionSequence.sumOf { charMatrix.positionCount(it) }
-        val partTwo = positionSequence.count { charMatrix.hasXShapeTarget(it) }
+        val partOne = positions.sumOf { charMatrix.positionCount(it) }
+        val partTwo = positions.count { charMatrix.hasXShapeTarget(it) }
 
         return AOCAnswer(partOne, partTwo)
     }
