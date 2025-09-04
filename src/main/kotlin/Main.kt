@@ -9,16 +9,18 @@ import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.functions
 import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.full.valueParameters
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
     solveYear(AOCYear.TwentyFour, days = listOf(1))
 }
 
-data class AOCAnswer(val partOne: Any, val partTwo: Any?)
-
 interface AOCSolution {
     fun solve(): AOCAnswer
 }
+
+data class AOCAnswer(val partOne: Any? = null, val partTwo: Any? = null)
 
 enum class ErrorPropagation { CAUSE, FULL, NONE }
 
@@ -26,9 +28,10 @@ fun solveYear(
     year: AOCYear = AOCYear.TwentyThree,
     days: List<Int> = (1..25).toList(),
     skipDays: List<Int> = emptyList(),
-    timeout: Long? = null,
+    timeout: Duration? = null,
     quietlySkipMissing: Boolean = false,
     logTotalPerformance: Boolean = true,
+    dryRun: Boolean = false,
     errorPropagation: ErrorPropagation = ErrorPropagation.CAUSE,
 ) {
     val prefix = year.getSuffix()
@@ -58,7 +61,7 @@ fun solveYear(
         }
 
         val classInstance = klazz.createInstance()
-        val executor = Executors.newVirtualThreadPerTaskExecutor()
+        val executor = Executors.newFixedThreadPool(1)
 
         println("Day $dayNumber:")
 
@@ -73,13 +76,19 @@ fun solveYear(
             if (quietlySkipMissing) return@mapNotNull null
         }
 
+        if (dryRun) {
+            repeat(2) {
+                executor.submit { solveMethod.call(classInstance) }.get()
+            }
+        }
+
         val start = System.currentTimeMillis()
         val callableSolve = Callable { solveMethod.call(classInstance) }
         val task = executor.submit(callableSolve)
 
         val result = runCatching {
             if (timeout != null) {
-                task.get(timeout, TimeUnit.MILLISECONDS)
+                task.get(timeout.inWholeNanoseconds, TimeUnit.NANOSECONDS)
             } else {
                 task.get()
             }
@@ -102,7 +111,7 @@ fun solveYear(
                 is InterruptedException, is TimeoutException -> {
                     executor.shutdownNow()
 
-                    println("Timeout out...")
+                    println("Timed out...")
                 }
                 else -> error("Unknown exception type in result: $exception")
             }
@@ -116,12 +125,13 @@ fun solveYear(
             }
         }
 
+        executor.shutdown()
         // TODO: Handling of performance on timed-out tasks
         System.currentTimeMillis() - start
     }
 
     if (logTotalPerformance) {
-        println("Performance: ${timings.sum()} ms")
+        println("Performance: ${timings.sum().milliseconds}")
     }
 }
 
