@@ -148,11 +148,9 @@ private fun latestDay(year: AOCYear): Int {
     val reflections = Reflections(suffix)
 
     val existingDays = reflections.getAll(Scanners.SubTypes)
-        .mapNotNull { subType ->
-            subType.split(".")
-                .takeIf { it.size == 2 && it.first() == suffix }
-                ?.let { (_, second) -> second.removePrefix("Day").toIntOrNull() }
-        }
+        .map { it.split(".") }
+        .filter { it.size == 2 && it.first() == suffix }
+        .mapNotNull { (_, second) -> second.removePrefix("Day").toIntOrNull() }
 
     return existingDays.max()
 }
