@@ -1,55 +1,63 @@
 package aoc22
 
+import AOCAnswer
+import AOCSolution
 import readInput
+import splitBy
+import transposed
 
-class Day5 {
-    fun solve() {
+class Day5 : AOCSolution {
+
+    private data class Operation(
+        val amount: Int,
+        val from: Int,
+        val to: Int,
+    )
+
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day5.txt")
-        val rawInputMap = rawInput.takeWhile { it.isNotEmpty() }
 
-        val inputMap = rawInputMap.reversed().run {
-            val identifiers = first()
-            val data = drop(1)
+        val (mapLines, operationLines) = rawInput.splitBy { isEmpty() }
 
-            val identifierToValues = identifiers.mapIndexedNotNull { index, identifier ->
-                if (identifier.isDigit()) {
-                    val rowData = data.mapNotNull { dataRow ->
-                        dataRow[index].takeIf { it.isLetter() }?.toString()
-                    }
-                    identifier.digitToInt() to rowData
-                } else {
-                    null
-                }
-            }
-            identifierToValues.toMap()
+        val lineLength = mapLines.maxOf { it.length }
+        val mapRows = mapLines
+            .map { it.padEnd(lineLength).toList() } // Pad to common line length to enable `rotated` (uses transposed)
+            .rotated()
+            .filter { (first) -> first.isDigit() } // Keep only rows with map data
+
+        val initialMap = mapRows.associate { line ->
+            val identifier = line.first().digitToInt()
+            val elements = line.drop(1).takeWhile { it.isLetter() }
+
+            identifier to elements
         }
 
-        val input = rawInput.drop(rawInputMap.size + 1).map { line ->
-            line.split(" ")
-                .mapNotNull { it.toIntOrNull() }
-                .let { Triple(it[0], it[1], it[2]) }
+        val operations = operationLines.map { line ->
+            val (amount, from, to) = line.split(" ").mapNotNull { it.toIntOrNull() }
+
+            Operation(amount, from, to)
         }
 
-        val resultStatePartOne = input.fold(inputMap) { acc, op -> acc.executeOperation(op, false) }
-        val resultStatePartTwo = input.fold(inputMap) { acc, op -> acc.executeOperation(op, true) }
+        val resultStatePartOne = operations.fold(initialMap) { map, op -> map.applyOperation(op, false) }
+        val resultStatePartTwo = operations.fold(initialMap) { map, op -> map.applyOperation(op, true) }
 
-        val lastFromEachPartOne = resultStatePartOne.values.joinToString("") { it.last() }
-        val lastFromEachPartTwo = resultStatePartTwo.values.joinToString("") { it.last() }
+        val partOne = resultStatePartOne.values.map { it.last() }.joinToString("")
+        val partTwo = resultStatePartTwo.values.map { it.last() }.joinToString("")
 
-        println("Part One: $lastFromEachPartOne")
-        println("Part Two: $lastFromEachPartTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
-    private fun Map<Int, List<String>>.executeOperation(
-        operation: Triple<Int, Int, Int>,
-        moveAtOnce: Boolean,
-    ): Map<Int, List<String>> {
-        val (amount, from, to) = operation
+    private fun Map<Int, List<Char>>.applyOperation(operation: Operation, moveAtOnce: Boolean): Map<Int, List<Char>> {
+        val from = this.getValue(operation.from)
+        val to = this.getValue(operation.to)
 
-        val toMove = getValue(from).takeLast(amount)
-        val newAtTo = getValue(to) + toMove.run { if (moveAtOnce) this else reversed() }
-        val newAtFrom = getValue(from).dropLast(amount)
+        val toMove = from.takeLast(operation.amount).let { if (moveAtOnce) it else it.asReversed() }
 
-        return this + (to to newAtTo) + (from to newAtFrom)
+        val newTo = to + toMove
+        val newFrom = from.dropLast(operation.amount)
+
+        return this + (operation.to to newTo) + (operation.from to newFrom)
     }
+
+    private fun List<List<Char>>.rotated() = this.transposed().map { it.asReversed() }
 }
