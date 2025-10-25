@@ -79,7 +79,7 @@ fun Iterable<String>.mapToLong() = map(String::toLong)
 /**
  * Splits List of [T] into sublists by specified [predicate]. An equivalent of [split] but for Lists.
  */
-inline fun <T> List<T>.splitBy(predicate: T.() -> Boolean): List<List<T>> {
+inline fun <T> List<T>.splitBy(predicate: (T) -> Boolean): List<List<T>> {
     val (_, result) = foldIndexed(listOf<T>() to listOf<List<T>>()) { index, (localCollected, globalCollected), line ->
         when {
             index == lastIndex -> {
@@ -101,7 +101,7 @@ inline fun <T> List<T>.splitBy(predicate: T.() -> Boolean): List<List<T>> {
 /**
  * Splits List of [T] into sublists by specified [predicate] and applies [transform] on each element. An equivalent of [split] but for Lists.
  */
-inline fun <T, K> List<T>.splitBy(predicate: T.() -> Boolean, transform: (T) -> K): List<List<K>> {
+inline fun <T, K> List<T>.splitBy(predicate: (T) -> Boolean, transform: (T) -> K): List<List<K>> {
     val (_, result) = foldIndexed(listOf<K>() to listOf<List<K>>()) { index, (localCollected, globalCollected), line ->
         when {
             index == lastIndex -> {

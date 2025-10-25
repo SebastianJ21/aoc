@@ -9,7 +9,7 @@ class Day1 {
     fun solve() {
         val rawInput = readInput("day1.txt", AOCYear.TwentyTwo)
 
-        val inputs = rawInput.splitBy({ isEmpty() }) { it.toInt() }
+        val inputs = rawInput.splitBy({ it.isEmpty() }) { it.toInt() }
 
         val rowSums = inputs.map { it.sum() }
 

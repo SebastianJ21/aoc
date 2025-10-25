@@ -17,7 +17,7 @@ class Day5 : AOCSolution {
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day5.txt")
 
-        val (mapLines, operationLines) = rawInput.splitBy { isEmpty() }
+        val (mapLines, operationLines) = rawInput.splitBy { it.isEmpty() }
 
         val lineLength = mapLines.maxOf { it.length }
         val mapRows = mapLines

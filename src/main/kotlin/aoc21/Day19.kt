@@ -28,7 +28,7 @@ class Day19 {
         val inputScanners = rawInput
             .drop(1)
             .filter { it.isNotEmpty() }
-            .splitBy { contains("scanner") }
+            .splitBy { it.contains("scanner") }
             .map { beacons ->
                 beacons.map { beacon ->
                     val (a, b, c) = beacon.split(",").mapToInt()

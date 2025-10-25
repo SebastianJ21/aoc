@@ -62,7 +62,7 @@ class Day13 {
     fun solve() {
         val rawInput = readInput("day13.txt", AOCYear.TwentyTwo)
 
-        val packetPairs = rawInput.splitBy { isEmpty() }.map { (a, b) ->
+        val packetPairs = rawInput.splitBy { it.isEmpty() }.map { (a, b) ->
             parseIntoPackets(a) to parseIntoPackets(b)
         }
 

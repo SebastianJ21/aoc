@@ -16,7 +16,7 @@ class Day13 {
     fun solve() {
         val rawInput = readInput("day13.txt", AOCYear.TwentyOne)
 
-        val (hashes, folds) = rawInput.splitBy { isEmpty() }
+        val (hashes, folds) = rawInput.splitBy { it.isEmpty() }
 
         val hashPositions = hashes.map { line ->
             val (col, row) = line.split(",")

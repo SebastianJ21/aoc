@@ -14,7 +14,7 @@ class Day22 {
 
         val numbers = (1..10L).reduce { acc, num -> acc * num * num }
 
-        val (startDeck1, startDeck2) = rawInput.splitBy { isEmpty() }.map { it.drop(1).mapToInt() }
+        val (startDeck1, startDeck2) = rawInput.splitBy { it.isEmpty() }.map { it.drop(1).mapToInt() }
 
         val partOne = playGame(startDeck1, startDeck2)
             .toList()

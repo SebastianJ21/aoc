@@ -49,7 +49,7 @@ class Day24 {
 
         val rootNode = Tree.Root(initialRegisters.dropLast(1))
 
-        val splitByInputCommand = rawInput.drop(1).splitBy { contains("inp") }
+        val splitByInputCommand = rawInput.drop(1).splitBy { it.contains("inp") }
 
         val individualExecutions = splitByInputCommand.map { extractExecutionFlow(it) }
 

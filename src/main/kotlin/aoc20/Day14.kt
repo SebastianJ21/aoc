@@ -18,7 +18,7 @@ class Day14 {
         }.reversed().dropWhile { it.isEmpty() }
 
         val groups = paddedInput
-            .splitBy { isEmpty() }
+            .splitBy { it.isEmpty() }
             .associate { groupLines ->
                 val (_, mask) = groupLines.first().split(" = ")
 

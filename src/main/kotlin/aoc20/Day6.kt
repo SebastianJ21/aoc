@@ -9,7 +9,7 @@ class Day6 {
     fun solve() {
         val rawInput = readInput("day6.txt", AOCYear.Twenty)
 
-        val answersPerGroup = rawInput.splitBy({ isEmpty() }, { it.toList() })
+        val answersPerGroup = rawInput.splitBy({ it.isEmpty() }, { it.toList() })
 
         val partOne = answersPerGroup.sumOf { groupAnswers -> groupAnswers.flatten().toSet().size }
 
