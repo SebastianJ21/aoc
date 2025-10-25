@@ -16,7 +16,7 @@ class Day20 {
     fun solve() {
         val rawInput = readInput("day20.txt", AOCYear.Twenty)
 
-        val idToMatrix = rawInput.splitBy { isEmpty() }.associate { lines ->
+        val idToMatrix = rawInput.splitBy { it.isEmpty() }.associate { lines ->
             val id = lines.first().dropWhile { !it.isDigit() }.takeWhile { it.isDigit() }.toInt()
 
             val matrix = lines.drop(1).toCharMatrix()

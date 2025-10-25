@@ -9,7 +9,7 @@ class Day4 {
     fun solve() {
         val rawInput = readInput("day4.txt", AOCYear.Twenty)
 
-        val rawPassports = rawInput.splitBy { isEmpty() }
+        val rawPassports = rawInput.splitBy { it.isEmpty() }
 
         val blankCid = "cid" to "420"
 

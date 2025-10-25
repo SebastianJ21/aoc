@@ -12,7 +12,7 @@ class Day13 {
     fun solve() {
         val rawInput = readInput("day13.txt", AOCYear.TwentyThree)
 
-        val rawMatrices = rawInput.splitBy { isEmpty() }
+        val rawMatrices = rawInput.splitBy { it.isEmpty() }
 
         val indexToResultPartOne = rawMatrices
             .mapIndexed { index, matrix -> index to matrix.calcNumber() }

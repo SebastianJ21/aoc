@@ -23,7 +23,7 @@ class Day11 {
     fun solve() {
         val rawInput = readInput("day11.txt", AOCYear.TwentyTwo)
 
-        val monkeyInputs = rawInput.splitBy { isEmpty() }
+        val monkeyInputs = rawInput.splitBy { it.isEmpty() }
         val monkeys = monkeyInputs.map { parseMonkey(it) }
 
         val lcm = monkeys.map { it.testNumber.toBigInteger() }.reduce(BigInteger::lcm).toLong()

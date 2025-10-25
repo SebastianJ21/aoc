@@ -11,7 +11,7 @@ class Day4 {
 
         val drawnNumbers = rawInput.first().split(",").mapToInt()
 
-        val matrices = rawInput.drop(2).splitBy({ isEmpty() }) { line ->
+        val matrices = rawInput.drop(2).splitBy({ it.isEmpty() }) { line ->
             line.trimStart()
                 .split("  ", " ")
                 .mapToInt()

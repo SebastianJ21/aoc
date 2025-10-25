@@ -63,7 +63,7 @@ class Day17 : AOCSolution {
 
         val cameraOutputs = executeInstructions(initialState).outputs
 
-        val matrix = cameraOutputs.splitBy({ this == 10L }) { Char(it.toInt()) }.filter { it.isNotEmpty() }
+        val matrix = cameraOutputs.splitBy({ it == 10L }) { Char(it.toInt()) }.filter { it.isNotEmpty() }
 
         fun Char.isScaffold() = this == scaffoldTile || this == robotTile
 

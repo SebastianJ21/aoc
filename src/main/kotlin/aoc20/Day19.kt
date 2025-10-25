@@ -13,7 +13,7 @@ class Day19 {
     fun solve() {
         val rawInput = readInput("day19.txt", AOCYear.Twenty)
 
-        val (rawRules, textLines) = rawInput.splitBy { isEmpty() }
+        val (rawRules, textLines) = rawInput.splitBy { it.isEmpty() }
 
         val (resolvedRules, unresolvedRules) = rawRules.partition { it.contains("\"") }
 

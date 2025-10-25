@@ -11,7 +11,7 @@ class Day5 : AOCSolution {
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day5.txt", AOCYear.TwentyFour)
 
-        val (rules, rawCommands) = rawInput.splitBy { isEmpty() }
+        val (rules, rawCommands) = rawInput.splitBy { it.isEmpty() }
 
         val lowerToHigherNumbers = rules
             .map { it.split('|').mapToInt() }

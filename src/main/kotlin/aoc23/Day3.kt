@@ -38,7 +38,7 @@ class Day3 {
 
         val partNumbers = rawInput.flatMapIndexed { rowI, row ->
             val numberPartsGroups = row.mapIndexed { index, char -> index to char }
-                .splitBy { !second.isDigit() }
+                .splitBy { !it.second.isDigit() }
                 .filter { it.isNotEmpty() }
 
             val numsWithAdjacentPositions = numberPartsGroups.map { numberParts ->

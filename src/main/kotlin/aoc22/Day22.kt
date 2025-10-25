@@ -64,7 +64,7 @@ class Day22 : AOCSolution {
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day22.txt", AOCYear.TwentyTwo)
 
-        val (matrixInput, instructions) = rawInput.splitBy { isEmpty() }
+        val (matrixInput, instructions) = rawInput.splitBy { it.isEmpty() }
 
         val longestRowLength = matrixInput.maxOf { it.length }
         val normalizedInput = matrixInput.map { it.padEnd(longestRowLength, ' ') }

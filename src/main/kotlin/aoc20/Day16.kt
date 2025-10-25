@@ -12,7 +12,7 @@ class Day16 {
     fun solve() {
         val rawInput = readInput("day16.txt", AOCYear.Twenty)
 
-        val (rawRules, rawMyTicket, rawNearbyTickets) = rawInput.splitBy { isEmpty() }
+        val (rawRules, rawMyTicket, rawNearbyTickets) = rawInput.splitBy { it.isEmpty() }
 
         val ruleToIntervals = rawRules.associate { rawRule ->
             val (ruleName, rawIntervals) = rawRule.split(": ")
