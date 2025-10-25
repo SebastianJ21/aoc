@@ -20,8 +20,12 @@ class Day11 : AOCSolution {
         return AOCAnswer(partOne, partTwo)
     }
 
+    /**
+     * This solution uses an unusual amount of mutable data structures.
+     * I decided to keep / use it as it is one of a little mutability use cases I actually really like.
+     */
     private fun buildResolvers(initialStones: List<Long>): Map<Long, (steps: Int) -> Long> {
-        val stoneToResolver = mutableMapOf<Long, (steps: Int) -> Long>()
+        val stoneToResolver = hashMapOf<Long, (steps: Int) -> Long>()
         val cache = hashMapOf<Pair<Long, Int>, Long>()
         val seen = hashSetOf<Long>()
 
