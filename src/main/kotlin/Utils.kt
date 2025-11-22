@@ -42,6 +42,9 @@ operator fun <T> List<List<T>>.get(position: Position) = this[position.first][po
 
 fun <T> List<List<T>>.getOrNull(position: Position) = getOrNull(position.first)?.getOrNull(position.second)
 
+fun <T> List<List<T>>.getInDirectionOrNull(position: Position, direction: Direction) =
+    getOrNull(position.first + direction.first)?.getOrNull(position.second + direction.second)
+
 fun List<String>.toCharMatrix() = map { it.toList() }
 
 inline fun <T> List<String>.toMatrix(transform: (Char) -> T): List<List<T>> = this.map { row -> row.map(transform) }
