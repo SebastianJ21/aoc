@@ -14,7 +14,12 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
-    solveYear(AOCYear.TwentyFour, listOf(latestDay(AOCYear.TwentyFour)), logTotalPerformance = true)
+    solveYear(
+        year = AOCYear.TwentyFive,
+        days = listOf(latestDay(AOCYear.TwentyFive)),
+        logTotalPerformance = true,
+        dryRun = true,
+    )
 }
 
 interface AOCSolution {
