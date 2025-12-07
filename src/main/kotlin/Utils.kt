@@ -166,3 +166,17 @@ fun <T> Iterable<Iterable<T>>.positionsOf(predicate: (T) -> Boolean): Sequence<P
             if (predicate(value)) Position(rowI, colI) else null
         }
     }
+
+/**
+ * Returns the number of elements matching the given [predicate] or [until] if reached.
+ */
+inline fun <T> List<T>.countUntil(until: Int, predicate: (T) -> Boolean): Int {
+    if (isEmpty()) return 0
+
+    var count = 0
+    for (element in this) {
+        if (count == until) return count
+        if (predicate(element)) count++
+    }
+    return count
+}
