@@ -43,12 +43,11 @@ class Day2 : AOCSolution {
         val strValue = toString()
 
         val mid = strValue.length / 2
-        val last = strValue.last()
 
         return (1..mid).any { subStrSize ->
             if (strValue.length % subStrSize != 0) return@any false
             // Fast path out if it does not match
-            if (strValue[subStrSize - 1] != last) return@any false
+            if (strValue[subStrSize - 1] != strValue.last()) return@any false
 
             val subStr = strValue.take(subStrSize)
             subStr.repeat(strValue.length / subStrSize) == strValue

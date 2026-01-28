@@ -21,7 +21,7 @@ class Day3 : AOCSolution {
         fun selectNext(values: List<IndexedValue<Long>>, n: Int): List<Long> {
             if (n == 0) return emptyList()
 
-            // Pick first a value that leaves enough entries to match the needed count
+            // Pick first value that leaves enough entries to match the needed count
             val (newIndex, newValue) = values.first { (selectedIndex) ->
                 val leftAfterRemove = values.count { it.index > selectedIndex }
 
