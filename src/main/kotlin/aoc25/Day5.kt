@@ -49,10 +49,10 @@ class Day5 : AOCSolution {
         // Full overlap
         other.first <= this.first && other.last >= this.last -> emptyList()
         // Left overlap
-        other.first <= this.first && other.last < this.last -> listOf(other.last.inc()..this.last)
+        other.first <= this.first && other.last < this.last -> listOf(other.last + 1..this.last)
         // Right overlap
         other.first > this.first && other.last >= this.last -> listOf(this.first until other.first)
         // Inner overlap
-        else -> listOf(this.first until other.first, other.last.inc()..this.last)
+        else -> listOf(this.first until other.first, other.last + 1..this.last)
     }
 }
