@@ -14,9 +14,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.code.style>official</kotlin.code.style>
-        <kotlin.compiler.jvmTarget>21</kotlin.compiler.jvmTarget>
-        <java.version>21</java.version>
-        <kotlin.version>2.1.20</kotlin.version>
+        <kotlin.compiler.jvmTarget>25</kotlin.compiler.jvmTarget>
+        <java.version>25</java.version>
+        <kotlin.version>2.3.20</kotlin.version>
     </properties>
 
     <repositories>
@@ -32,7 +32,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>ktlint</id>
@@ -97,7 +97,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <apiVersion>2.1</apiVersion>
+                    <apiVersion>2.3</apiVersion>
                 </configuration>
             </plugin>
             <plugin>
@@ -111,10 +111,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.14.1</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <source>${kotlin.compiler.jvmTarget}</source>
+                    <target>${kotlin.compiler.jvmTarget}</target>
                 </configuration>
             </plugin>
         </plugins>
