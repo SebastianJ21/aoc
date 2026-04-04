@@ -1,5 +1,3 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc19
 
 import AOCAnswer
@@ -8,6 +6,7 @@ import AOCYear
 import Position
 import aoc19.IntCodeRunner.Companion.executeInstructions
 import applyDirection
+import at
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toPersistentList
@@ -17,10 +16,10 @@ import readInput
 
 class Day13 : AOCSolution {
 
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
     enum class Tile {
         WALL,
@@ -30,7 +29,7 @@ class Day13 : AOCSolution {
         EMPTY,
     }
 
-    fun Int.toTile(): Tile = when (this) {
+    private fun Int.toTile(): Tile = when (this) {
         0 -> Tile.EMPTY
         1 -> Tile.WALL
         2 -> Tile.BLOCK
@@ -39,7 +38,7 @@ class Day13 : AOCSolution {
         else -> error("Invalid tileId $this")
     }
 
-    data class GameState(
+    private data class GameState(
         val executionState: ExecutionState,
         val boardState: PersistentMap<Position, Tile>,
         val score: Int,
@@ -53,7 +52,7 @@ class Day13 : AOCSolution {
         val instructions = rawInput.single().split(",").mapToLong()
 
         val boardCreationSequence = generateSequence(ExecutionState.fromList(instructions)) { state ->
-            executeInstructions(state.withClearedOutputs(), 3)
+            executeInstructions(state.withClearedOutputs(), stopOnOutputSize = 3)
         }.drop(1).takeWhile { it.outputs.isNotEmpty() }
 
         val initialGameBoard = boardCreationSequence.fold(persistentMapOf<Position, Tile>()) { board, state ->
@@ -117,14 +116,14 @@ class Day13 : AOCSolution {
         return AOCAnswer(partOne, partTwo)
     }
 
-    val possibleBallDirections = listOf(up + left, up + right, down + left, down + right, 0 to 0)
+    val possibleBallDirections = listOf(up + left, up + right, down + left, down + right, 0 at 0)
 
     fun getNewBallPosition(oldPosition: Position, boardState: PersistentMap<Position, Tile>): Position =
         possibleBallDirections.firstNotNullOf { direction ->
             oldPosition.applyDirection(direction).takeIf { boardState[it] == Tile.BALL }
         }
 
-    val possiblePaddleDirections = listOf(left, right, 0 to 0)
+    val possiblePaddleDirections = listOf(left, right, 0 at 0)
 
     fun getNewPaddlePosition(oldPosition: Position, boardState: PersistentMap<Position, Tile>) =
         possiblePaddleDirections.firstNotNullOf { direction ->

@@ -5,7 +5,9 @@ import AOCSolution
 import AOCYear
 import Position
 import applyDirection
+import at
 import get
+import getInDirectionOrNull
 import getOrNull
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
@@ -14,12 +16,13 @@ import readInput
 import toMatrix
 
 class Day9 : AOCSolution {
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
 
-    val directions = listOf(up, down, left, right)
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
+
+    private val directions = listOf(up, down, left, right)
 
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day9.txt", AOCYear.TwentyOne)
@@ -28,10 +31,10 @@ class Day9 : AOCSolution {
         // low points - the locations that are lower than any of its adjacent locations
         val lowPointsPositions = matrix.flatMapIndexed { rowI, row ->
             row.mapIndexedNotNull { colI, current ->
-                val currentPosition = rowI to colI
+                val currentPosition = rowI at colI
 
                 val isLowPoint = directions.all { direction ->
-                    val adjacent = matrix.getOrNull(currentPosition.applyDirection(direction))
+                    val adjacent = matrix.getInDirectionOrNull(currentPosition, direction)
 
                     adjacent == null || current < adjacent
                 }
@@ -53,7 +56,7 @@ class Day9 : AOCSolution {
         return AOCAnswer(partOne, partTwo)
     }
 
-    private fun exploreBasin(position: Pair<Int, Int>, matrix: List<List<Int>>): Int {
+    private fun exploreBasin(position: Position, matrix: List<List<Int>>): Int {
         fun Position.dfsExploreBasin(seen: PersistentSet<Position>): Int {
             val value = matrix[this]
 

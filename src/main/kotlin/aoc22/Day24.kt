@@ -3,29 +3,31 @@ package aoc22
 import AOCAnswer
 import AOCSolution
 import Position
-import getOrNull
-import plus
+import applyDirection
+import at
+import getInDirectionOrNull
 import readInput
 import toMatrix
 import kotlin.math.abs
 import kotlin.math.min
 
-typealias TileMatrix = List<List<List<Day24.TileType>>>
+private typealias TileMatrix = List<List<List<TileType>>>
+
+private enum class TileType {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    WALL,
+}
 
 class Day24 : AOCSolution {
-    enum class TileType {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT,
-        WALL,
-    }
 
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
-    val wait = 0 to 0
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
+    private val wait = 0 at 0
 
     private val moves = listOf(up, down, left, right, wait)
 
@@ -47,8 +49,8 @@ class Day24 : AOCSolution {
         }
         val matrixSequence = constructMatrixSequence(matrix)
 
-        val start = 0 to 1
-        val end = 21 to 150
+        val start = 0 at 1
+        val end = 21 at 150
 
         val partOne = findShortestPath(0, matrixSequence, start, end)
 
@@ -70,18 +72,18 @@ class Day24 : AOCSolution {
         start: Position,
         destination: Position,
     ): Pair<Int, Int> {
-        val cache = matrixSequence.map { hashMapOf<Position, Int>() }
+        val cache = matrixSequence.map { HashMap<Position, Int>(1_000) }
 
         var best = Int.MAX_VALUE
 
         fun search(matrixIndex: Int, position: Position, round: Int): Pair<Int, Int>? {
             when {
+                round + manhattanDistance(position, destination) >= best -> return null
                 position == destination -> {
                     best = min(best, round)
                     return round to matrixIndex
                 }
-                (cache[matrixIndex][position] ?: Int.MAX_VALUE) <= round -> return null
-                round + manhattanDistance(position, destination) >= best -> return null
+                cache[matrixIndex][position]?.let { it <= round } ?: false -> return null
             }
 
             cache[matrixIndex][position] = round
@@ -90,9 +92,8 @@ class Day24 : AOCSolution {
             val nextMatrix = matrixSequence[nextMatrixIndex]
 
             return moves
-                .map { position + it }
-                .filter { nextMatrix.getOrNull(it)?.isEmpty() == true }
-                .mapNotNull { search(nextMatrixIndex, it, round + 1) }
+                .filter { direction -> nextMatrix.getInDirectionOrNull(position, direction)?.isEmpty() == true }
+                .mapNotNull { direction -> search(nextMatrixIndex, position.applyDirection(direction), round + 1) }
                 .minByOrNull { it.first }
         }
 
@@ -100,10 +101,8 @@ class Day24 : AOCSolution {
     }
 
     private fun constructMatrixSequence(fromMatrix: TileMatrix): List<TileMatrix> {
-        val firstHash = fromMatrix.hashCode()
-
         val sequence = generateSequence(fromMatrix) { matrix ->
-            matrix.constructNext().takeIf { it.hashCode() != firstHash }
+            matrix.constructNext().takeIf { it != fromMatrix }
         }
 
         return sequence.toList()
@@ -161,7 +160,7 @@ class Day24 : AOCSolution {
 
         return mapIndexed { rowI, row ->
             List(row.size) { colI ->
-                positionToTiles[rowI to colI] ?: emptyList()
+                positionToTiles[rowI at colI] ?: emptyList()
             }
         }
     }

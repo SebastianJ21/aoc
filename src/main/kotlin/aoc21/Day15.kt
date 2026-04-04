@@ -1,8 +1,11 @@
 package aoc21
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import Position
 import applyDirection
+import at
 import getOrNull
 import readInput
 import toMatrix
@@ -10,31 +13,30 @@ import transposed
 import java.util.PriorityQueue
 import kotlin.math.min
 
-class Day15 {
+class Day15 : AOCSolution {
 
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    val directions = listOf(up, down, left, right)
+    private val directions = listOf(up, down, left, right)
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day15.txt", AOCYear.TwentyOne)
         val matrix = rawInput.toMatrix { value -> value.digitToInt() }
 
-        val startPosition = 0 to 0
-        val targetPartOne = matrix.lastIndex to matrix.first().lastIndex
+        val startPosition = 0 at 0
+        val targetPartOne = matrix.lastIndex at matrix.first().lastIndex
 
         val bufferedMatrix = matrix.bufferedWithItself(4)
 
-        val targetPartTwo = bufferedMatrix.lastIndex to bufferedMatrix.first().lastIndex
+        val targetPartTwo = bufferedMatrix.lastIndex at bufferedMatrix.first().lastIndex
 
         val partOne = dijkstra(matrix, startPosition)[targetPartOne]!!
         val partTwo = dijkstra(bufferedMatrix, startPosition)[targetPartTwo]!!
 
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
     private fun dijkstra(matrix: List<List<Int>>, startPosition: Position): Map<Position, Int> {

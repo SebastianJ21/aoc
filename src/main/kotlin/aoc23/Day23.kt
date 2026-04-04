@@ -1,20 +1,22 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc23
 
+import AOCAnswer
+import AOCSolution
 import Position
 import applyDirection
+import at
 import getOrNull
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
 import readInput
 import toCharMatrix
 
-class Day23 {
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+class Day23 : AOCSolution {
+
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
     private val directions = listOf(up, down, left, right)
 
@@ -25,11 +27,11 @@ class Day23 {
         'v' to down,
     )
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day23.txt", AOCYear.TwentyThree)
         val matrix = rawInput.toCharMatrix()
 
-        val (start, end) = Position(0, 1) to (matrix.lastIndex to matrix.last().lastIndex - 1)
+        val (start, end) = 0 at 1 to (matrix.lastIndex at matrix.last().lastIndex - 1)
 
         val matrixWithoutSlopes = matrix.map { row ->
             row.map { value ->
@@ -41,7 +43,7 @@ class Day23 {
             row.mapIndexedNotNull { colI, value ->
                 if (value != '.') return@mapIndexedNotNull null
 
-                val position = rowI to colI
+                val position = rowI at colI
                 val possibleDirections = directions.mapNotNull { direction ->
                     val check = position.applyDirection(direction)
 
@@ -61,11 +63,10 @@ class Day23 {
         val partOne = findLongestToggleSequence(start, end, togglePartOnePaths)
         val partTwo = findLongestToggleSequence(start, end, togglePaths)
 
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
-    fun findLongestToggleSequence(
+    private fun findLongestToggleSequence(
         start: Position,
         end: Position,
         togglePaths: Map<Position, List<Pair<Position, Int>>>,
@@ -90,7 +91,7 @@ class Day23 {
         return dfs(start, 0, persistentHashSetOf())
     }
 
-    fun getAllTogglePaths(
+    private fun getAllTogglePaths(
         matrix: List<List<Char>>,
         toggles: Map<Position, List<Position>>,
     ): Map<Position, List<Pair<Position, Int>>> = toggles.mapValues { (toggle, togglePaths) ->
@@ -101,7 +102,7 @@ class Day23 {
         reachableToggles.map { path -> path.last() to path.size }
     }
 
-    fun getNextPositions(position: Position, matrix: List<List<Char>>, previous: Position? = null) =
+    private fun getNextPositions(position: Position, matrix: List<List<Char>>, previous: Position? = null) =
         directions.mapNotNull { direction ->
             val newPosition = position.applyDirection(direction)
             val value = matrix.getOrNull(newPosition)
@@ -111,7 +112,7 @@ class Day23 {
             newPosition.takeIf { value == '.' || slopeToDirection[value] == direction }
         }
 
-    fun findNextTogglePath(
+    private fun findNextTogglePath(
         position: Position,
         toggles: Map<Position, List<Position>>,
         matrix: List<List<Char>>,

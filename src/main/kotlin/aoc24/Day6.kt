@@ -5,6 +5,7 @@ import AOCSolution
 import Direction
 import Position
 import applyDirection
+import at
 import getOrNull
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
@@ -17,12 +18,12 @@ class Day6 : AOCSolution {
 
     enum class Tile { EMPTY, OBSTRUCTION, GUARD }
 
-    val up: Direction = -1 to 0
-    val down: Direction = 1 to 0
-    val left: Direction = 0 to -1
-    val right: Direction = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    val directions = listOf(up, right, down, left)
+    private val directions = listOf(up, right, down, left)
 
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day6.txt", AOCYear.TwentyFour)
@@ -52,7 +53,7 @@ class Day6 : AOCSolution {
             val newMatrix = persistentMatrix.replaceTile(obstructPosition, Tile.OBSTRUCTION)
             val movementWithObstruction = makeMovementSequence(newMatrix, startPosition, startDirection)
 
-            val seenLocal = hashSetOf<Pair<Position, Direction>>()
+            val seenLocal = HashSet<Pair<Position, Direction>>(distinctPositions.size)
             val isLoop = movementWithObstruction.any { value -> !seenLocal.add(value) }
 
             isLoop

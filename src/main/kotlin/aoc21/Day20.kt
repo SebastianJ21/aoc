@@ -1,41 +1,43 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc21
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import Position
 import applyDirection
+import at
 import getOrNull
 import readInput
 import toCharMatrix
 import transposed
 
-class Day20 {
-    val northWest = -1 to -1
-    val north = -1 to 0
-    val northEast = -1 to 1
-    val west = 0 to -1
-    val origin = 0 to 0
-    val east = 0 to 1
-    val southWest = 1 to -1
-    val south = 1 to 0
-    val southEast = 1 to 1
+class Day20 : AOCSolution {
 
-    val mooreNeighborhood = listOf(northWest, north, northEast, west, origin, east, southWest, south, southEast)
+    private val northWest = -1 at -1
+    private val north = -1 at 0
+    private val northEast = -1 at 1
+    private val west = 0 at -1
+    private val origin = 0 at 0
+    private val east = 0 at 1
+    private val southWest = 1 at -1
+    private val south = 1 at 0
+    private val southEast = 1 at 1
 
-    fun pixelToValue(pixel: Char) = when (pixel) {
+    private val mooreNeighborhood = listOf(northWest, north, northEast, west, origin, east, southWest, south, southEast)
+
+    private fun pixelToValue(pixel: Char) = when (pixel) {
         '#' -> "1"
         '.' -> "0"
         else -> error("Invalid Pixel $pixel")
     }
 
-    fun getNextVoid(current: Char) = when (current) {
+    private fun getNextVoid(current: Char) = when (current) {
         '.' -> '#'
         '#' -> '.'
         else -> error("Invalid Pixel $current")
     }
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day20.txt", AOCYear.TwentyOne)
         val charMatrix = rawInput.toCharMatrix()
 
@@ -58,7 +60,7 @@ class Day20 {
 
                 bufferedMatrix.mapIndexed { rowI, row ->
                     List(row.size) { colI ->
-                        val pixelIndex = bufferedMatrix.getPixelIndex(rowI to colI, currentVoid)
+                        val pixelIndex = bufferedMatrix.getPixelIndex(rowI at colI, currentVoid)
                         val newPixel = pixels[pixelIndex]
                         newPixel
                     }
@@ -74,13 +76,12 @@ class Day20 {
         val partOne = resultMapPartOne.countHashes()
         val partTwo = resultMapPartTwo.countHashes()
 
-        println("Part One: $partOne")
-        println("Part Two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
-    fun List<List<Char>>.countHashes() = sumOf { row -> row.count { it == '#' } }
+    private fun List<List<Char>>.countHashes() = sumOf { row -> row.count { it == '#' } }
 
-    fun List<List<Char>>.getPixelIndex(position: Position, voidPixel: Char): Int {
+    private fun List<List<Char>>.getPixelIndex(position: Position, voidPixel: Char): Int {
         val binaryString = mooreNeighborhood.joinToString("") { direction ->
             val pixel = getOrNull(position.applyDirection(direction)) ?: voidPixel
 
@@ -90,7 +91,7 @@ class Day20 {
         return binaryString.toInt(2)
     }
 
-    fun List<List<Char>>.buffered(bufferWith: Char): List<List<Char>> {
+    private fun List<List<Char>>.buffered(bufferWith: Char): List<List<Char>> {
         val bufferRow = listOf(List(first().size) { bufferWith })
 
         val withBufferedRows = bufferRow + this + bufferRow

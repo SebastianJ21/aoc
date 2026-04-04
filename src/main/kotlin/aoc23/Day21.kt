@@ -5,6 +5,7 @@ import AOCSolution
 import AOCYear
 import Position
 import applyDirection
+import at
 import getOrNull
 import positionsOf
 import readInput
@@ -13,14 +14,14 @@ import kotlin.math.pow
 
 class Day21 : AOCSolution {
 
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    val directions = listOf(up, down, left, right)
+    private val directions = listOf(up, down, left, right)
 
-    data class GraphNode(val position: Position, val isWall: Boolean, val neighbours: List<Position>)
+    private data class GraphNode(val position: Position, val isWall: Boolean, val neighbours: List<Position>)
 
     private val partOneSteps = 64
     private val partTwoSteps = 26501365
@@ -33,7 +34,7 @@ class Day21 : AOCSolution {
 
         val nodes = matrix.flatMapIndexed { rowI, row ->
             row.mapIndexed { colI, value ->
-                val position = rowI to colI
+                val position = rowI at colI
 
                 val neighbours = directions.mapNotNull { direction ->
                     position.applyDirection(direction).takeIf { matrix.getOrNull(it) != null }

@@ -5,6 +5,7 @@ import AOCSolution
 import AOCYear
 import Position
 import applyDirection
+import at
 import get
 import getOrNull
 import positionsOf
@@ -14,12 +15,12 @@ import kotlin.math.absoluteValue
 
 class Day10 : AOCSolution {
 
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    val directions = listOf(up, down, left, right)
+    private val directions = listOf(up, down, left, right)
 
     private val pipeToDirections = mapOf(
         '|' to listOf(up, down),
@@ -30,8 +31,8 @@ class Day10 : AOCSolution {
         'F' to listOf(right, down),
     )
 
-    val rawInput = readInput("day10.txt", AOCYear.TwentyThree)
-    val matrix = rawInput.toCharMatrix()
+    private val rawInput = readInput("day10.txt", AOCYear.TwentyThree)
+    private val matrix = rawInput.toCharMatrix()
 
     override fun solve(): AOCAnswer {
         val start = matrix.positionsOf { it == 'S' }.first()

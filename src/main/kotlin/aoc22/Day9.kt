@@ -1,25 +1,26 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc22
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import Position
 import applyDirection
+import at
 import plus
 import readInput
 import kotlin.math.abs
 
-class Day9 {
+class Day9 : AOCSolution {
 
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    val diagonals = listOf(up + left, up + right, down + right, down + left)
-    val directions = listOf(up, down, left, right)
+    private val diagonals = listOf(up + left, up + right, down + right, down + left)
+    private val directions = listOf(up, down, left, right)
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day9.txt", AOCYear.TwentyTwo)
 
         val allMovements = rawInput.map { line ->
@@ -40,7 +41,6 @@ class Day9 {
 
         fun collectTailMovements(initialPositions: List<Position>) = buildSet {
             allMovements.fold(initialPositions) { positions, (direction, amount) ->
-
                 (1..amount).fold(positions) { currentPositions, _ ->
                     val newHead = currentPositions.first().applyDirection(direction)
 
@@ -58,8 +58,7 @@ class Day9 {
         val partOne: Set<Position> = collectTailMovements(listOf(initialPosition, initialPosition))
         val partTwo: Set<Position> = collectTailMovements((1..10).map { initialPosition })
 
-        println(partOne.size)
-        println(partTwo.size)
+        return AOCAnswer(partOne.size, partTwo.size)
     }
 
     fun getNewTail(head: Position, tail: Position): Position {
@@ -93,7 +92,7 @@ class Day9 {
         }
     }
 
-    fun manhattanDistance(a: Position, b: Position) = abs(a.first - b.first) + abs(a.second - b.second)
+    private fun manhattanDistance(a: Position, b: Position) = abs(a.first - b.first) + abs(a.second - b.second)
 
-    fun coordinateDistance(a: Position, b: Position) = abs(a.first - b.first) to abs(a.second - b.second)
+    private fun coordinateDistance(a: Position, b: Position) = abs(a.first - b.first) to abs(a.second - b.second)
 }

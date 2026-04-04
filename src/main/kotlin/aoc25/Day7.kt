@@ -4,6 +4,7 @@ import AOCAnswer
 import AOCSolution
 import Position
 import applyDirection
+import at
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentHashMapOf
 import positionsOf
@@ -11,10 +12,10 @@ import readInput
 
 class Day7 : AOCSolution {
 
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day7.txt", AOCYear.TwentyFive)
@@ -49,7 +50,7 @@ class Day7 : AOCSolution {
 
         val rowSize = lines.first().size
         // Create an imaginary last row of splitters which we will use to capture all beams
-        val extraLastRow = List(rowSize) { rows to it }
+        val extraLastRow = List(rowSize) { rows at it }
 
         val splitterToConnected = hitSplitters.plus(extraLastRow).associateWith { startPosition ->
             // 'Shoot' a beam from the splitter upwards and collect all splitters that lead to hitting it

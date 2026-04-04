@@ -1,29 +1,30 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc22
 
+import AOCAnswer
+import AOCSolution
 import Position
 import applyDirection
+import at
 import invertListMap
 import mapToInt
 import readInput
 import kotlin.math.max
 import kotlin.math.min
 
-class Day14 {
+class Day14 : AOCSolution {
 
-    data class Line(
+    private data class Line(
         val x: IntRange,
         val y: IntRange,
     )
 
-    val down = 1 to 0
-    val left = 1 to -1
-    val right = 1 to 1
+    private val down = 1 at 0
+    private val left = 1 at -1
+    private val right = 1 at 1
 
-    val sandDirections = listOf(down, left, right)
+    private val sandDirections = listOf(down, left, right)
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val input = readInput("day14.txt")
 
         val intervals = input.flatMap { line ->
@@ -42,7 +43,7 @@ class Day14 {
         val lines = intervals.map { (from, to) -> Line(from.first..to.first, from.second..to.second) }
 
         val lowestPoint = lines.maxOf { it.x.last }
-        val sandStart = 0 to 500
+        val sandStart = 0 at 500
 
         // Dropped sand
         val sandPositions = getFinalSandPositions(sandStart, lines) { (x), _ -> x >= lowestPoint }
@@ -56,18 +57,16 @@ class Day14 {
             sandStart == current && current in dropped
         }
 
-        println("Part One: ${sandPositions.size}")
-        println("Part Two: ${sandPositionsWithPlatform.size}")
+        return AOCAnswer(sandPositions.size, sandPositionsWithPlatform.size)
     }
 
-    fun getFinalSandPositions(
+    private fun getFinalSandPositions(
         sandStart: Position,
         lines: List<Line>,
         stopDropPredicate: (Position, Set<Position>) -> Boolean,
     ): Set<Position> {
-        val xPointToYInterval = invertListMap(
-            lines.associateWith { (x) -> x.toList() },
-        ).mapValues { (_, lines) -> lines.map { it.y } }
+        val xPointToYInterval = invertListMap(lines.associateWith { (x) -> x.toList() })
+            .mapValues { (_, lines) -> lines.map { it.y } }
 
         return buildSet {
             val dropSandSequence = generateSequence(sandStart) { currentSand ->

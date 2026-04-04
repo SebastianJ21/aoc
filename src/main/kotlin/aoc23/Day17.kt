@@ -3,20 +3,23 @@ package aoc23
 import AOCAnswer
 import AOCSolution
 import AOCYear
+import Direction
 import Position
 import applyDirection
+import at
 import getOrNull
 import readInput
 import toMatrix
 import java.util.PriorityQueue
 
 class Day17 : AOCSolution {
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
 
-    fun turnDirection(direction: Pair<Int, Int>, toDirection: Pair<Int, Int>) = when (direction) {
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
+
+    private fun turnDirection(direction: Direction, toDirection: Direction) = when (direction) {
         left -> if (toDirection == left) down else up
         right -> if (toDirection == left) up else down
         up -> if (toDirection == left) left else right
@@ -28,8 +31,8 @@ class Day17 : AOCSolution {
         val rawInput = readInput("day17.txt", AOCYear.TwentyThree)
 
         val matrix = rawInput.toMatrix { value -> value.digitToInt() }
-        val startPos = 0 to 0
-        val endPosition = matrix.lastIndex to matrix.last().lastIndex
+        val startPos = 0 at 0
+        val endPosition = matrix.lastIndex at matrix.last().lastIndex
 
         val partOne = allPaths(matrix, startPos, 2, 0)
             .getValue(endPosition)
@@ -42,7 +45,7 @@ class Day17 : AOCSolution {
         return AOCAnswer(partOne, partTwo)
     }
 
-    data class PathNode(val directionCount: Int, val pathCost: Int, val direction: Pair<Int, Int>)
+    private data class PathNode(val directionCount: Int, val pathCost: Int, val direction: Direction)
 
     private fun allPaths(
         matrix: List<List<Int>>,
@@ -52,7 +55,7 @@ class Day17 : AOCSolution {
     ): Map<Position, List<PathNode>> {
         val turnCountRange = minTurnCount..maxDirCount
 
-        val paths = hashMapOf<Pair<Int, Int>, List<PathNode>>()
+        val paths = hashMapOf<Position, List<PathNode>>()
 
         val compareFunc = { (_, aNode): Pair<Position, PathNode>, (_, bNode): Pair<Position, PathNode> ->
             aNode.pathCost.compareTo(bNode.pathCost)
@@ -68,7 +71,7 @@ class Day17 : AOCSolution {
             val (leftTurn, rightTurn, noTurn) =
                 listOf(left, right).map { turnDirection(directionVector, it) }.plus(directionVector)
 
-            fun checkTurn(turn: Pair<Int, Int>, directionCount: Int) {
+            fun checkTurn(turn: Direction, directionCount: Int) {
                 val position = currentPosition.applyDirection(turn)
                 val value = matrix.getOrNull(position) ?: return
 

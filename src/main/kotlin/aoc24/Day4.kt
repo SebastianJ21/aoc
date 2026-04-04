@@ -4,9 +4,9 @@ import AOCAnswer
 import AOCSolution
 import Direction
 import Position
-import applyDirection
+import at
 import get
-import getOrNull
+import getInDirectionOrNull
 import plus
 import positions
 import readInput
@@ -14,12 +14,12 @@ import toCharMatrix
 
 class Day4 : AOCSolution {
 
-    val up: Direction = -1 to 0
-    val down: Direction = 1 to 0
-    val left: Direction = 0 to -1
-    val right: Direction = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    val directions = listOf(
+    private val directions = listOf(
         up,
         down,
         left,
@@ -52,7 +52,7 @@ class Day4 : AOCSolution {
         if (this[origin] != 'A') return false
 
         return directionPathsPartTwo.all { directionPath ->
-            val pathChars = directionPath.mapNotNull { this.getOrNull(origin.applyDirection(it)) }
+            val pathChars = directionPath.mapNotNull { this.getInDirectionOrNull(origin, it) }
 
             targetPartTwo == pathChars.toSet()
         }
@@ -62,15 +62,11 @@ class Day4 : AOCSolution {
         if (this[origin] != targetPartOne.first()) return 0
 
         return directionPathsPartOne.count { directionPath ->
-            val pathChars = directionPath.mapNotNull {
-                val position = origin.applyDirection(it)
-
-                this.getOrNull(position)
-            }
+            val pathChars = directionPath.mapNotNull { this.getInDirectionOrNull(origin, it) }
 
             pathChars == targetPartOne
         }
     }
 
-    private operator fun Direction.times(scalar: Int): Direction = first * scalar to second * scalar
+    private operator fun Direction.times(scalar: Int): Direction = first * scalar at second * scalar
 }

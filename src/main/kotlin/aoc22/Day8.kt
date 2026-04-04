@@ -1,32 +1,34 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc22
 
+import AOCAnswer
+import AOCSolution
 import Position
 import applyDirection
+import at
 import get
+import getInDirectionOrNull
 import getOrNull
 import product
 import readInput
 import toMatrix
 import kotlin.math.max
 
-class Day8 {
+class Day8 : AOCSolution {
 
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    val directions = listOf(up, down, left, right)
+    private val directions = listOf(up, down, left, right)
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val input = readInput("day8.txt", AOCYear.TwentyTwo)
         val matrix = input.toMatrix { value -> value.digitToInt() }
 
         val (visibleCount, scenicMax) = matrix.foldIndexed(0 to 0) { rowI, acc, row ->
             row.foldIndexed(acc) { colI, (visibleCount, scenicMax), _ ->
-                val position = rowI to colI
+                val position = rowI at colI
 
                 val isVisible = isTreeVisible(position, matrix)
                 val scenicScore = getScenicScoreOfATree(position, matrix)
@@ -38,8 +40,7 @@ class Day8 {
             }
         }
 
-        println("Part one: $visibleCount")
-        println("Part two: $scenicMax")
+        return AOCAnswer(visibleCount, scenicMax)
     }
 
     private fun isTreeVisible(treePosition: Position, matrix: List<List<Int>>): Boolean {
@@ -66,8 +67,8 @@ class Day8 {
             val firstHeight = matrix.getOrNull(firstPosition) ?: return@map 0
 
             val seq = generateSequence(firstPosition to firstHeight) { (position, _) ->
+                val nextHeight = matrix.getInDirectionOrNull(position, direction) ?: return@generateSequence null
                 val nextPosition = position.applyDirection(direction)
-                val nextHeight = matrix.getOrNull(nextPosition) ?: return@generateSequence null
 
                 nextPosition to nextHeight
             }.toList()

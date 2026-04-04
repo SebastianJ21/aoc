@@ -3,8 +3,10 @@ package aoc19
 import AOCAnswer
 import AOCSolution
 import AOCYear
+import Direction
 import Position
 import applyDirection
+import at
 import readInput
 import kotlin.math.abs
 import kotlin.math.max
@@ -12,31 +14,14 @@ import kotlin.math.min
 
 class Day3 : AOCSolution {
 
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    data class LineRange(val x: IntProgression, val y: IntProgression, val startSteps: Int)
+    private val origin = 0 at 0
 
-    fun Position.scaleBy(value: Int) = first * value to second * value
-
-    fun getDirectionVector(direction: Char) = when (direction) {
-        'R' -> right
-        'L' -> left
-        'D' -> down
-        'U' -> up
-        else -> error("Illegal direction $direction")
-    }
-
-    fun IntProgression.intersects(other: IntProgression): Boolean {
-        val (low, high) = min(first, last) to max(first, last)
-        val (otherLow, otherHigh) = min(other.first, other.last) to max(other.first, other.last)
-
-        return !(high < otherLow || low > otherHigh)
-    }
-
-    fun intersects(a: LineRange, b: LineRange) = a.x.intersects(b.x) && a.y.intersects(b.y)
+    private data class LineRange(val x: IntProgression, val y: IntProgression, val startSteps: Int)
 
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day3.txt", AOCYear.Nineteen)
@@ -44,35 +29,32 @@ class Day3 : AOCSolution {
         val linePositions = rawInput.map { line ->
             val rawCommands = line.split(",")
 
-            rawCommands.runningFold(Position(0, 0) to 0) { (position, steps), rawCommand ->
+            rawCommands.runningFold(origin to 0) { (position, steps), rawCommand ->
                 val direction = rawCommand.first()
                 val size = rawCommand.drop(1).toInt()
 
                 val movement = getDirectionVector(direction).scaleBy(size)
-
                 val newPosition = position.applyDirection(movement)
 
                 newPosition to steps + size
             }
         }
 
-        fun pickRange(from: Int, to: Int) = if (from <= to) from..to else from downTo to
-
         val lineRanges = linePositions.map { positions ->
-            positions.zipWithNext { from, to ->
-                val (x0, y0) = from.first
-                val (x1, y1) = to.first
-
-                val startSteps = from.second
+            positions.zipWithNext { (fromPosition, startSteps), (toPosition) ->
+                val (x0, y0) = fromPosition
+                val (x1, y1) = toPosition
 
                 LineRange(pickRange(x0, x1), pickRange(y0, y1), startSteps)
             }
         }
 
-        val (line1, line2) = lineRanges
+        val (line1Ranges, line2Ranges) = lineRanges
 
-        val intersectingRanges = line1.flatMap { range ->
-            line2.filter { range2 -> intersects(range, range2) }.map { range to it }
+        val intersectingRanges = line1Ranges.flatMap { line1 ->
+            val intersecting = line2Ranges.filter { line2 -> intersects(line1, line2) }
+
+            intersecting.map { line2 -> line1 to line2 }
         }
 
         val intersectionPoints = intersectingRanges.map { (a, b) ->
@@ -88,7 +70,6 @@ class Day3 : AOCSolution {
             Position(xPoint, yPoint) to totalSteps
         }
 
-        val origin = Position(0, 0)
         val validIntersections = intersectionPoints.filter { (point) -> point != origin }
 
         // Ignore origin intersection
@@ -98,5 +79,26 @@ class Day3 : AOCSolution {
         return AOCAnswer(partOne, partTwo)
     }
 
-    fun manhattanDistance(a: Position, b: Position) = abs(a.first - b.first) + abs(a.second - b.second)
+    private fun IntProgression.intersects(other: IntProgression): Boolean {
+        val (low, high) = min(first, last) to max(first, last)
+        val (otherLow, otherHigh) = min(other.first, other.last) to max(other.first, other.last)
+
+        return !(high < otherLow || low > otherHigh)
+    }
+
+    private fun intersects(a: LineRange, b: LineRange) = a.x.intersects(b.x) && a.y.intersects(b.y)
+
+    private fun pickRange(from: Int, to: Int) = if (from <= to) from..to else from downTo to
+
+    private fun manhattanDistance(a: Position, b: Position) = abs(a.first - b.first) + abs(a.second - b.second)
+
+    private fun getDirectionVector(direction: Char): Direction = when (direction) {
+        'R' -> right
+        'L' -> left
+        'D' -> down
+        'U' -> up
+        else -> error("Illegal direction $direction")
+    }
+
+    private fun Position.scaleBy(value: Int) = first * value at second * value
 }

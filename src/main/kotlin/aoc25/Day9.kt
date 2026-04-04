@@ -2,6 +2,9 @@ package aoc25
 
 import AOCAnswer
 import AOCSolution
+import Position
+import applyDirection
+import at
 import kotlinx.collections.immutable.persistentHashSetOf
 import kotlinx.collections.immutable.persistentListOf
 import mapToInt
@@ -12,15 +15,14 @@ import kotlin.math.min
 
 class Day9 : AOCSolution {
 
-    private data class Position(val first: Int, val second: Int)
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
+
+    private val directions = listOf(up, right, down, left)
+
     private data class Intervals(val x: IntRange, val y: IntRange)
-
-    private val up = Position(-1, 0)
-    private val down = Position(1, 0)
-    private val left = Position(0, -1)
-    private val right = Position(0, 1)
-
-    private val directions = listOf(up, left, down, right)
 
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day9.txt", AOCYear.TwentyFive)
@@ -164,7 +166,4 @@ class Day9 : AOCSolution {
     private fun IntRange.size() = last - first + 1
 
     private fun IntRange.intersects(other: IntRange) = !(last < other.first || first > other.last)
-
-    private fun Position.applyDirection(direction: Position): Position =
-        Position(first + direction.first, second + direction.second)
 }

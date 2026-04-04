@@ -1,18 +1,16 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc20
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import mapToInt
 import readInput
 import splitBy
 
-class Day22 {
+class Day22 : AOCSolution {
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day22.txt", AOCYear.Twenty)
-
-        val numbers = (1..10L).reduce { acc, num -> acc * num * num }
 
         val (startDeck1, startDeck2) = rawInput.splitBy { it.isEmpty() }.map { it.drop(1).mapToInt() }
 
@@ -30,11 +28,10 @@ class Day22 {
             .mapIndexed { index, num -> num * (index + 1) }
             .sum()
 
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
-    fun playGame(deck1: List<Int>, deck2: List<Int>): Pair<List<Int>, List<Int>> {
+    private fun playGame(deck1: List<Int>, deck2: List<Int>): Pair<List<Int>, List<Int>> {
         val gameSequence = generateSequence(deck1 to deck2) { (deck1, deck2) ->
             if (deck1.isEmpty() || deck2.isEmpty()) return@generateSequence null
 
@@ -54,9 +51,9 @@ class Day22 {
         return gameSequence.last()
     }
 
-    fun playRecursiveGame(deck1: List<Int>, deck2: List<Int>): Pair<List<Int>, List<Int>> {
-        val seen1 = hashSetOf<Int>()
-        val seen2 = hashSetOf<Int>()
+    private fun playRecursiveGame(deck1: List<Int>, deck2: List<Int>): Pair<List<Int>, List<Int>> {
+        val seen1 = HashSet<Int>(128)
+        val seen2 = HashSet<Int>(128)
 
         val gameSequence = generateSequence(deck1 to deck2) { (deck1, deck2) ->
             if (deck1.isEmpty() || deck2.isEmpty()) return@generateSequence null
