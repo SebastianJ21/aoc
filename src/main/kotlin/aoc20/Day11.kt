@@ -1,41 +1,43 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc20
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
+import Direction
 import Position
 import applyDirection
+import at
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import plus
 import readInput
 import kotlin.math.abs
 
-class Day11 {
+class Day11 : AOCSolution {
 
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    val neighborhood = listOf(up + left, up, up + right, right, down + right, down, down + left, left)
+    private val neighborhood = listOf(up + left, up, up + right, right, down + right, down, down + left, left)
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day11.txt", AOCYear.Twenty)
 
-        val initialState: Pair<Set<Position>, List<Position>> = rawInput.foldIndexed(
+        val (initialOccupied: Set<Position>, initialUnoccupied: List<Position>) = rawInput.foldIndexed(
             persistentSetOf<Position>() to persistentListOf<Position>(),
         ) { rowI, acc, row ->
             row.foldIndexed(acc) { colI, (occupied, unoccupied), value ->
                 when (value) {
-                    'L' -> occupied to unoccupied.add(rowI to colI)
-                    '#' -> occupied.add(rowI to colI) to unoccupied
+                    'L' -> occupied to unoccupied.add(rowI at colI)
+                    '#' -> occupied.add(rowI at colI) to unoccupied
                     else -> occupied to unoccupied
                 }
             }
         }
 
-        val allSeats = initialState.let { (occupied, unoccupied) -> occupied + unoccupied }
+        val allSeats = initialOccupied + initialUnoccupied
 
         val closestSeats = findClosestSeats(allSeats, rawInput.size, rawInput[0].length)
 
@@ -46,34 +48,28 @@ class Day11 {
             }
         }
 
-        val partOneStateSequence = generateSequence(initialState) { state ->
+        val partOneStateSequence = generateSequence(initialOccupied to initialUnoccupied) { state ->
             getNextState(state.first, state.second, immediateClosest, 4).takeIf { it != state }
         }
 
-        val partTwoStateSequence = generateSequence(initialState) { state ->
+        val partTwoStateSequence = generateSequence(initialOccupied to initialUnoccupied) { state ->
             getNextState(state.first, state.second, closestSeats, 5).takeIf { it != state }
         }
 
         val partOne = partOneStateSequence.last().first.size
         val partTwo = partTwoStateSequence.last().first.size
 
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
-    fun manhattanDistance(a: Position, b: Position) = abs(b.first - a.first) to abs(b.second - a.second)
+    private fun manhattanDistance(a: Position, b: Position) = abs(b.first - a.first) to abs(b.second - a.second)
 
-    fun findClosestSeats(seats: Set<Position>, rows: Int, cols: Int): Map<Position, List<Position>> {
+    private fun findClosestSeats(seats: Set<Position>, rows: Int, cols: Int): Map<Position, List<Position>> {
         fun Position.outOfBounds() = first < 0 || first >= rows || second < 0 || second >= cols
 
-        fun positionSequence(position: Position, direction: Pair<Int, Int>) =
-            generateSequence(position.applyDirection(direction)) { current ->
-                if (current.outOfBounds() || current in seats) {
-                    null
-                } else {
-                    current.applyDirection(direction)
-                }
-            }
+        fun positionSequence(position: Position, direction: Direction) =
+            generateSequence(position.applyDirection(direction)) { current -> current.applyDirection(direction) }
+                .takeWhile { !it.outOfBounds() && it !in seats }
 
         return seats.associateWith { position ->
             neighborhood.mapNotNull { direction ->
@@ -84,7 +80,7 @@ class Day11 {
         }
     }
 
-    fun getNextState(
+    private fun getNextState(
         occupied: Set<Position>,
         unoccupied: List<Position>,
         seatToClosest: Map<Position, List<Position>>,

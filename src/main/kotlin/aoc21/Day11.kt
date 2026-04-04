@@ -1,105 +1,70 @@
 package aoc21
 
+import AOCAnswer
+import AOCSolution
 import Position
-import get
-import getOrNull
+import applyDirection
+import at
+import plus
+import positionsOf
 import readInput
 import toMatrix
 
-private typealias Matrix = List<List<Int>>
-private const val FLASH_THRESHOLD = 10
+private const val FLASH_THRESHOLD = 9
 
-class Day11 {
+class Day11 : AOCSolution {
 
-    fun solve() {
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
+
+    private val neighborhood = listOf(up + left, up, up + right, right, down + right, down, down + left, left)
+
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day11.txt", AOCYear.TwentyOne)
         val matrix = rawInput.toMatrix { value -> value.digitToInt() }
 
-        val partOne = (1..100).fold(matrix to 0) { (matrix, score), _ ->
-            val (newMatrix, stepScore) = performStep(matrix)
+        val matrixSequence = generateSequence(matrix) { matrix -> performStep(matrix) }
 
-            newMatrix to score + stepScore
-        }.second
+        val partOne = matrixSequence
+            .drop(1)
+            .take(100)
+            .sumOf { matrix -> matrix.sumOf { row -> row.count { it == 0 } } }
 
         val totalPositions = matrix.size * matrix.first().size
 
-        val stepSequence = generateSequence(matrix to 1) { (matrix, stepCount) ->
-            val (newMatrix, stepScore) = performStep(matrix)
-
-            when {
-                stepScore == totalPositions -> null
-                else -> newMatrix to stepCount + 1
-            }
+        val partTwo = matrixSequence.indexOfFirst { matrix ->
+            matrix.sumOf { row -> row.count { it == 0 } } == totalPositions
         }
 
-        val partTwo = stepSequence.last().second
-
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
-    private fun performStep(matrix: Matrix): Pair<Matrix, Int> {
-        val flashThreshold = FLASH_THRESHOLD - 1
-        val initialPositionsToFlash = matrix.findFlashPositions(flashThreshold)
+    private fun performStep(matrix: List<List<Int>>): List<List<Int>> {
+        val flashed = hashSetOf<Position>()
 
-        val changedPositions = buildMap {
-            fun nextFlashPositions(position: Position): List<Position> {
-                val flashRadius = position.let { (row, col) ->
-                    listOf(
-                        row + 1 to col,
-                        row - 1 to col,
-                        row + 1 to col - 1,
-                        row + 1 to col + 1,
-                        row - 1 to col + 1,
-                        row - 1 to col - 1,
-                        row to col - 1,
-                        row to col + 1,
-                    )
-                }
+        val matrixSequence = generateSequence(matrix.incAll()) { current ->
+            val flashPositions = current.positionsOf { it > FLASH_THRESHOLD }.filter { flashed.add(it) }
 
-                val flashPositions = flashRadius.filter { positionToFlash ->
-                    val value = get(positionToFlash) ?: matrix.getOrNull(positionToFlash) ?: return@filter false
+            val positionToIncrement = flashPositions
+                .flatMap { flashPosition -> neighborhood.map { flashPosition.applyDirection(it) } }
+                .groupingBy { it }
+                .eachCount()
 
-                    if (value >= flashThreshold) return@filter false
+            if (positionToIncrement.isEmpty()) return@generateSequence null
 
-                    val newValue = value + 1
-
-                    put(positionToFlash, newValue)
-                    newValue == flashThreshold
-                }
-
-                return flashPositions
+            val next = current.mapIndexed { rowI, row ->
+                row.mapIndexed { colI, value -> value + (positionToIncrement[rowI at colI] ?: 0) }
             }
 
-            putAll(initialPositionsToFlash.map { it to matrix[it] })
-
-            val flashSequence = generateSequence(initialPositionsToFlash) { positionsToFlash ->
-                if (positionsToFlash.isEmpty()) {
-                    null
-                } else {
-                    positionsToFlash.flatMap { nextFlashPositions(it) }
-                }
-            }
-
-            flashSequence.last()
+            next
         }
 
-        val flashCount = changedPositions.values.count { it >= flashThreshold }
+        val finalMatrix = matrixSequence.last()
 
-        val newMatrix = matrix.mapIndexed { rowI, row ->
-            row.mapIndexed { colI, currentValue ->
-                val value = changedPositions[rowI to colI] ?: currentValue
-
-                if (value >= flashThreshold) 0 else value + 1
-            }
-        }
-
-        return newMatrix to flashCount
+        return finalMatrix.map { row -> row.map { if (it > FLASH_THRESHOLD) 0 else it } }
     }
 
-    private fun Matrix.findFlashPositions(flashThreshold: Int): List<Position> = flatMapIndexed { rowI, row ->
-        row.mapIndexedNotNull { colI, value ->
-            if (value == flashThreshold) rowI to colI else null
-        }
-    }
+    private fun List<List<Int>>.incAll() = this.map { row -> row.map { it + 1 } }
 }

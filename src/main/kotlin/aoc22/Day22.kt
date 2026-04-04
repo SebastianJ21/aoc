@@ -1,5 +1,3 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc22
 
 import AOCAnswer
@@ -7,6 +5,7 @@ import AOCSolution
 import Direction
 import Position
 import applyDirection
+import at
 import getOrNull
 import mapToInt
 import readInput
@@ -15,9 +14,9 @@ import transposed
 
 class Day22 : AOCSolution {
 
-    data class CellConnection(val toCell: Cell.Active, val newDirection: Direction? = null)
+    private data class CellConnection(val toCell: Cell.Active, val newDirection: Direction? = null)
 
-    sealed class Cell {
+    private sealed class Cell {
         abstract val row: Int
         abstract val column: Int
 
@@ -37,14 +36,14 @@ class Day22 : AOCSolution {
         }
     }
 
-    val up: Direction = -1 to 0
-    val down: Direction = 1 to 0
-    val left: Direction = 0 to -1
-    val right: Direction = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    val directions = listOf(up, down, left, right)
+    private val directions = listOf(up, down, left, right)
 
-    fun labelCellWithSection(row: Int, column: Int): Pair<Position, Int> {
+    private fun labelCellWithSection(row: Int, column: Int): Pair<Position, Int> {
         val cubeSection = when {
             row in 1..50 && column in 51..100 -> 1
             row in 1..50 && column in 101..150 -> 2
@@ -58,7 +57,7 @@ class Day22 : AOCSolution {
         val normalizedRow = ((row - 1) % 50) + 1
         val normalizedCol = ((column - 1) % 50) + 1
 
-        return (normalizedRow to normalizedCol) to cubeSection
+        return (normalizedRow at normalizedCol) to cubeSection
     }
 
     override fun solve(): AOCAnswer {
@@ -119,7 +118,10 @@ class Day22 : AOCSolution {
         return AOCAnswer(partOne, partTwo)
     }
 
-    fun executeCommands(commands: List<Pair<Direction, Int>>, initialCell: Cell.Active): Pair<Cell.Active, Direction> {
+    private fun executeCommands(
+        commands: List<Pair<Direction, Int>>,
+        initialCell: Cell.Active,
+    ): Pair<Cell.Active, Direction> {
         val (initialDirection, firstSteps) = commands.first()
         val initial = executeCommand(initialCell, initialDirection, firstSteps)
 
@@ -132,12 +134,12 @@ class Day22 : AOCSolution {
         return result
     }
 
-    fun Cell.clone() = when (this) {
+    private fun Cell.clone() = when (this) {
         is Cell.Active -> copy()
         is Cell.Void -> copy()
     }
 
-    fun List<List<Cell>>.addCubeWarpConnections() {
+    private fun List<List<Cell>>.addCubeWarpConnections() {
         val cubeSectionToCubes = flatMap { cells -> cells.filterIsInstance<Cell.Active>() }.groupBy { it.cubeSection }
 
         cubeSectionToCubes.getValue(1).filter { it.row == 1 }.forEach { cell ->
@@ -190,7 +192,7 @@ class Day22 : AOCSolution {
         }
     }
 
-    fun List<List<Cell>>.addSimpleWarpConnections() {
+    private fun List<List<Cell>>.addSimpleWarpConnections() {
         forEach { row ->
             val firstActiveRow = row.first { it is Cell.Active } as Cell.Active
             val lastActiveRow = row.last { it is Cell.Active } as Cell.Active
@@ -208,12 +210,12 @@ class Day22 : AOCSolution {
         }
     }
 
-    fun List<List<Cell>>.addDirectConnections() {
+    private fun List<List<Cell>>.addDirectConnections() {
         // Create base connections in the map (No wrapping)
         forEachIndexed forCells@{ rowIndex, row ->
             row.forEachIndexed { colIndex, cell ->
                 if (cell !is Cell.Active) return@forEachIndexed
-                val position = rowIndex to colIndex
+                val position = rowIndex at colIndex
 
                 directions.forEach { direction ->
                     val newPosition = position.applyDirection(direction)
@@ -227,20 +229,23 @@ class Day22 : AOCSolution {
         }
     }
 
-    tailrec fun executeCommand(cell: Cell.Active, direction: Direction, steps: Int): Pair<Cell.Active, Direction> =
-        if (steps == 0) {
+    private tailrec fun executeCommand(
+        cell: Cell.Active,
+        direction: Direction,
+        steps: Int,
+    ): Pair<Cell.Active, Direction> = if (steps == 0) {
+        cell to direction
+    } else {
+        val (targetCell, changedDirection) = cell.cellConnections[direction]!!
+
+        if (targetCell.isWall) {
             cell to direction
         } else {
-            val (targetCell, changedDirection) = cell.cellConnections[direction]!!
-
-            if (targetCell.isWall) {
-                cell to direction
-            } else {
-                executeCommand(targetCell, changedDirection ?: direction, steps - 1)
-            }
+            executeCommand(targetCell, changedDirection ?: direction, steps - 1)
         }
+    }
 
-    fun parseInstructions(line: String, startDirection: Direction): List<Pair<Direction, Int>> {
+    private fun parseInstructions(line: String, startDirection: Direction): List<Pair<Direction, Int>> {
         val values = line.split(Regex("\\D")).mapToInt()
         val directions = line.filter { !it.isDigit() }.map { turnToDirection(it) }
 
@@ -249,37 +254,38 @@ class Day22 : AOCSolution {
         return listOf(startDirection).plus(directions).zip(values)
     }
 
-    fun turnToDirection(turn: Char) = when (turn) {
+    private fun turnToDirection(turn: Char) = when (turn) {
         'L' -> left
         'R' -> right
         else -> error("Invalid turn $turn")
     }
 
-    fun makeTurnByDirectionCommand(currentDirection: Direction, directionCommand: Direction) = when (currentDirection) {
-        left -> when (directionCommand) {
-            left -> (down)
-            right -> (up)
-            else -> error("")
+    private fun makeTurnByDirectionCommand(currentDirection: Direction, directionCommand: Direction) =
+        when (currentDirection) {
+            left -> when (directionCommand) {
+                left -> (down)
+                right -> (up)
+                else -> error("")
+            }
+            right -> when (directionCommand) {
+                left -> (up)
+                right -> (down)
+                else -> error("")
+            }
+            down -> when (directionCommand) {
+                left -> (right)
+                right -> (left)
+                else -> error("")
+            }
+            up -> when (directionCommand) {
+                left -> (left)
+                right -> (right)
+                else -> error("")
+            }
+            else -> error("Unknown direction $currentDirection")
         }
-        right -> when (directionCommand) {
-            left -> (up)
-            right -> (down)
-            else -> error("")
-        }
-        down -> when (directionCommand) {
-            left -> (right)
-            right -> (left)
-            else -> error("")
-        }
-        up -> when (directionCommand) {
-            left -> (left)
-            right -> (right)
-            else -> error("")
-        }
-        else -> error("Unknown direction $currentDirection")
-    }
 
-    fun directionToResultValue(direction: Direction) = when (direction) {
+    private fun directionToResultValue(direction: Direction) = when (direction) {
         right -> 0
         down -> 1
         left -> 2

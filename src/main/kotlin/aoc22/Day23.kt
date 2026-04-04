@@ -1,41 +1,43 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc22
 
+import AOCAnswer
+import AOCSolution
+import Direction
 import Position
+import at
 import plus
+import positionsOf
 import readInput
 import toCharMatrix
 import transposed
 
 private const val EMPTY_POSITION = '.'
 private const val OCCUPIED_POSITION = '#'
-private typealias Direction = Pair<Int, Int>
 
-class Day23 {
+class Day23 : AOCSolution {
     private fun directionToVector(direction: String) = when (direction) {
-        "N" -> (-1 to 0)
-        "NE" -> (-1 to 1)
-        "E" -> (0 to 1)
-        "SE" -> (1 to 1)
-        "S" -> (1 to 0)
-        "SW" -> (1 to -1)
-        "W" -> (0 to -1)
-        "NW" -> (-1 to -1)
+        "N" -> (-1 at 0)
+        "NE" -> (-1 at 1)
+        "E" -> (0 at 1)
+        "SE" -> (1 at 1)
+        "S" -> (1 at 0)
+        "SW" -> (1 at -1)
+        "W" -> (0 at -1)
+        "NW" -> (-1 at -1)
         else -> error("Invalid direction $direction")
     }
 
     private val directions =
         listOf("N", "NE", "E", "SE", "S", "SW", "W", "NW").map { directionToVector(it) }
 
-    val propositionToDirections = listOf(
+    private val propositionToDirections = listOf(
         "N" to listOf("N", "NE", "NW"),
         "S" to listOf("S", "SE", "SW"),
         "W" to listOf("W", "SW", "NW"),
         "E" to listOf("E", "NE", "SE"),
     ).associate { (key, value) -> directionToVector(key) to value.map { directionToVector(it) } }
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day23.txt")
         val matrix = rawInput.toCharMatrix()
 
@@ -61,7 +63,7 @@ class Day23 {
 
         val partOneMatrix = matrix.buffered(EMPTY_POSITION, partOneRounds)
 
-        val initialOccupiedPositions = getOccupiedPositions(partOneMatrix)
+        val initialOccupiedPositions = partOneMatrix.positionsOf { it == OCCUPIED_POSITION }.toSet()
 
         val (_, finalOccupiedPositions) = perform(initialOccupiedPositions, initialOrder, 1, partOneRounds)
 
@@ -70,14 +72,13 @@ class Day23 {
         // Part two does not care for the 'buffering' as we only care about the number of rounds to no movements
         val (partTwo) = perform(initialOccupiedPositions, initialOrder, 1, 1000)
 
-        println("Part One: $partOne")
-        println("Part Two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
     private fun countEmptyPositions(initialMatrix: List<List<Char>>, occupiedPositions: Set<Position>): Int {
         val matrix = initialMatrix.mapIndexed { rowI, row ->
             List(row.size) { colI ->
-                if (rowI to colI in occupiedPositions) OCCUPIED_POSITION else EMPTY_POSITION
+                if (rowI at colI in occupiedPositions) OCCUPIED_POSITION else EMPTY_POSITION
             }
         }
 
@@ -130,12 +131,6 @@ class Day23 {
             requiredDirections.all { it in emptyPositions }
         }
     }
-
-    fun getOccupiedPositions(matrix: List<List<Char>>) = matrix.flatMapIndexed { rowI, row ->
-        row.mapIndexedNotNull { colI, value ->
-            if (value == OCCUPIED_POSITION) rowI to colI else null
-        }.toSet()
-    }.toSet()
 
     private fun List<List<Char>>.buffered(bufferWith: Char, bufferSize: Int): List<List<Char>> {
         val bufferRow = List(bufferSize) { List(first().size) { bufferWith } }

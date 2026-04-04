@@ -29,16 +29,18 @@ fun AOCYear.getSuffix() = when (this) {
     AOCYear.Nineteen -> "aoc19"
 }
 
-typealias Position = Pair<Int, Int>
+data class Position(val first: Int, val second: Int)
+
+infix fun Int.at(col: Int) = Position(this, col)
+
+operator fun Position.plus(other: Position): Position = Position(first + other.first, second + other.second)
 
 /**
  * For more descriptive naming when used alongside [Position]
  */
-typealias Direction = Pair<Int, Int>
+typealias Direction = Position
 
 fun Position.applyDirection(direction: Direction): Position = this + direction
-
-operator fun Pair<Int, Int>.plus(other: Pair<Int, Int>) = first.plus(other.first) to second.plus(other.second)
 
 operator fun <T> List<List<T>>.get(position: Position) = this[position.first][position.second]
 
@@ -46,6 +48,8 @@ fun <T> List<List<T>>.getOrNull(position: Position) = getOrNull(position.first)?
 
 fun <T> List<List<T>>.getInDirectionOrNull(position: Position, direction: Direction) =
     getOrNull(position.first + direction.first)?.getOrNull(position.second + direction.second)
+
+operator fun Pair<Int, Int>.plus(other: Pair<Int, Int>) = first.plus(other.first) to second.plus(other.second)
 
 fun List<String>.toCharMatrix() = map { it.toList() }
 
@@ -159,10 +163,19 @@ fun <T> Iterable<Iterable<T>>.positions(): Sequence<Position> = this
         row.asSequence().mapIndexed { colI, _ -> Position(rowI, colI) }
     }
 
-fun <T> Iterable<Iterable<T>>.positionsOf(predicate: (T) -> Boolean): Sequence<Position> = this
+inline fun <T> Iterable<Iterable<T>>.positionsOf(crossinline predicate: (T) -> Boolean): Sequence<Position> = this
     .asSequence()
     .flatMapIndexed { rowI, row ->
         row.asSequence().mapIndexedNotNull { colI, value ->
+            if (predicate(value)) Position(rowI, colI) else null
+        }
+    }
+
+@JvmName("positionsOfString")
+inline fun Iterable<String>.positionsOf(crossinline predicate: (Char) -> Boolean): Sequence<Position> = this
+    .asSequence()
+    .flatMapIndexed { rowI, row ->
+        row.mapIndexedNotNull { colI, value ->
             if (predicate(value)) Position(rowI, colI) else null
         }
     }

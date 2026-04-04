@@ -2,29 +2,25 @@ package aoc25
 
 import AOCAnswer
 import AOCSolution
+import at
 import countUntil
+import plus
 import positionsOf
 import readInput
 
 class Day4 : AOCSolution {
 
-    private val up = Position(-1, 0)
-    private val down = Position(1, 0)
-    private val left = Position(0, -1)
-    private val right = Position(0, 1)
-
-    private data class Position(val first: Int, val second: Int)
-    private operator fun Position.plus(other: Position): Position = Position(first + other.first, second + other.second)
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
     private val neighborhood = listOf(up + left, up, up + right, right, down + right, down, down + left, left)
 
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day4.txt", AOCYear.TwentyFive)
 
-        val initialRollPositions = rawInput.map { line -> line.toList() }
-            .positionsOf { it == '@' }
-            .map { Position(it.first, it.second) }
-            .toSet()
+        val initialRollPositions = rawInput.map { line -> line.toList() }.positionsOf { it == '@' }.toSet()
 
         val rollsCountSequence = generateSequence(initialRollPositions) { rollPositions ->
             val nextPositions = rollPositions.filter { position ->

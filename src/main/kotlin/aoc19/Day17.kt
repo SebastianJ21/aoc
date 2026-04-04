@@ -1,5 +1,3 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc19
 
 import AOCAnswer
@@ -9,6 +7,7 @@ import Direction
 import Position
 import aoc19.IntCodeRunner.Companion.executeInstructions
 import applyDirection
+import at
 import getOrNull
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
@@ -21,16 +20,16 @@ import kotlin.math.sin
 
 class Day17 : AOCSolution {
 
-    val up: Direction = -1 to 0
-    val down: Direction = 1 to 0
-    val left: Direction = 0 to -1
-    val right: Direction = 0 to 1
+    private enum class Turn { LEFT, RIGHT }
 
-    val directions = listOf(up, left, down, right)
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    enum class Turn { LEFT, RIGHT }
+    private val directions = listOf(up, down, left, right)
 
-    fun Direction.rotate(turn: Turn): Direction {
+    private fun Direction.rotate(turn: Turn): Direction {
         val degrees = when (turn) {
             Turn.LEFT -> 90.0
             Turn.RIGHT -> -90.0
@@ -51,7 +50,7 @@ class Day17 : AOCSolution {
     val robotTile = '^'
 
     // Given 2 directions, say what rotation / turn happened
-    fun getTurn(currentDirection: Direction, nextDirection: Direction): Turn = Turn.entries.single { turn ->
+    private fun getTurn(currentDirection: Direction, nextDirection: Direction): Turn = Turn.entries.single { turn ->
         currentDirection.rotate(turn) == nextDirection
     }
 
@@ -247,7 +246,7 @@ class Day17 : AOCSolution {
         return foundIndices
     }
 
-    fun Turn.toCommand(stepSize: Int): String {
+    private fun Turn.toCommand(stepSize: Int): String {
         val turnString = when (this) {
             Turn.LEFT -> "L"
             Turn.RIGHT -> "R"

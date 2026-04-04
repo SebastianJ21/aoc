@@ -1,37 +1,34 @@
 package aoc23
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import Position
+import at
+import positionsOf
 import product
 import readInput
 import splitBy
 
-class Day3 {
-    fun solve() {
+class Day3 : AOCSolution {
+
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day3.txt", AOCYear.TwentyThree)
 
-        val symbolsPositions = rawInput.flatMapIndexed { rowI, row ->
-            row.mapIndexedNotNull { colI, char ->
-                when {
-                    char == '.' -> null
-                    char.isDigit() -> null
-                    else -> rowI to colI
-                }
-            }
-        }.toSet()
+        val symbolsPositions = rawInput.positionsOf { it != '.' && !it.isDigit() }.toSet()
 
-        fun adjacentSymbols(position: Position): List<Pair<Int, Int>> {
+        fun adjacentSymbols(position: Position): List<Position> {
             val (row, col) = position
 
             val positionsToCheck = listOf(
-                row + 1 to col,
-                row + 1 to col - 1,
-                row + 1 to col + 1,
-                row - 1 to col,
-                row - 1 to col - 1,
-                row - 1 to col + 1,
-                row to col - 1,
-                row to col + 1,
+                row + 1 at col,
+                row + 1 at col - 1,
+                row + 1 at col + 1,
+                row - 1 at col,
+                row - 1 at col - 1,
+                row - 1 at col + 1,
+                row at col - 1,
+                row at col + 1,
             )
             return positionsToCheck.filter { it in symbolsPositions }
         }
@@ -42,8 +39,8 @@ class Day3 {
                 .filter { it.isNotEmpty() }
 
             val numsWithAdjacentPositions = numberPartsGroups.map { numberParts ->
-                val number = numberParts.fold("") { acc, (_, char) -> acc + char }.toInt()
-                val adjacent = numberParts.flatMap { (colI, _) -> adjacentSymbols(rowI to colI) }.toSet()
+                val number = numberParts.fold(0) { acc, (_, char) -> acc * 10 + char.digitToInt() }
+                val adjacent = numberParts.flatMap { (colI, _) -> adjacentSymbols(rowI at colI) }.toSet()
 
                 number to adjacent
             }
@@ -51,7 +48,7 @@ class Day3 {
             numsWithAdjacentPositions.filter { (_, adjacentSymbols) -> adjacentSymbols.isNotEmpty() }
         }
 
-        val partOne = partNumbers.sumOf { it.first }
+        val partOne = partNumbers.sumOf { (number) -> number }
 
         val partTwo = partNumbers
             // Invert list map
@@ -64,7 +61,6 @@ class Day3 {
                 if (adjacentNumbers.size == 2 && symbol == '*') adjacentNumbers.product() else 0
             }
 
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 }

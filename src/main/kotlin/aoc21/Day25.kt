@@ -1,62 +1,71 @@
 package aoc21
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
+import Direction
 import Position
-import alsoPrintLn
 import applyDirection
+import at
+import positionsOf
 import readInput
 import toCharMatrix
 
-class Day25 {
+class Day25 : AOCSolution {
 
-    fun solve() {
+    private val east = 0 at 1
+    private val south = 1 at 0
+
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day25.txt", AOCYear.TwentyOne)
         val matrix = rawInput.toCharMatrix()
 
         val rows = matrix.size
         val cols = matrix.first().size
 
-        fun getInitialPositions(): Pair<Set<Position>, Set<Position>> {
-            val east = mutableSetOf<Position>()
-            val south = mutableSetOf<Position>()
+        val initialEast = matrix.positionsOf { it == '>' }.toSet()
+        val initialSouth = matrix.positionsOf { it == 'v' }.toSet()
 
-            matrix.forEachIndexed { rowI, row ->
-                row.forEachIndexed { colI, char ->
-                    when (char) {
-                        '>' -> east.add(rowI to colI)
-                        'v' -> south.add(rowI to colI)
-                    }
-                }
-            }
+        val partOne = generateSequence(initialEast to initialSouth) { (eastFacing, southFacing) ->
+            val (newEast, changesEast) = performMovement(
+                movingPositions = eastFacing,
+                blockingPositions = southFacing,
+                direction = east,
+                maxRow = rows,
+                maxCol = cols,
+            )
 
-            return east to south
-        }
-        val (initialEast, initialSouth) = getInitialPositions()
+            val (newSouth, changesSouth) = performMovement(
+                movingPositions = southFacing,
+                blockingPositions = newEast,
+                direction = south,
+                maxRow = rows,
+                maxCol = cols,
+            )
 
-        generateSequence(initialEast to initialSouth) { (eastFacing, southFacing) ->
-            val (newEast, changesEast) = performMovement(eastFacing, southFacing, 0 to 1, rows, cols)
+            if (changesEast == 0 && changesSouth == 0) return@generateSequence null
 
-            val (newSouth, changesSouth) = performMovement(southFacing, newEast, 1 to 0, rows, cols)
+            newEast to newSouth
+        }.count()
 
-            if (changesEast == 0 && changesSouth == 0) null else newEast to newSouth
-        }.count().alsoPrintLn { }
+        return AOCAnswer(partOne)
     }
 
-    fun performMovement(
+    private fun performMovement(
         movingPositions: Set<Position>,
         blockingPositions: Set<Position>,
-        direction: Pair<Int, Int>,
+        direction: Direction,
         maxRow: Int,
         maxCol: Int,
     ): Pair<Set<Position>, Int> {
-        val movedPositions = mutableSetOf<Position>()
+        val movedPositions = HashSet<Position>(movingPositions.size)
 
         val movementCount = movingPositions.count { currentPosition ->
             val possiblePosition = currentPosition.applyDirection(direction)
 
             val newPosition = when {
-                possiblePosition.first == maxRow -> 0 to possiblePosition.second
-                possiblePosition.second == maxCol -> possiblePosition.first to 0
+                possiblePosition.first == maxRow -> 0 at possiblePosition.second
+                possiblePosition.second == maxCol -> possiblePosition.first at 0
                 else -> possiblePosition
             }
 

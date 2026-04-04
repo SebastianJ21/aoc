@@ -1,5 +1,3 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc19
 
 import AOCAnswer
@@ -8,6 +6,7 @@ import AOCYear
 import Position
 import aoc19.IntCodeRunner.Companion.executeInstructions
 import applyDirection
+import at
 import mapToLong
 import readInput
 import java.util.PriorityQueue
@@ -15,12 +14,12 @@ import kotlin.math.min
 
 class Day15 : AOCSolution {
 
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    val directions = listOf(up to 1L, down to 2L, left to 3L, right to 4L)
+    private val directions = listOf(up to 1L, down to 2L, left to 3L, right to 4L)
 
     enum class PositionType { WALL, TILE, OXYGEN }
 
@@ -44,7 +43,7 @@ class Day15 : AOCSolution {
         return AOCAnswer(partOne, partTwo)
     }
 
-    fun spreadOxygen(state: Map<Position, PositionType>) = buildMap {
+    private fun spreadOxygen(state: Map<Position, PositionType>) = buildMap {
         state.forEach { (position, type) ->
             when (type) {
                 PositionType.OXYGEN -> {
@@ -65,8 +64,6 @@ class Day15 : AOCSolution {
                 }
                 PositionType.WALL -> {
                     put(position, PositionType.WALL)
-                    // Type inference bug...
-                    return@forEach
                 }
             }
         }
@@ -75,7 +72,7 @@ class Day15 : AOCSolution {
     private fun dijkstra(initialState: ExecutionState): Map<Position, Pair<Int, PositionType>> {
         val visited = hashSetOf<Position>()
         val queue = PriorityQueue<Triple<Int, Position, ExecutionState>>(compareBy { (distance) -> distance })
-        val startPosition = 0 to 0
+        val startPosition = 0 at 0
 
         queue.add(Triple(0, startPosition, initialState))
 

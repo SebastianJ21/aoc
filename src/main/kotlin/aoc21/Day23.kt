@@ -1,37 +1,32 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc21
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import Position
+import at
 import plus
 import readInput
 import kotlin.math.abs
 import kotlin.math.min
 
-class Day23 {
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+class Day23 : AOCSolution {
 
-    val directions = listOf(up, down, left, right)
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    enum class Type {
+    private val directions = listOf(up, down, left, right)
+
+    private enum class Type {
         A,
         B,
         C,
         D,
     }
 
-    fun typeToEnergyCost(type: Type) = when (type) {
-        Type.A -> 1
-        Type.B -> 10
-        Type.C -> 100
-        Type.D -> 1000
-    }
-
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day23.txt", AOCYear.TwentyOne)
 
         val allPositions = rawInput.flatMapIndexed { rowI, row ->
@@ -57,11 +52,10 @@ class Day23 {
 
         val partTwo = minimumMovement(partTwoPositions)
 
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
-    fun minimumMovement(inputPositions: Map<Position, Char>): Long {
+    private fun minimumMovement(inputPositions: Map<Position, Char>): Long {
         val housePositions = inputPositions
             .filter { (_, value) -> value.isLetter() }
             .keys
@@ -219,7 +213,14 @@ class Day23 {
         return minimumMovement(initialPositions, 0L)
     }
 
-    fun manhattanDistance(a: Position, b: Position) = abs(a.first - b.first) + abs(a.second - b.second)
+    private fun typeToEnergyCost(type: Type) = when (type) {
+        Type.A -> 1
+        Type.B -> 10
+        Type.C -> 100
+        Type.D -> 1000
+    }
 
-    fun Position.isTopRow() = first == 1
+    private fun manhattanDistance(a: Position, b: Position) = abs(a.first - b.first) + abs(a.second - b.second)
+
+    private fun Position.isTopRow() = first == 1
 }

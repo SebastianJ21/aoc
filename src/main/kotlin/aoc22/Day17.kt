@@ -1,7 +1,7 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc22
 
+import AOCAnswer
+import AOCSolution
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.toPersistentHashSet
 import readInput
@@ -9,9 +9,7 @@ import kotlin.math.max
 
 private const val CHAMBER_WIDTH = 7
 
-private typealias PositionL = Pair<Long, Long>
-
-class Day17 {
+class Day17 : AOCSolution {
 
     enum class RockType {
         MINUS,
@@ -21,14 +19,17 @@ class Day17 {
         SQUARE,
     }
 
-    data class FlowState(
+    private data class FlowState(
         val windSequence: Sequence<Int>,
-        val solidPoints: PersistentSet<CoordinatesL>,
+        val solidPoints: PersistentSet<PositionL>,
         val highestPoint: Long,
         val lastDroppedType: RockType,
     )
 
-    fun solve() {
+    private data class PositionL(val first: Long, val second: Long)
+    private infix fun Long.at(other: Long) = PositionL(this, other)
+
+    override fun solve(): AOCAnswer {
         val windPattern = readInput("day17.txt").first()
         val windMovements = windPattern.map { windCharToYMovement(it) }
         val windSequence = sequence { while (true) yieldAll(windMovements) }
@@ -72,11 +73,10 @@ class Day17 {
 
         val partTwo = (numberOfCycles * cycleValue) + startValue + incompleteCycleValue
 
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
-    fun getNextFlowState(state: FlowState): FlowState {
+    private fun getNextFlowState(state: FlowState): FlowState {
         val rockType = state.lastDroppedType.getNext()
         val initialRock = createNextRock(state.highestPoint, rockType)
 
@@ -101,14 +101,14 @@ class Day17 {
         return FlowState(newWindSeq, newSolidPoints, newHighestPoint, rockType)
     }
 
-    fun List<CoordinatesL>.moveDown() = map { (x, y) -> x - 1 to y }
+    private fun List<PositionL>.moveDown() = map { (x, y) -> x - 1 at y }
 
-    fun List<CoordinatesL>.moveUp() = map { (x, y) -> x + 1 to y }
+    private fun List<PositionL>.moveUp() = map { (x, y) -> x + 1 at y }
 
-    fun List<CoordinatesL>.isValid(solidPoints: Set<CoordinatesL>) =
+    private fun List<PositionL>.isValid(solidPoints: Set<PositionL>) =
         none { it in solidPoints || it.second < 0L || it.second > 6L }
 
-    private fun List<CoordinatesL>.applyYDirection(yDirection: Int) = map { (x, y) -> x to y + yDirection }
+    private fun List<PositionL>.applyYDirection(yDirection: Int) = map { (x, y) -> x at y + yDirection }
 
     private fun windCharToYMovement(wind: Char) = when (wind) {
         '>' -> 1
@@ -124,38 +124,38 @@ class Day17 {
         RockType.SQUARE -> RockType.MINUS
     }
 
-    private fun createNextRock(highestPoint: Long, type: RockType): List<CoordinatesL> = when (type) {
+    private fun createNextRock(highestPoint: Long, type: RockType): List<PositionL> = when (type) {
         RockType.MINUS -> listOf(
-            highestPoint + 4 to 2,
-            highestPoint + 4 to 3,
-            highestPoint + 4 to 4,
-            highestPoint + 4 to 5,
+            highestPoint + 4 at 2,
+            highestPoint + 4 at 3,
+            highestPoint + 4 at 4,
+            highestPoint + 4 at 5,
         )
         RockType.PLUS -> listOf(
-            highestPoint + 4 to 3,
-            highestPoint + 5 to 2,
-            highestPoint + 5 to 3,
-            highestPoint + 5 to 4,
-            highestPoint + 6 to 3,
+            highestPoint + 4 at 3,
+            highestPoint + 5 at 2,
+            highestPoint + 5 at 3,
+            highestPoint + 5 at 4,
+            highestPoint + 6 at 3,
         )
         RockType.REVERSE_L -> listOf(
-            highestPoint + 4 to 2,
-            highestPoint + 4 to 3,
-            highestPoint + 4 to 4,
-            highestPoint + 5 to 4,
-            highestPoint + 6 to 4,
+            highestPoint + 4 at 2,
+            highestPoint + 4 at 3,
+            highestPoint + 4 at 4,
+            highestPoint + 5 at 4,
+            highestPoint + 6 at 4,
         )
         RockType.I -> listOf(
-            highestPoint + 4 to 2,
-            highestPoint + 5 to 2,
-            highestPoint + 6 to 2,
-            highestPoint + 7 to 2,
+            highestPoint + 4 at 2,
+            highestPoint + 5 at 2,
+            highestPoint + 6 at 2,
+            highestPoint + 7 at 2,
         )
         RockType.SQUARE -> listOf(
-            highestPoint + 4 to 2,
-            highestPoint + 4 to 3,
-            highestPoint + 5 to 2,
-            highestPoint + 5 to 3,
+            highestPoint + 4 at 2,
+            highestPoint + 4 at 3,
+            highestPoint + 5 at 2,
+            highestPoint + 5 at 3,
         )
     }
 }

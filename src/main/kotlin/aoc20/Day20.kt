@@ -1,7 +1,7 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package aoc20
 
+import AOCAnswer
+import AOCSolution
 import AOCYear
 import product
 import readInput
@@ -11,9 +11,9 @@ import transposed
 
 private typealias Tile = List<List<Char>>
 
-class Day20 {
+class Day20 : AOCSolution {
 
-    fun solve() {
+    override fun solve(): AOCAnswer {
         val rawInput = readInput("day20.txt", AOCYear.Twenty)
 
         val idToMatrix = rawInput.splitBy { it.isEmpty() }.associate { lines ->
@@ -65,14 +65,11 @@ class Day20 {
 
         val partTwo = totalHashCount - (matchCount * hashesPerMatch)
 
-        println("Part one: $partOne")
-        println("Part two: $partTwo")
+        return AOCAnswer(partOne, partTwo)
     }
 
-    fun countMatches(tile: Tile, pattern: List<String>): Int {
-        val regexPattern = pattern.map {
-            Regex(it.replace(' ', '.'))
-        }
+    private fun countMatches(tile: Tile, pattern: List<String>): Int {
+        val regexPattern = pattern.map { Regex(it.replace(' ', '.')) }
 
         val firstRegex = regexPattern.first()
         val restRegex = regexPattern.drop(1)
@@ -97,7 +94,7 @@ class Day20 {
         return counts.sum()
     }
 
-    fun <T> joinMatrices(matrices: List<List<List<T>>>): List<List<T>> {
+    private fun <T> joinMatrices(matrices: List<List<List<T>>>): List<List<T>> {
         if (matrices.isEmpty()) return emptyList()
 
         return matrices.drop(1).fold(matrices.first()) { acc, matrix ->
@@ -105,7 +102,7 @@ class Day20 {
         }
     }
 
-    fun getFirstRow(
+    private fun getFirstRow(
         id: Int,
         idToNeighborIds: Map<Int, Set<Int>>,
         idToConfigs: Map<Int, Set<Tile>>,
@@ -128,7 +125,7 @@ class Day20 {
         return getRowSequence(id to baseConfig, idToNeighborIds, idToConfigs).toList()
     }
 
-    fun getRowSequence(
+    private fun getRowSequence(
         cornerPair: Pair<Int, Tile>,
         idToNeighbors: Map<Int, Set<Int>>,
         idToConfigurations: Map<Int, Set<Tile>>,
@@ -149,7 +146,7 @@ class Day20 {
         nextLeft
     }
 
-    fun findConfiguration(idToNeighbors: Map<Int, Set<Int>>, idToBaseMatrix: Map<Int, Tile>): List<List<Tile>> {
+    private fun findConfiguration(idToNeighbors: Map<Int, Set<Int>>, idToBaseMatrix: Map<Int, Tile>): List<List<Tile>> {
         val idToConfigurations = idToBaseMatrix.mapValues { (_, matrix) -> getAllConfigurations(matrix) }
 
         // Corner matrix
@@ -193,16 +190,16 @@ class Day20 {
         return finalMatrix
     }
 
-    fun getAllConfigurations(tile: Tile): Set<Tile> {
-        fun Tile.getRotationCombination(): List<Tile> {
-            fun Tile.rotate() = transposed().map { it.reversed() }
+    private fun getAllConfigurations(tile: Tile): Set<Tile> {
+        fun Tile.rotate() = transposed().map { it.reversed() }
 
+        fun Tile.getRotationCombination(): List<Tile> {
             return (1..3).runningFold(this) { acc, _ -> acc.rotate() }
         }
 
         fun Tile.getFlipCombination(): List<Tile> {
             val rowFlip = { tile: Tile -> tile.map { it.reversed() } }
-            val colFlip = { tile: Tile -> tile.transposed().map { it.reversed() }.transposed() }
+            val colFlip = { tile: Tile -> tile.rotate().transposed() }
 
             return listOf(this, rowFlip(this), colFlip(this), rowFlip(colFlip(this)))
         }
@@ -214,12 +211,12 @@ class Day20 {
         return allCombinations.toSet()
     }
 
-    fun Tile.firstColumn() = map { it.first() }
-    fun Tile.lastColumn() = map { it.last() }
+    private fun Tile.firstColumn() = map { it.first() }
+    private fun Tile.lastColumn() = map { it.last() }
 
-    fun Tile.getBorders() = listOf(first(), last(), firstColumn(), lastColumn())
+    private fun Tile.getBorders() = listOf(first(), last(), firstColumn(), lastColumn())
 
-    fun Tile.getAllBorderCombinations(): Set<List<Char>> {
+    private fun Tile.getAllBorderCombinations(): Set<List<Char>> {
         val firstColumn = firstColumn()
         val lastColumn = lastColumn()
 

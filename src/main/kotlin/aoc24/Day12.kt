@@ -5,6 +5,7 @@ import AOCSolution
 import Direction
 import Position
 import applyDirection
+import at
 import get
 import getInDirectionOrNull
 import getOrNull
@@ -17,12 +18,12 @@ import kotlin.collections.sumOf
 
 class Day12 : AOCSolution {
 
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    val directions: List<Direction> = listOf(up, right, down, left)
+    private val directions: List<Direction> = listOf(up, right, down, left)
 
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day12.txt", AOCYear.TwentyFour)

@@ -4,23 +4,23 @@ import AOCAnswer
 import AOCSolution
 import Position
 import applyDirection
+import at
 import get
 import getOrNull
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
-import kotlinx.collections.immutable.persistentSetOf
 import positionsOf
 import readInput
 import toMatrix
 
 class Day10 : AOCSolution {
 
-    val up = -1 to 0
-    val down = 1 to 0
-    val left = 0 to -1
-    val right = 0 to 1
+    private val up = -1 at 0
+    private val down = 1 at 0
+    private val left = 0 at -1
+    private val right = 0 at 1
 
-    val directions = listOf(up, right, down, left)
+    private val directions = listOf(up, right, down, left)
 
     override fun solve(): AOCAnswer {
         val rawInput = readInput("day10.txt", AOCYear.TwentyFour)
@@ -42,11 +42,9 @@ class Day10 : AOCSolution {
                 .map { position.applyDirection(it) }
                 .filter { it !in seen && matrix.getOrNull(it) == nextValue }
 
-            return nextPositions.fold(seen.add(position)) { seenAcc, pos ->
-                explore(pos, seenAcc)
-            }
+            return nextPositions.fold(seen.add(position)) { seenAcc, pos -> explore(pos, seenAcc) }
         }
-        val seenPositions = explore(start, persistentSetOf())
+        val seenPositions = explore(start, persistentHashSetOf())
 
         return seenPositions
     }
