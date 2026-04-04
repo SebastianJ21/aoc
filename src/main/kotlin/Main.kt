@@ -32,7 +32,7 @@ enum class ErrorPropagation { CAUSE, FULL, NONE }
 
 fun solveYear(
     year: AOCYear = AOCYear.TwentyThree,
-    days: List<Int> = (1..25).toList(),
+    days: List<Int> = (1..latestDay(year)).toList(),
     skipDays: List<Int> = emptyList(),
     timeout: Duration? = null,
     quietlySkipMissing: Boolean = false,
@@ -82,6 +82,7 @@ fun solveYear(
             if (quietlySkipMissing) return@mapNotNull null
         }
 
+        // TODO: Handling of errors on dryRun runs
         if (dryRun) {
             repeat(2) {
                 executor.submit { solveMethod.call(classInstance) }.get()
@@ -99,6 +100,8 @@ fun solveYear(
                 task.get()
             }
         }
+
+        executor.shutdown()
 
         result.onFailure { exception ->
             when (exception) {
@@ -131,7 +134,6 @@ fun solveYear(
             }
         }
 
-        executor.shutdown()
         // TODO: Handling of performance on timed-out tasks
         System.currentTimeMillis() - start
     }
