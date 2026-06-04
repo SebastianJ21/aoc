@@ -2,7 +2,6 @@ package aoc20
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import Direction
 import Position
 import applyDirection
@@ -10,7 +9,7 @@ import at
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import plus
-import readInput
+import inputLines
 import kotlin.math.abs
 
 class Day11 : AOCSolution {
@@ -23,9 +22,9 @@ class Day11 : AOCSolution {
     private val neighborhood = listOf(up + left, up, up + right, right, down + right, down, down + left, left)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day11.txt", AOCYear.Twenty)
+        val inputLines = inputLines()
 
-        val (initialOccupied: Set<Position>, initialUnoccupied: List<Position>) = rawInput.foldIndexed(
+        val (initialOccupied: Set<Position>, initialUnoccupied: List<Position>) = inputLines.foldIndexed(
             persistentSetOf<Position>() to persistentListOf<Position>(),
         ) { rowI, acc, row ->
             row.foldIndexed(acc) { colI, (occupied, unoccupied), value ->
@@ -39,7 +38,7 @@ class Day11 : AOCSolution {
 
         val allSeats = initialOccupied + initialUnoccupied
 
-        val closestSeats = findClosestSeats(allSeats, rawInput.size, rawInput[0].length)
+        val closestSeats = findClosestSeats(allSeats, inputLines.size, inputLines[0].length)
 
         val immediateClosest = closestSeats.mapValues { (seat, closestSeats) ->
             closestSeats.filter {

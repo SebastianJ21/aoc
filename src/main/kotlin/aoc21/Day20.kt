@@ -2,12 +2,11 @@ package aoc21
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import Position
 import applyDirection
 import at
 import getOrNull
-import readInput
+import inputLines
 import toCharMatrix
 import transposed
 
@@ -38,8 +37,8 @@ class Day20 : AOCSolution {
     }
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day20.txt", AOCYear.TwentyOne)
-        val charMatrix = rawInput.toCharMatrix()
+        val inputLines = inputLines()
+        val charMatrix = inputLines.toCharMatrix()
 
         val pixels = charMatrix.first()
         val inputMatrix = charMatrix.drop(2)

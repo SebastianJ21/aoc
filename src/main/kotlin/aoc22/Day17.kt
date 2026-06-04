@@ -4,7 +4,7 @@ import AOCAnswer
 import AOCSolution
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.toPersistentHashSet
-import readInput
+import inputLines
 import kotlin.math.max
 
 private const val CHAMBER_WIDTH = 7
@@ -30,7 +30,7 @@ class Day17 : AOCSolution {
     private infix fun Long.at(other: Long) = PositionL(this, other)
 
     override fun solve(): AOCAnswer {
-        val windPattern = readInput("day17.txt").first()
+        val windPattern = inputLines().first()
         val windMovements = windPattern.map { windCharToYMovement(it) }
         val windSequence = sequence { while (true) yieldAll(windMovements) }
 

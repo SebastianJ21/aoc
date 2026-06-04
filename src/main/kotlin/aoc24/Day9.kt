@@ -4,7 +4,7 @@ import AOCAnswer
 import AOCSolution
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
-import readInput
+import inputLines
 
 class Day9 : AOCSolution {
 
@@ -16,11 +16,11 @@ class Day9 : AOCSolution {
     }
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day9.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
         // Digits alternate between indicating the length of a file and the length of free space
         // The last digit is of file length, so we add an extra 0 to indicate the free space and enable pairing
-        val diskMap = rawInput.single().map { it.digitToInt() } + 0
+        val diskMap = inputLines.single().map { it.digitToInt() } + 0
 
         val initialMemory = diskMap.chunked(2).withIndex().flatMap { (blockIndex, memoryBlock) ->
             val (usedSpace, freeSpace) = memoryBlock

@@ -2,7 +2,6 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import Direction
 import Position
 import aoc19.IntCodeRunner.Companion.executeInstructions
@@ -12,7 +11,7 @@ import getOrNull
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
 import mapToLong
-import readInput
+import inputLines
 import splitBy
 import kotlin.math.cos
 import kotlin.math.max
@@ -55,9 +54,9 @@ class Day17 : AOCSolution {
     }
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day17.txt", AOCYear.Nineteen)
+        val inputLines = inputLines()
 
-        val inputInstructions = rawInput.single().split(',').mapToLong()
+        val inputInstructions = inputLines.single().split(',').mapToLong()
         val initialState = ExecutionState.fromList(inputInstructions)
 
         val cameraOutputs = executeInstructions(initialState).outputs

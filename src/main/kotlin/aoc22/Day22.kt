@@ -8,7 +8,7 @@ import applyDirection
 import at
 import getOrNull
 import mapToInt
-import readInput
+import inputLines
 import splitBy
 import transposed
 
@@ -61,9 +61,9 @@ class Day22 : AOCSolution {
     }
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day22.txt", AOCYear.TwentyTwo)
+        val inputLines = inputLines()
 
-        val (matrixInput, instructions) = rawInput.splitBy { it.isEmpty() }
+        val (matrixInput, instructions) = inputLines.splitBy { it.isEmpty() }
 
         val longestRowLength = matrixInput.maxOf { it.length }
         val normalizedInput = matrixInput.map { it.padEnd(longestRowLength, ' ') }

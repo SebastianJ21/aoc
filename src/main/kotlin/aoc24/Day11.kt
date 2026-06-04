@@ -2,15 +2,14 @@ package aoc24
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import mapToLong
-import readInput
+import inputLines
 
 class Day11 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day11.txt", AOCYear.TwentyFour)
-        val initialStones = rawInput.single().split(" ").mapToLong()
+        val inputLines = inputLines()
+        val initialStones = inputLines.single().split(" ").mapToLong()
 
         val stoneToResolver = buildResolvers(initialStones)
 

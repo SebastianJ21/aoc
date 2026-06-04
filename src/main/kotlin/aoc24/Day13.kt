@@ -5,7 +5,7 @@ import AOCSolution
 import Direction
 import mapToInt
 import mapToLong
-import readInput
+import inputLines
 import splitBy
 import kotlin.math.min
 
@@ -22,9 +22,9 @@ class Day13 : AOCSolution {
             buttonA.second * pressA + buttonB.second * pressB == target.second
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day13.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
-        val configurations = rawInput.splitBy { it.isEmpty() }.map { (buttonA, buttonB, prize) ->
+        val configurations = inputLines.splitBy { it.isEmpty() }.map { (buttonA, buttonB, prize) ->
             val (aX, aY) = buttonA.removePrefix("Button A: X+").replace("Y+", "").split(", ").mapToInt()
             val (bX, bY) = buttonB.removePrefix("Button B: X+").replace("Y+", "").split(", ").mapToInt()
             val (prizeX, prizeY) = prize.removePrefix("Prize: X=").replace("Y=", "").split(", ").mapToLong()

@@ -2,17 +2,16 @@ package aoc24
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import mapToInt
-import readInput
+import inputLines
 
 class Day3 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day3.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
         val regex = Regex("(mul\\(\\d*,\\d*\\))")
-        val input = rawInput.joinToString("")
+        val input = inputLines.joinToString("")
 
         val matchResults = regex.findAll(input).toList()
 

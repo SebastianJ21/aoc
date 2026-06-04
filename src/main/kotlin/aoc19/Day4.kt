@@ -2,17 +2,16 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import firstAndRest
 import mapToInt
-import readInput
+import inputLines
 
 class Day4 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day4.txt", AOCYear.Nineteen)
+        val inputLines = inputLines()
 
-        val (from, to) = rawInput.single().split("-").mapToInt()
+        val (from, to) = inputLines.single().split("-").mapToInt()
 
         val range = from..to
 

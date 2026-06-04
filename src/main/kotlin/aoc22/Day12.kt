@@ -8,7 +8,7 @@ import at
 import get
 import getOrNull
 import positionsOf
-import readInput
+import inputLines
 import toMatrix
 import java.util.PriorityQueue
 import kotlin.math.min
@@ -23,12 +23,12 @@ class Day12 : AOCSolution {
     private val directions = listOf(up, down, left, right)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day12.txt")
+        val inputLines = inputLines()
 
-        val startPosition = rawInput.positionsOf { it == 'S' }.single()
-        val endPosition = rawInput.positionsOf { it == 'E' }.single()
+        val startPosition = inputLines.positionsOf { it == 'S' }.single()
+        val endPosition = inputLines.positionsOf { it == 'E' }.single()
 
-        val inputMatrix = rawInput.toMatrix { value ->
+        val inputMatrix = inputLines.toMatrix { value ->
             // Convert to height
             when {
                 value.isLowerCase() -> value.code - 'a'.code
@@ -42,7 +42,7 @@ class Day12 : AOCSolution {
 
         val partOne = shortestPaths.getValue(startPosition)
 
-        val lowestPositions = rawInput.positionsOf { it == 'a' }
+        val lowestPositions = inputLines.positionsOf { it == 'a' }
 
         val partTwo = lowestPositions.minOf { shortestPaths[it] ?: Int.MAX_VALUE }
 

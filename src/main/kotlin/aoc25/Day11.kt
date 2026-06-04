@@ -3,14 +3,14 @@ package aoc25
 import AOCAnswer
 import AOCSolution
 import product
-import readInput
+import inputLines
 
 class Day11 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day11.txt", AOCYear.TwentyFive)
+        val inputLines = inputLines()
 
-        val nodeToConnections = rawInput.associate { line ->
+        val nodeToConnections = inputLines.associate { line ->
             val (node, connections) = line.split(": ")
 
             node to connections.split(" ")

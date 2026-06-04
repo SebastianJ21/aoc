@@ -1,5 +1,6 @@
 import java.io.File
 import java.math.BigInteger
+import kotlin.reflect.jvm.jvmName
 
 enum class AOCYear {
     TwentyFive,
@@ -11,15 +12,7 @@ enum class AOCYear {
     Nineteen,
 }
 
-const val RESOURCES_PATH = "src/main/resources"
-
-/**
- * Reads lines from the given input txt file located in resources.
- */
-fun readInput(name: String, year: AOCYear = AOCYear.TwentyTwo) =
-    File("$RESOURCES_PATH/${year.getSuffix()}/$name").readLines()
-
-fun AOCYear.getSuffix() = when (this) {
+fun AOCYear.getPrefix() = when (this) {
     AOCYear.TwentyFive -> "aoc25"
     AOCYear.TwentyFour -> "aoc24"
     AOCYear.TwentyThree -> "aoc23"
@@ -27,6 +20,28 @@ fun AOCYear.getSuffix() = when (this) {
     AOCYear.TwentyOne -> "aoc21"
     AOCYear.Twenty -> "aoc20"
     AOCYear.Nineteen -> "aoc19"
+}
+
+const val RESOURCES_PATH = "src/main/resources"
+
+/**
+ * Reads lines from the given input txt file located in resources.
+ */
+fun readInput(name: String, year: AOCYear = AOCYear.TwentyTwo) =
+    File("$RESOURCES_PATH/${year.getPrefix()}/$name").readLines()
+
+fun AOCSolution.inputLines(): List<String> {
+    val qualifiedName = this::class.qualifiedName ?: error("Invalid AOC solution class ${this::class.jvmName}.")
+
+    check(qualifiedName.count { it == '.' } == 1) {
+        "Invalid qualified name for determining the year and day of the AOC solution. " +
+            "Expected: aoc<year>.Day<day>, got: $qualifiedName"
+    }
+
+    val (prefix, day) = qualifiedName.split(".")
+    val year = AOCYear.entries.singleOrNull { it.getPrefix() == prefix } ?: error("No AOCYear entry found for $prefix")
+
+    return readInput("${day.lowercase()}.txt", year)
 }
 
 data class Position(val first: Int, val second: Int)

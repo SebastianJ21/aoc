@@ -2,14 +2,13 @@ package aoc23
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import Position
 import applyDirection
 import at
 import get
 import getOrNull
 import positionsOf
-import readInput
+import inputLines
 import toCharMatrix
 import kotlin.math.absoluteValue
 
@@ -31,8 +30,8 @@ class Day10 : AOCSolution {
         'F' to listOf(right, down),
     )
 
-    private val rawInput = readInput("day10.txt", AOCYear.TwentyThree)
-    private val matrix = rawInput.toCharMatrix()
+    private val inputLines = inputLines()
+    private val matrix = inputLines.toCharMatrix()
 
     override fun solve(): AOCAnswer {
         val start = matrix.positionsOf { it == 'S' }.first()

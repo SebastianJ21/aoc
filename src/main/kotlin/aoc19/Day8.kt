@@ -2,19 +2,18 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
-import readInput
+import inputLines
 
 class Day8 : AOCSolution {
 
     private val imageDimensions = 25 to 6
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day8.txt", AOCYear.Nineteen)
+        val inputLines = inputLines()
 
         val (width, height) = imageDimensions
 
-        val pixelLayers = rawInput.single().map { it.digitToInt() }.chunked(width).chunked(height)
+        val pixelLayers = inputLines.single().map { it.digitToInt() }.chunked(width).chunked(height)
 
         val layerPixelCount = pixelLayers.map { layer -> layer.flatten().groupingBy { it }.eachCount() }
         val minLayer = layerPixelCount.minBy { it[0] ?: 0 }

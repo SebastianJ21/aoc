@@ -4,11 +4,10 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import kotlinx.collections.immutable.persistentHashSetOf
 import lcm
 import mapToInt
-import readInput
+import inputLines
 import transposed
 import java.math.BigInteger
 import kotlin.math.abs
@@ -18,9 +17,9 @@ typealias Position_Velocity = Pair<Int, Int>
 class Day12 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day12.txt", AOCYear.Nineteen)
+        val inputLines = inputLines()
 
-        val moonPositions = rawInput.map { line ->
+        val moonPositions = inputLines.map { line ->
             line.replace(Regex("<|>|[xyz]="), "").split(", ").mapToInt()
         }
 

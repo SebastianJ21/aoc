@@ -10,7 +10,7 @@ import getOrNull
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
 import positionsOf
-import readInput
+import inputLines
 import toMatrix
 
 class Day10 : AOCSolution {
@@ -23,8 +23,8 @@ class Day10 : AOCSolution {
     private val directions = listOf(up, right, down, left)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day10.txt", AOCYear.TwentyFour)
-        val map = rawInput.toMatrix { it.digitToInt() }
+        val inputLines = inputLines()
+        val map = inputLines.toMatrix { it.digitToInt() }
 
         val startPositions = map.positionsOf { it == 0 }
 

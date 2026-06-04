@@ -2,13 +2,12 @@ package aoc23
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import Position
 import applyDirection
 import at
 import getOrNull
 import positionsOf
-import readInput
+import inputLines
 import toCharMatrix
 import kotlin.math.pow
 
@@ -27,8 +26,8 @@ class Day21 : AOCSolution {
     private val partTwoSteps = 26501365
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day21.txt", AOCYear.TwentyThree)
-        val matrix = rawInput.toCharMatrix()
+        val inputLines = inputLines()
+        val matrix = inputLines.toCharMatrix()
 
         val start = matrix.positionsOf { it == 'S' }.first()
 

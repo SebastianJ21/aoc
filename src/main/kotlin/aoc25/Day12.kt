@@ -3,15 +3,15 @@ package aoc25
 import AOCAnswer
 import AOCSolution
 import mapToInt
-import readInput
+import inputLines
 import splitBy
 
 class Day12 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day12.txt", AOCYear.TwentyFive)
+        val inputLines = inputLines()
 
-        val inputParts = rawInput.splitBy { it.isEmpty() }
+        val inputParts = inputLines.splitBy { it.isEmpty() }
 
         val isShapeHeader: (List<String>) -> Boolean = { it.first().matches(Regex("[0-9]:")) }
 

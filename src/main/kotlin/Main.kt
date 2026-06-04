@@ -40,7 +40,7 @@ fun solveYear(
     dryRun: Boolean = false,
     errorPropagation: ErrorPropagation = ErrorPropagation.CAUSE,
 ) {
-    val prefix = year.getSuffix()
+    val prefix = year.getPrefix()
     val reflections = Reflections(prefix)
 
     val daysToRun = days.filter { it !in skipDays }
@@ -151,7 +151,7 @@ private fun printAOCAnswers(partOne: Any?, partTwo: Any?) {
 }
 
 private fun latestDay(year: AOCYear): Int {
-    val suffix = year.getSuffix()
+    val suffix = year.getPrefix()
     val reflections = Reflections(suffix)
 
     val existingDays = reflections.getAll(Scanners.SubTypes)

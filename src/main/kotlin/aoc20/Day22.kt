@@ -2,17 +2,16 @@ package aoc20
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import mapToInt
-import readInput
+import inputLines
 import splitBy
 
 class Day22 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day22.txt", AOCYear.Twenty)
+        val inputLines = inputLines()
 
-        val (startDeck1, startDeck2) = rawInput.splitBy { it.isEmpty() }.map { it.drop(1).mapToInt() }
+        val (startDeck1, startDeck2) = inputLines.splitBy { it.isEmpty() }.map { it.drop(1).mapToInt() }
 
         val partOne = playGame(startDeck1, startDeck2)
             .toList()

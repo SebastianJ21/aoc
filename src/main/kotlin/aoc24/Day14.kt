@@ -2,17 +2,14 @@ package aoc24
 
 import AOCAnswer
 import AOCSolution
+import Direction
+import Position
+import applyDirection
+import inputLines
 import mapToInt
 import product
-import readInput
 
 class Day14 : AOCSolution {
-
-    private data class Position(val first: Int, val second: Int)
-    private typealias Direction = Position
-
-    private fun Position.applyDirection(other: Position) = Position(first + other.first, second + other.second)
-    private fun Position.scaled(n: Int) = Position(first * n, second * n)
 
     companion object {
         private const val WIDTH: Int = 101
@@ -22,10 +19,10 @@ class Day14 : AOCSolution {
     }
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day14.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
         // space which is 101 tiles wide and 103 tiles tall
-        val robots = rawInput.map { line ->
+        val robots = inputLines.map { line ->
             // p=54,45 v=-37,75
             line.split(" ").let { (position, velocity) ->
                 val (col, row) = position.removePrefix("p=").split(",").mapToInt()
@@ -96,4 +93,6 @@ class Day14 : AOCSolution {
             println(row.joinToString(""))
         }
     }
+
+    private fun Position.scaled(n: Int) = Position(first * n, second * n)
 }

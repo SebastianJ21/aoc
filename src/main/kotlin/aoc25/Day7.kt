@@ -8,7 +8,7 @@ import at
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentHashMapOf
 import positionsOf
-import readInput
+import inputLines
 
 class Day7 : AOCSolution {
 
@@ -18,8 +18,8 @@ class Day7 : AOCSolution {
     private val right = 0 at 1
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day7.txt", AOCYear.TwentyFive)
-        val lines = rawInput.map { it.toList() }
+        val inputLines = inputLines()
+        val lines = inputLines.map { it.toList() }
 
         val splitterPositions = lines.positionsOf { it == '^' }.toSet()
         val start = lines.positionsOf { it == 'S' }.first()

@@ -4,7 +4,7 @@ import AOCAnswer
 import AOCSolution
 import invertListMap
 import mapToInt
-import readInput
+import inputLines
 import transposed
 import java.math.BigInteger
 import kotlin.IndexOutOfBoundsException
@@ -14,8 +14,8 @@ import kotlin.math.min
 class Day10 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day10.txt", AOCYear.TwentyFive)
-        val inputs = rawInput.map { line ->
+        val inputLines = inputLines()
+        val inputs = inputLines.map { line ->
             val parts = line.split(" ")
 
             // [.####..#..]

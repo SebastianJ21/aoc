@@ -2,14 +2,14 @@ package aoc25
 
 import AOCAnswer
 import AOCSolution
-import readInput
+import inputLines
 
 class Day3 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day3.txt", AOCYear.TwentyFive)
+        val inputLines = inputLines()
 
-        val batteries = rawInput.map { line -> line.map { it.digitToInt().toLong() } }
+        val batteries = inputLines.map { line -> line.map { it.digitToInt().toLong() } }
 
         val partOne = batteries.sumOf { battery -> turnOnScore(battery, 2) }
         val partTwo = batteries.sumOf { battery -> turnOnScore(battery, 12) }

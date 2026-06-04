@@ -9,7 +9,7 @@ import get
 import getInDirectionOrNull
 import getOrNull
 import product
-import readInput
+import inputLines
 import toMatrix
 import kotlin.math.max
 
@@ -23,8 +23,8 @@ class Day8 : AOCSolution {
     private val directions = listOf(up, down, left, right)
 
     override fun solve(): AOCAnswer {
-        val input = readInput("day8.txt", AOCYear.TwentyTwo)
-        val matrix = input.toMatrix { value -> value.digitToInt() }
+        val inputLines = inputLines()
+        val matrix = inputLines.toMatrix { value -> value.digitToInt() }
 
         val (visibleCount, scenicMax) = matrix.foldIndexed(0 to 0) { rowI, acc, row ->
             row.foldIndexed(acc) { colI, (visibleCount, scenicMax), _ ->

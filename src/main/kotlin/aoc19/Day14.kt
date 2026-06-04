@@ -4,10 +4,9 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
-import readInput
+import inputLines
 import kotlin.math.ceil
 
 class Day14 : AOCSolution {
@@ -17,9 +16,9 @@ class Day14 : AOCSolution {
     fun String.parseToChemical() = split(' ').let { (amount, item) -> Pair(item, amount.toInt()) }
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day14.txt", AOCYear.Nineteen)
+        val inputLines = inputLines()
 
-        val pairs = rawInput.map { line ->
+        val pairs = inputLines.map { line ->
             val (inputPart, outputPart) = line.split(" => ")
 
             outputPart.parseToChemical() to inputPart.split(", ").map { it.parseToChemical() }

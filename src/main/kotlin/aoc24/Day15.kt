@@ -10,7 +10,7 @@ import get
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import positionsOf
-import readInput
+import inputLines
 import splitBy
 
 class Day15 : AOCSolution {
@@ -28,9 +28,9 @@ class Day15 : AOCSolution {
     }
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day15.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
-        val (gridLines, instructionLines) = rawInput.splitBy { it.isEmpty() }
+        val (gridLines, instructionLines) = inputLines.splitBy { it.isEmpty() }
 
         val instructions = instructionLines.flatMap { line ->
             line.map { char ->

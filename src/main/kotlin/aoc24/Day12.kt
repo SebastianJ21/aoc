@@ -11,7 +11,7 @@ import getInDirectionOrNull
 import getOrNull
 import kotlinx.collections.immutable.persistentHashSetOf
 import positions
-import readInput
+import inputLines
 import toCharMatrix
 import kotlin.Pair
 import kotlin.collections.sumOf
@@ -26,8 +26,8 @@ class Day12 : AOCSolution {
     private val directions: List<Direction> = listOf(up, right, down, left)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day12.txt", AOCYear.TwentyFour)
-        val map = rawInput.toCharMatrix()
+        val inputLines = inputLines()
+        val map = inputLines.toCharMatrix()
 
         val regions = map
             .positions()

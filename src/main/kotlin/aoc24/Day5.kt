@@ -3,15 +3,15 @@ package aoc24
 import AOCAnswer
 import AOCSolution
 import mapToInt
-import readInput
+import inputLines
 import splitBy
 
 class Day5 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day5.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
-        val (rules, rawCommands) = rawInput.splitBy { it.isEmpty() }
+        val (rules, rawCommands) = inputLines.splitBy { it.isEmpty() }
 
         val lowerToHigherNumbers = rules
             .map { it.split('|').mapToInt() }

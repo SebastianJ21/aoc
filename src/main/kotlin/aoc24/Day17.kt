@@ -6,7 +6,7 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import mapToLong
-import readInput
+import inputLines
 import splitBy
 
 class Day17 : AOCSolution {
@@ -20,9 +20,9 @@ class Day17 : AOCSolution {
     )
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day17.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
-        val (registerInput, programInput) = rawInput.splitBy { it.isEmpty() }
+        val (registerInput, programInput) = inputLines.splitBy { it.isEmpty() }
 
         // Register A: 63687530
         // Register B: 0

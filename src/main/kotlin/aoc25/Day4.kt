@@ -6,7 +6,7 @@ import at
 import countUntil
 import plus
 import positionsOf
-import readInput
+import inputLines
 
 class Day4 : AOCSolution {
 
@@ -18,9 +18,9 @@ class Day4 : AOCSolution {
     private val neighborhood = listOf(up + left, up, up + right, right, down + right, down, down + left, left)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day4.txt", AOCYear.TwentyFive)
+        val inputLines = inputLines()
 
-        val initialRollPositions = rawInput.map { line -> line.toList() }.positionsOf { it == '@' }.toSet()
+        val initialRollPositions = inputLines.map { line -> line.toList() }.positionsOf { it == '@' }.toSet()
 
         val rollsCountSequence = generateSequence(initialRollPositions) { rollPositions ->
             val nextPositions = rollPositions.filter { position ->

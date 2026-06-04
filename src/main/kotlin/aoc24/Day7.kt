@@ -5,7 +5,7 @@ import AOCSolution
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import mapToLong
-import readInput
+import inputLines
 
 class Day7 : AOCSolution {
 
@@ -19,9 +19,9 @@ class Day7 : AOCSolution {
     private val allOperators = (baseOperators + concatenationOperator)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day7.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
-        val instructions = rawInput.map { line ->
+        val instructions = inputLines.map { line ->
             // Line example: "12615: 804 5 2 1 5 7 7 7 1 3 3 5"
             val (expectedResult, operands) = line.split(": ")
 

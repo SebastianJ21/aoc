@@ -3,7 +3,7 @@ package aoc22
 import AOCAnswer
 import AOCSolution
 import maxOrZero
-import readInput
+import inputLines
 
 class Day16 : AOCSolution {
 
@@ -27,9 +27,9 @@ class Day16 : AOCSolution {
     }
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day16.txt", AOCYear.TwentyTwo)
+        val inputLines = inputLines()
 
-        val valves = rawInput.mapIndexed { index, line ->
+        val valves = inputLines.mapIndexed { index, line ->
             // Valve ZN has flow rate=0; tunnels lead to valves SD, ZV
             val (valvePart, tunnelPart) = line.split("; ")
 

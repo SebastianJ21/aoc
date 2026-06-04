@@ -2,7 +2,6 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import Position
 import aoc19.IntCodeRunner.Companion.executeInstructions
 import applyDirection
@@ -12,7 +11,7 @@ import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toPersistentList
 import mapToLong
 import plus
-import readInput
+import inputLines
 
 class Day13 : AOCSolution {
 
@@ -47,9 +46,9 @@ class Day13 : AOCSolution {
     )
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day13.txt", AOCYear.Nineteen)
+        val inputLines = inputLines()
 
-        val instructions = rawInput.single().split(",").mapToLong()
+        val instructions = inputLines.single().split(",").mapToLong()
 
         val boardCreationSequence = generateSequence(ExecutionState.fromList(instructions)) { state ->
             executeInstructions(state.withClearedOutputs(), stopOnOutputSize = 3)

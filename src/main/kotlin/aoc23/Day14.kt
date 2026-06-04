@@ -4,8 +4,7 @@ package aoc23
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
-import readInput
+import inputLines
 import toCharMatrix
 import transposed
 
@@ -13,8 +12,8 @@ class Day14 : AOCSolution {
     enum class Direction { N, W, S, E }
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day14.txt", AOCYear.TwentyThree)
-        val matrix = rawInput.toCharMatrix()
+        val inputLines = inputLines()
+        val matrix = inputLines.toCharMatrix()
 
         val partOne = calculateMatrixScore(getMatrixTilted(matrix, Direction.N))
         val partTwo = calculateMatrixScore(performNMatrixSpins(matrix, 1000000000))

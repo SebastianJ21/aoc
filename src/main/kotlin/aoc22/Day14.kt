@@ -7,7 +7,7 @@ import applyDirection
 import at
 import invertListMap
 import mapToInt
-import readInput
+import inputLines
 import kotlin.math.max
 import kotlin.math.min
 
@@ -25,9 +25,9 @@ class Day14 : AOCSolution {
     private val sandDirections = listOf(down, left, right)
 
     override fun solve(): AOCAnswer {
-        val input = readInput("day14.txt")
+        val inputLines = inputLines()
 
-        val intervals = input.flatMap { line ->
+        val intervals = inputLines.flatMap { line ->
             val rawIntervals = line.split(" -> ")
             val points = rawIntervals.map {
                 it.split(",").mapToInt().let { (y, x) -> y to x }

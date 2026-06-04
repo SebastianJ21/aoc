@@ -2,19 +2,18 @@ package aoc25
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import kotlinx.collections.immutable.toImmutableList
 import mapToLong
-import readInput
+import inputLines
 
 class Day2 : AOCSolution {
 
     private val powersOf10 = generateSequence(1L) { it * 10 }.takeWhile { it > 0 }.toImmutableList()
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day2.txt", AOCYear.TwentyFive)
+        val inputLines = inputLines()
 
-        val ranges = rawInput.single()
+        val ranges = inputLines.single()
             .split(",")
             .map { rawRange -> rawRange.split("-").mapToLong().let { (a, b) -> a..b } }
 
