@@ -8,7 +8,7 @@ import at
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
 import positionsOf
-import readInput
+import inputLines
 import java.util.PriorityQueue
 import kotlin.math.abs
 
@@ -27,12 +27,12 @@ class Day16 : AOCSolution {
     }
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day16.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
-        val start = rawInput.positionsOf { it == 'S' }.single()
-        val end = rawInput.positionsOf { it == 'E' }.single()
+        val start = inputLines.positionsOf { it == 'S' }.single()
+        val end = inputLines.positionsOf { it == 'E' }.single()
 
-        val positions = rawInput.positionsOf { it != '#' }.toHashSet()
+        val positions = inputLines.positionsOf { it != '#' }.toHashSet()
 
         val startState = State(
             position = start,

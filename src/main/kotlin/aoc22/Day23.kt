@@ -7,7 +7,7 @@ import Position
 import at
 import plus
 import positionsOf
-import readInput
+import inputLines
 import toCharMatrix
 import transposed
 
@@ -38,8 +38,8 @@ class Day23 : AOCSolution {
     ).associate { (key, value) -> directionToVector(key) to value.map { directionToVector(it) } }
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day23.txt")
-        val matrix = rawInput.toCharMatrix()
+        val inputLines = inputLines()
+        val matrix = inputLines.toCharMatrix()
 
         tailrec fun perform(
             positions: Set<Position>,

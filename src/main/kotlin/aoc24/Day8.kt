@@ -6,7 +6,7 @@ import Position
 import get
 import getOrNull
 import positions
-import readInput
+import inputLines
 import toCharMatrix
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
@@ -14,8 +14,8 @@ import kotlin.math.roundToInt
 class Day8 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day8.txt", AOCYear.TwentyFour)
-        val matrix = rawInput.toCharMatrix()
+        val inputLines = inputLines()
+        val matrix = inputLines.toCharMatrix()
 
         val antennaPositions = matrix
             .positions()

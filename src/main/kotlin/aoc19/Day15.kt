@@ -2,13 +2,12 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import Position
 import aoc19.IntCodeRunner.Companion.executeInstructions
 import applyDirection
 import at
 import mapToLong
-import readInput
+import inputLines
 import java.util.PriorityQueue
 import kotlin.math.min
 
@@ -24,9 +23,9 @@ class Day15 : AOCSolution {
     enum class PositionType { WALL, TILE, OXYGEN }
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day15.txt", AOCYear.Nineteen)
+        val inputLines = inputLines()
 
-        val inputInstructions = rawInput.single().split(",").mapToLong()
+        val inputInstructions = inputLines.single().split(",").mapToLong()
         val initialExecutionState = ExecutionState.fromList(inputInstructions, listOf())
 
         val shortestPaths = dijkstra(initialExecutionState)

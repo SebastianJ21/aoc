@@ -9,7 +9,7 @@ import get
 import getInDirectionOrNull
 import plus
 import positions
-import readInput
+import inputLines
 import toCharMatrix
 
 class Day4 : AOCSolution {
@@ -37,8 +37,8 @@ class Day4 : AOCSolution {
     private val directionPathsPartTwo = listOf(listOf(up + left, down + right), listOf(up + right, down + left))
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day4.txt", AOCYear.TwentyFour)
-        val charMatrix = rawInput.toCharMatrix()
+        val inputLines = inputLines()
+        val charMatrix = inputLines.toCharMatrix()
 
         val positions = charMatrix.positions()
 

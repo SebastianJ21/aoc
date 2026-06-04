@@ -2,7 +2,7 @@ package aoc22
 
 import AOCAnswer
 import AOCSolution
-import readInput
+import inputLines
 import splitBy
 import transposed
 
@@ -15,9 +15,9 @@ class Day5 : AOCSolution {
     )
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day5.txt")
+        val inputLines = inputLines()
 
-        val (mapLines, operationLines) = rawInput.splitBy { it.isEmpty() }
+        val (mapLines, operationLines) = inputLines.splitBy { it.isEmpty() }
 
         val lineLength = mapLines.maxOf { it.length }
         val mapRows = mapLines

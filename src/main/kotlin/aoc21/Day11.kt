@@ -7,7 +7,7 @@ import applyDirection
 import at
 import plus
 import positionsOf
-import readInput
+import inputLines
 import toMatrix
 
 private const val FLASH_THRESHOLD = 9
@@ -22,8 +22,8 @@ class Day11 : AOCSolution {
     private val neighborhood = listOf(up + left, up, up + right, right, down + right, down, down + left, left)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day11.txt", AOCYear.TwentyOne)
-        val matrix = rawInput.toMatrix { value -> value.digitToInt() }
+        val inputLines = inputLines()
+        val matrix = inputLines.toMatrix { value -> value.digitToInt() }
 
         val matrixSequence = generateSequence(matrix) { matrix -> performStep(matrix) }
 

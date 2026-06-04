@@ -2,18 +2,17 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import aoc19.IntCodeRunner.Companion.executeInstructions
 import kotlinx.collections.immutable.toPersistentMap
 import mapToLong
-import readInput
+import inputLines
 
 class Day2 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day2.txt", AOCYear.Nineteen)
+        val inputLines = inputLines()
 
-        val instructions = rawInput.single().split(",").mapToLong()
+        val instructions = inputLines.single().split(",").mapToLong()
 
         val initialMemory = instructions.withIndex().associate { (index, value) ->
             index.toLong() to value

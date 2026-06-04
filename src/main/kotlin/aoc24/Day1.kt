@@ -2,16 +2,15 @@ package aoc24
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import mapToInt
-import readInput
+import inputLines
 import kotlin.math.abs
 
 class Day1 : AOCSolution {
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day1.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
-        val numberPairs = rawInput.map { line ->
+        val numberPairs = inputLines.map { line ->
             val (number1, number2) = line.split("   ").mapToInt()
 
             number1 to number2

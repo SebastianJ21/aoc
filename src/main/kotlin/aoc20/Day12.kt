@@ -2,13 +2,12 @@ package aoc20
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import Direction
 import Position
 import applyDirection
 import at
 import plus
-import readInput
+import inputLines
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.round
@@ -24,12 +23,12 @@ class Day12 : AOCSolution {
     private val directions = listOf(up, right, down, left)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day12.txt", AOCYear.Twenty)
+        val inputLines = inputLines()
 
         val directionSequence = sequence { while (true) yieldAll(directions) }
         val reverseDirectionSequence = sequence { while (true) yieldAll(directions.asReversed()) }
 
-        val (finalPositionPartOne) = rawInput.fold((0 at 0) to right) { (position, direction), line ->
+        val (finalPositionPartOne) = inputLines.fold((0 at 0) to right) { (position, direction), line ->
             val command = line.first()
             val value = line.drop(1).toInt()
 
@@ -58,7 +57,7 @@ class Day12 : AOCSolution {
 
         val partOne = finalPositionPartOne.run { abs(first) + abs(second) }
 
-        val (finalPositionPartTwo) = rawInput.fold(Position(0, 0) to Position(-1, 10)) { (ship, waypoint), line ->
+        val (finalPositionPartTwo) = inputLines.fold(Position(0, 0) to Position(-1, 10)) { (ship, waypoint), line ->
             val command = line.first()
             val value = line.drop(1).toInt()
 

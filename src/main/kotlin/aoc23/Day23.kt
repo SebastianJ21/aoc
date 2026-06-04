@@ -8,7 +8,7 @@ import at
 import getOrNull
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
-import readInput
+import inputLines
 import toCharMatrix
 
 class Day23 : AOCSolution {
@@ -28,8 +28,8 @@ class Day23 : AOCSolution {
     )
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day23.txt", AOCYear.TwentyThree)
-        val matrix = rawInput.toCharMatrix()
+        val inputLines = inputLines()
+        val matrix = inputLines.toCharMatrix()
 
         val (start, end) = 0 at 1 to (matrix.lastIndex at matrix.last().lastIndex - 1)
 

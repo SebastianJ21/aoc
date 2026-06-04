@@ -4,8 +4,7 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
-import readInput
+import inputLines
 import toCharMatrix
 import kotlin.math.PI
 import kotlin.math.abs
@@ -16,8 +15,8 @@ typealias PositionDouble = Pair<Double, Double>
 class Day10 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day10.txt", AOCYear.Nineteen)
-        val matrix = rawInput.toCharMatrix()
+        val inputLines = inputLines()
+        val matrix = inputLines.toCharMatrix()
 
         val positions = matrix.flatMapIndexed { rowI, row ->
             row.mapIndexedNotNull { colI, value ->

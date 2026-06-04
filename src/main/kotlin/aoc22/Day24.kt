@@ -6,7 +6,7 @@ import Position
 import applyDirection
 import at
 import getInDirectionOrNull
-import readInput
+import inputLines
 import toMatrix
 import kotlin.math.abs
 import kotlin.math.min
@@ -32,9 +32,9 @@ class Day24 : AOCSolution {
     private val moves = listOf(up, down, left, right, wait)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day24.txt")
+        val inputLines = inputLines()
 
-        val matrix = rawInput.toMatrix { value ->
+        val matrix = inputLines.toMatrix { value ->
             val tileType = when (value) {
                 '#' -> TileType.WALL
                 '>' -> TileType.RIGHT

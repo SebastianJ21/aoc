@@ -3,15 +3,15 @@ package aoc25
 import AOCAnswer
 import AOCSolution
 import mapToLong
-import readInput
+import inputLines
 import splitBy
 
 class Day5 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day5.txt", AOCYear.TwentyFive)
+        val inputLines = inputLines()
 
-        val (rangesLines, idsLines) = rawInput.splitBy { it.isEmpty() }
+        val (rangesLines, idsLines) = inputLines.splitBy { it.isEmpty() }
 
         val ranges = rangesLines.map { line ->
             // 336566098811319-337408802399429

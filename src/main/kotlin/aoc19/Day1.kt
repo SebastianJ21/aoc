@@ -2,15 +2,14 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import mapToInt
-import readInput
+import inputLines
 
 class Day1 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day1.txt", AOCYear.Nineteen)
-        val numbers = rawInput.mapToInt()
+        val inputLines = inputLines()
+        val numbers = inputLines.mapToInt()
 
         val partOne = numbers.sumOf { calculateFuel(it) }
 

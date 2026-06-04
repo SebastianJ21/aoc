@@ -2,15 +2,15 @@ package aoc24
 
 import AOCAnswer
 import AOCSolution
-import readInput
+import inputLines
 import splitBy
 
 class Day19 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day19.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
-        val (partsInput, targetsInput) = rawInput.splitBy { it.isEmpty() }
+        val (partsInput, targetsInput) = inputLines.splitBy { it.isEmpty() }
 
         val parts = partsInput.single().split(", ")
 

@@ -6,8 +6,8 @@ import Direction
 import Position
 import applyDirection
 import at
+import inputLines
 import positionsOf
-import readInput
 import kotlin.math.absoluteValue
 
 class Day20 : AOCSolution {
@@ -20,12 +20,11 @@ class Day20 : AOCSolution {
     private val directions = listOf(up, left, down, right)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day20.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
-        val positions = rawInput.positionsOf { it != '#' }.toSet()
-
-        val end = rawInput.positionsOf { it == 'E' }.first()
-        val start = rawInput.positionsOf { it == 'S' }.first()
+        val positions = inputLines.positionsOf { it != '#' }.toSet()
+        val end = inputLines.positionsOf { it == 'E' }.first()
+        val start = inputLines.positionsOf { it == 'S' }.first()
 
         val path = tracePath(positions, start, end)
         val positionToDistance = path.asReversed().withIndex().associate { (index, position) -> position to index }

@@ -2,12 +2,11 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import Direction
 import Position
 import applyDirection
 import at
-import readInput
+import inputLines
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -24,9 +23,9 @@ class Day3 : AOCSolution {
     private data class LineRange(val x: IntProgression, val y: IntProgression, val startSteps: Int)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day3.txt", AOCYear.Nineteen)
+        val inputLines = inputLines()
 
-        val linePositions = rawInput.map { line ->
+        val linePositions = inputLines.map { line ->
             val rawCommands = line.split(",")
 
             rawCommands.runningFold(origin to 0) { (position, steps), rawCommand ->

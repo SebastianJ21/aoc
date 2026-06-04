@@ -2,12 +2,11 @@ package aoc21
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import Position
 import applyDirection
 import at
 import getOrNull
-import readInput
+import inputLines
 import toMatrix
 import transposed
 import java.util.PriorityQueue
@@ -23,8 +22,8 @@ class Day15 : AOCSolution {
     private val directions = listOf(up, down, left, right)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day15.txt", AOCYear.TwentyOne)
-        val matrix = rawInput.toMatrix { value -> value.digitToInt() }
+        val inputLines = inputLines()
+        val matrix = inputLines.toMatrix { value -> value.digitToInt() }
 
         val startPosition = 0 at 0
         val targetPartOne = matrix.lastIndex at matrix.first().lastIndex

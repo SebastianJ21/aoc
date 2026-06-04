@@ -8,7 +8,7 @@ import at
 import kotlinx.collections.immutable.persistentHashSetOf
 import kotlinx.collections.immutable.persistentListOf
 import mapToInt
-import readInput
+import inputLines
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -25,9 +25,9 @@ class Day9 : AOCSolution {
     private data class Intervals(val x: IntRange, val y: IntRange)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day9.txt", AOCYear.TwentyFive)
+        val inputLines = inputLines()
 
-        val positions = rawInput
+        val positions = inputLines
             .map { line -> line.split(",").mapToInt() }
             .map { (x, y) -> Position(x, y) }
 

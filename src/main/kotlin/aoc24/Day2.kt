@@ -2,17 +2,16 @@ package aoc24
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import kotlinx.collections.immutable.toPersistentList
 import mapToInt
-import readInput
+import inputLines
 
 class Day2 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day2.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
-        val allLevels = rawInput.map { row -> row.split(" ").mapToInt() }
+        val allLevels = inputLines.map { row -> row.split(" ").mapToInt() }
 
         val (safe, unsafe) = allLevels.partition { levels -> levels.isSafe() }
 

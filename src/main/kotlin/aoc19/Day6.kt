@@ -4,18 +4,17 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import invertListMap
-import readInput
+import inputLines
 import java.util.PriorityQueue
 import kotlin.math.min
 
 class Day6 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day6.txt", AOCYear.Nineteen)
+        val inputLines = inputLines()
 
-        val planetToOrbiters = rawInput.map { line ->
+        val planetToOrbiters = inputLines.map { line ->
             val (orbited, orbiter) = line.split(")")
 
             orbited to orbiter

@@ -2,7 +2,6 @@ package aoc21
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import Position
 import applyDirection
 import at
@@ -12,7 +11,7 @@ import getOrNull
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
 import product
-import readInput
+import inputLines
 import toMatrix
 
 class Day9 : AOCSolution {
@@ -25,8 +24,8 @@ class Day9 : AOCSolution {
     private val directions = listOf(up, down, left, right)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day9.txt", AOCYear.TwentyOne)
-        val matrix = rawInput.toMatrix { value -> value.digitToInt() }
+        val inputLines = inputLines()
+        val matrix = inputLines.toMatrix { value -> value.digitToInt() }
 
         // low points - the locations that are lower than any of its adjacent locations
         val lowPointsPositions = matrix.flatMapIndexed { rowI, row ->

@@ -8,7 +8,7 @@ import at
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
 import mapToInt
-import readInput
+import inputLines
 import java.util.PriorityQueue
 
 class Day18 : AOCSolution {
@@ -24,10 +24,10 @@ class Day18 : AOCSolution {
     private val end = 70 at 70
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day18.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
         // Positions are provided with flipped coordinates (x = col, y = row)
-        val allBlockedPositions = rawInput.map { it.split(",").mapToInt().let { (y, x) -> Position(x, y) } }
+        val allBlockedPositions = inputLines.map { it.split(",").mapToInt().let { (y, x) -> Position(x, y) } }
 
         // 71 x 71 grid
         val allPositions = (0..70).flatMap { x -> (0..70).map { y -> Position(x, y) } }

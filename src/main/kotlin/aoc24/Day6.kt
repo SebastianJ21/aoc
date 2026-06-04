@@ -10,7 +10,7 @@ import getOrNull
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import positionsOf
-import readInput
+import inputLines
 import toMatrix
 import kotlin.math.max
 
@@ -26,9 +26,9 @@ class Day6 : AOCSolution {
     private val directions = listOf(up, right, down, left)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day6.txt", AOCYear.TwentyFour)
+        val inputLines = inputLines()
 
-        val matrix = rawInput.toMatrix {
+        val matrix = inputLines.toMatrix {
             when (it) {
                 '.' -> Tile.EMPTY
                 '#' -> Tile.OBSTRUCTION

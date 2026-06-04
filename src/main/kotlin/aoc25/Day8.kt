@@ -2,6 +2,7 @@ package aoc25
 
 import AOCAnswer
 import AOCSolution
+import inputLines
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
@@ -10,7 +11,6 @@ import kotlinx.collections.immutable.toPersistentHashSet
 import kotlinx.collections.immutable.toPersistentList
 import mapToInt
 import product
-import readInput
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -31,9 +31,9 @@ class Day8 : AOCSolution {
     )
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day8.txt", AOCYear.TwentyFive)
+        val inputLines = inputLines()
 
-        val positions = rawInput.map { line ->
+        val positions = inputLines.map { line ->
             val (x, y, z) = line.split(",").mapToInt()
 
             Position(x, y, z)

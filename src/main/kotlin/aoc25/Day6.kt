@@ -3,16 +3,16 @@ package aoc25
 import AOCAnswer
 import AOCSolution
 import mapToLong
-import readInput
+import inputLines
 import splitBy
 import transposed
 
 class Day6 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day6.txt", AOCYear.TwentyFive)
+        val inputLines = inputLines()
 
-        val functions = rawInput.last().split(" ").filter { it.isNotBlank() }.map {
+        val functions = inputLines.last().split(" ").filter { it.isNotBlank() }.map {
             val operator: (Long, Long) -> Long = when (it) {
                 "*" -> Long::times
                 "+" -> Long::plus
@@ -21,13 +21,13 @@ class Day6 : AOCSolution {
             operator
         }
 
-        val rowNumbers = rawInput.dropLast(1).map { line ->
+        val rowNumbers = inputLines.dropLast(1).map { line ->
             line.split(" ").filter { it.isNotBlank() }.mapToLong()
         }
 
         val partOne = rowNumbers.transposed().zip(functions) { numbers, function -> numbers.reduce(function) }.sum()
 
-        val colNumbers = rawInput
+        val colNumbers = inputLines
             .dropLast(1)
             .map { line -> line.toList() } // For `transposed` (needs List<List<T>> receiver)
             .transposed()

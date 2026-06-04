@@ -2,11 +2,10 @@ package aoc21
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import Position
 import at
 import plus
-import readInput
+import inputLines
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -27,9 +26,9 @@ class Day23 : AOCSolution {
     }
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day23.txt", AOCYear.TwentyOne)
+        val inputLines = inputLines()
 
-        val allPositions = rawInput.flatMapIndexed { rowI, row ->
+        val allPositions = inputLines.flatMapIndexed { rowI, row ->
             row.mapIndexedNotNull { colI, char ->
                 Pair(Position(rowI, colI), char).takeIf { char == '.' || char.isLetter() }
             }
@@ -40,7 +39,7 @@ class Day23 : AOCSolution {
         val partTwoInsert = listOf("  #D#C#B#A#", "  #D#B#A#C#")
         val insertAt = 3
 
-        val inputPartTwo = rawInput.run {
+        val inputPartTwo = inputLines.run {
             take(insertAt).plus(partTwoInsert).plus(takeLast(size - insertAt))
         }
 

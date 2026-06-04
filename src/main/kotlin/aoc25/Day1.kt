@@ -2,15 +2,15 @@ package aoc25
 
 import AOCAnswer
 import AOCSolution
-import readInput
+import inputLines
 import kotlin.math.abs
 
 class Day1 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day1.txt", AOCYear.TwentyFive)
+        val inputLines = inputLines()
 
-        val transformations = rawInput.map { line ->
+        val transformations = inputLines.map { line ->
             val direction = line.first()
             val value = line.drop(1).toInt()
 

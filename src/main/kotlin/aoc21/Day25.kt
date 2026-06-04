@@ -2,13 +2,12 @@ package aoc21
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import Direction
 import Position
 import applyDirection
 import at
 import positionsOf
-import readInput
+import inputLines
 import toCharMatrix
 
 class Day25 : AOCSolution {
@@ -17,8 +16,8 @@ class Day25 : AOCSolution {
     private val south = 1 at 0
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day25.txt", AOCYear.TwentyOne)
-        val matrix = rawInput.toCharMatrix()
+        val inputLines = inputLines()
+        val matrix = inputLines.toCharMatrix()
 
         val rows = matrix.size
         val cols = matrix.first().size

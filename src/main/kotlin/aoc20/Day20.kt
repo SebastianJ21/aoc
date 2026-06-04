@@ -2,9 +2,8 @@ package aoc20
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import product
-import readInput
+import inputLines
 import splitBy
 import toCharMatrix
 import transposed
@@ -14,9 +13,9 @@ private typealias Tile = List<List<Char>>
 class Day20 : AOCSolution {
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day20.txt", AOCYear.Twenty)
+        val inputLines = inputLines()
 
-        val idToMatrix = rawInput.splitBy { it.isEmpty() }.associate { lines ->
+        val idToMatrix = inputLines.splitBy { it.isEmpty() }.associate { lines ->
             val id = lines.first().dropWhile { !it.isDigit() }.takeWhile { it.isDigit() }.toInt()
 
             val matrix = lines.drop(1).toCharMatrix()

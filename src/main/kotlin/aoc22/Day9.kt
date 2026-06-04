@@ -2,12 +2,11 @@ package aoc22
 
 import AOCAnswer
 import AOCSolution
-import AOCYear
 import Position
 import applyDirection
 import at
 import plus
-import readInput
+import inputLines
 import kotlin.math.abs
 
 class Day9 : AOCSolution {
@@ -21,9 +20,9 @@ class Day9 : AOCSolution {
     private val directions = listOf(up, down, left, right)
 
     override fun solve(): AOCAnswer {
-        val rawInput = readInput("day9.txt", AOCYear.TwentyTwo)
+        val inputLines = inputLines()
 
-        val allMovements = rawInput.map { line ->
+        val allMovements = inputLines.map { line ->
             val (direction, scalar) = line.split(" ")
 
             val directionVector = when (direction) {
