@@ -117,7 +117,7 @@ class Day21 : AOCSolution {
 
                 if (distance(nextPosition, end) >= currentDistance || nextPosition !in possible) return@forEach
 
-                queue.add(currentPath.add(nextPosition))
+                queue.add(currentPath.adding(nextPosition))
             }
         }
 

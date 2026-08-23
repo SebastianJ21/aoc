@@ -103,18 +103,19 @@ class Day14 : AOCSolution {
                     val oreCost = purchaseAmount * unitOreCost
                     val purchasedAmount = purchaseAmount * targetOutput.amount
 
-                    currentState.set(oreIndex, currentState[oreIndex] + oreCost)
-                        .set(target.index, currentAmount + purchasedAmount)
+                    currentState.replacingAt(oreIndex, currentState[oreIndex] + oreCost)
+                        .replacingAt(target.index, currentAmount + purchasedAmount)
                 }
                 else -> {
                     val newMultiplier = ceil(neededTargetAmount / targetOutput.amount.toDouble()).toLong()
                     val produced = targetOutput.amount * newMultiplier
 
-                    executeSearch(targetInputs, currentState, newMultiplier).set(target.index, currentAmount + produced)
+                    executeSearch(targetInputs, currentState, newMultiplier)
+                        .replacingAt(target.index, currentAmount + produced)
                 }
             }
 
-            resultState.set(target.index, resultState[target.index] - targetAmount)
+            resultState.replacingAt(target.index, resultState[target.index] - targetAmount)
         }
 
         val (_, fuelInputs) = purchaseOptions.getValue(fuelIndex)

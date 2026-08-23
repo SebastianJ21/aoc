@@ -96,7 +96,7 @@ class Day19 {
                     val existingGroupIndex = indexOfFirst { from in it || to in it }
 
                     if (existingGroupIndex != -1) {
-                        val group = get(existingGroupIndex).add(from).add(to)
+                        val group = get(existingGroupIndex).adding(from).adding(to)
 
                         set(existingGroupIndex, group)
                     } else {

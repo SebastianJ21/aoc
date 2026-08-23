@@ -238,7 +238,7 @@ class Day15 : AOCSolution {
     }
 
     private fun <T> PersistentList<PersistentList<T>>.set(position: Position, value: T) =
-        this.set(position.first, this[position.first].set(position.second, value))
+        replacingAt(position.first, this[position.first].replacingAt(position.second, value))
 
     private fun robotEncounteredError(): Nothing = error("Robot tile should not be encountered while making a move!")
 }

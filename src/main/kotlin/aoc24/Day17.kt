@@ -106,7 +106,7 @@ class Day17 : AOCSolution {
 
             copy(
                 // combo operand modulo 8 (thereby keeping only its lowest 3 bits)
-                output = output.add((resolvedOperand and 7L).toInt()),
+                output = output.adding((resolvedOperand and 7L).toInt()),
                 instructionPointer = instructionPointer + 2,
             )
         }
@@ -156,7 +156,7 @@ class Day17 : AOCSolution {
             val target = program[programIndex].toInt()
 
             return (0..7).firstNotNullOfOrNull { value ->
-                val registerA = current.set(index, value)
+                val registerA = current.replacingAt(index, value)
                     .joinToString("") { it.toString(2).padStart(3, '0') }
                     .toLong(2)
 
@@ -166,7 +166,7 @@ class Day17 : AOCSolution {
                 if (output[programIndex] != target) return@firstNotNullOfOrNull null
 
                 val picked = search(
-                    current = current.set(index, value),
+                    current = current.replacingAt(index, value),
                     index = index + 1,
                 )
 

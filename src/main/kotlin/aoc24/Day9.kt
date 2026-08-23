@@ -42,7 +42,8 @@ class Day9 : AOCSolution {
                 memory[frontIndex] != MemoryBlock.Free -> Triple(memory, frontIndex + 1, backIndex)
                 memory[backIndex] !is MemoryBlock.Data -> Triple(memory, frontIndex, backIndex - 1)
                 else -> {
-                    val newMemory = memory.set(frontIndex, memory[backIndex]).set(backIndex, MemoryBlock.Free)
+                    val newMemory =
+                        memory.replacingAt(frontIndex, memory[backIndex]).replacingAt(backIndex, MemoryBlock.Free)
 
                     Triple(newMemory, frontIndex + 1, backIndex - 1)
                 }
@@ -89,9 +90,9 @@ class Day9 : AOCSolution {
                         val unusedFreeMemory = freeSpaceFrom + memorySize..freeSpaceTo
 
                         val newFreeSpace = if (unusedFreeMemory.size() > 0) {
-                            freeSpace.set(freeMemoryIndex, unusedFreeMemory)
+                            freeSpace.replacingAt(freeMemoryIndex, unusedFreeMemory)
                         } else {
-                            freeSpace.removeAt(freeMemoryIndex)
+                            freeSpace.removingAt(freeMemoryIndex)
                         }
 
                         val newMemory = memory
@@ -123,7 +124,7 @@ class Day9 : AOCSolution {
     private fun IntRange.size() = last - first + 1
 
     private fun PersistentList<MemoryBlock>.replaceRange(range: IntRange, value: MemoryBlock) =
-        range.fold(this) { memory, index -> memory.set(index, value) }
+        range.fold(this) { memory, index -> memory.replacingAt(index, value) }
 
     private fun PersistentList<MemoryBlock>.scanFreeSpace(): List<IntRange> {
         val sequence = generateSequence(0 to emptyList<IntRange>()) { (index, collectedRanges) ->

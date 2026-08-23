@@ -99,7 +99,7 @@ class Day18 : AOCSolution {
                 if (currentShortestPath > distance + 1) {
                     positionToShortestPath[nextPosition] = distance + 1
 
-                    queue.offer(Node(nextPosition, distance + 1, previousPositions.add(position)))
+                    queue.offer(Node(nextPosition, distance + 1, previousPositions.adding(position)))
                 }
             }
         }

@@ -29,8 +29,8 @@ class Day11 : AOCSolution {
         ) { rowI, acc, row ->
             row.foldIndexed(acc) { colI, (occupied, unoccupied), value ->
                 when (value) {
-                    'L' -> occupied to unoccupied.add(rowI at colI)
-                    '#' -> occupied.add(rowI at colI) to unoccupied
+                    'L' -> occupied to unoccupied.adding(rowI at colI)
+                    '#' -> occupied.adding(rowI at colI) to unoccupied
                     else -> occupied to unoccupied
                 }
             }

@@ -34,7 +34,7 @@ class Day8 {
 
                 val instruction = instructions[index]
 
-                Triple(instruction(nodesMap.getValue(node)), index.inc() % instructions.size, seen.add(nodeToIndex))
+                Triple(instruction(nodesMap.getValue(node)), index.inc() % instructions.size, seen.adding(nodeToIndex))
             }
 
             val (lastNode, _, seen) = occurrenceSeq.last()

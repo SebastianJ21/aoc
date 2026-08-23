@@ -1,7 +1,7 @@
 package aoc20
 
 import AOCYear
-import kotlinx.collections.immutable.putAll
+import kotlinx.collections.immutable.puttingAll
 import kotlinx.collections.immutable.toPersistentHashMap
 import readInput
 
@@ -42,7 +42,7 @@ class Day7 {
                     }
                 }
 
-                val newResolved = resolved.putAll(newlyResolved)
+                val newResolved = resolved.puttingAll(newlyResolved)
 
                 newResolved to toResolve.filter { (bag, _) -> bag !in newResolved }
             }

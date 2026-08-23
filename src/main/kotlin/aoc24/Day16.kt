@@ -100,7 +100,7 @@ class Day16 : AOCSolution {
                     position = nextPosition,
                     directionIndex = directionIndex,
                     score = newScore,
-                    previousPositions = previousPositions.add(position),
+                    previousPositions = previousPositions.adding(position),
                 )
 
                 positionToPaths[nextPosition] = currentPaths + state

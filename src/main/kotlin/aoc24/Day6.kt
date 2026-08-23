@@ -92,5 +92,6 @@ class Day6 : AOCSolution {
     private fun PersistentList<PersistentList<Tile>>.replaceTile(
         position: Position,
         tile: Tile,
-    ): PersistentList<PersistentList<Tile>> = this.set(position.first, this[position.first].set(position.second, tile))
+    ): PersistentList<PersistentList<Tile>> =
+        replacingAt(position.first, this[position.first].replacingAt(position.second, tile))
 }

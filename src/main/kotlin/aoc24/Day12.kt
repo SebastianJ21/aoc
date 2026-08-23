@@ -112,7 +112,7 @@ class Day12 : AOCSolution {
                 potentialPosition.takeIf { it !in seen && map.getOrNull(it) == regionName }
             }
 
-            queue.remove(position).addAll(newPositions) to seen.add(position)
+            queue.removing(position).addingAll(newPositions) to seen.adding(position)
         }
 
         val (_, regionPositions) = exploreSequence.last()

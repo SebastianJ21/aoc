@@ -54,10 +54,10 @@ class Day7 : AOCSolution {
             return operators.any { operator ->
                 val newCurrent = operator(current, operandLeft.first())
 
-                canReachTargetInternal(operandLeft.removeAt(0), newCurrent)
+                canReachTargetInternal(operandLeft.removingAt(0), newCurrent)
             }
         }
 
-        return canReachTargetInternal(operands.toPersistentList().removeAt(0), operands.first())
+        return canReachTargetInternal(operands.toPersistentList().removingAt(0), operands.first())
     }
 }

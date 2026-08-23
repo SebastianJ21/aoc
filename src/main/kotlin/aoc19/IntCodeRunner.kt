@@ -69,7 +69,7 @@ class IntCodeRunner {
                             8 -> if (operandA == operandB) 1 else 0
                             else -> error("Illegal instruction $instruction")
                         }
-                        val newMemory = memory.put(writeAddress, result)
+                        val newMemory = memory.putting(writeAddress, result)
 
                         ExecutionState(newMemory, inputs, output, index + 4, relativeOffset)
                     }
@@ -77,7 +77,7 @@ class IntCodeRunner {
                         val inputValue = inputs.first()
 
                         val writeAddress = readWriteAddress(currentState, memory.getValue(index + 1), parameterModes[0])
-                        val newMemory = memory.put(writeAddress, inputValue)
+                        val newMemory = memory.putting(writeAddress, inputValue)
 
                         ExecutionState(newMemory, inputs.drop(1), output, index + 2, relativeOffset)
                     }

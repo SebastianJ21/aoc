@@ -18,7 +18,7 @@ class Day2 : AOCSolution {
             index.toLong() to value
         }.toPersistentMap()
 
-        val partOneProgram = ExecutionState(initialMemory.put(1, 12).put(2, 2))
+        val partOneProgram = ExecutionState(initialMemory.putting(1, 12).putting(2, 2))
         val partOne = executeInstructions(partOneProgram).memory.getValue(0)
 
         val target = 19690720L
@@ -26,7 +26,7 @@ class Day2 : AOCSolution {
 
         val resultReplacement = replacementRange.firstNotNullOf { firstReplacement ->
             replacementRange.firstNotNullOfOrNull { secondReplacement ->
-                val program = ExecutionState(initialMemory.put(1, firstReplacement).put(2, secondReplacement))
+                val program = ExecutionState(initialMemory.putting(1, firstReplacement).putting(2, secondReplacement))
 
                 val result = executeInstructions(program).memory.getValue(0)
 

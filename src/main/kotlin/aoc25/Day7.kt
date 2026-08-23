@@ -72,14 +72,14 @@ class Day7 : AOCSolution {
         ): PersistentMap<Position, Long> {
             if (position in currentMap) return currentMap
             // The only splitter reachable from origin position
-            if (position == firstSplitter) return currentMap.put(position, 1)
+            if (position == firstSplitter) return currentMap.putting(position, 1)
 
             val connections = splitterToConnected.getValue(position)
 
             val newMap = connections.fold(currentMap) { accMap, it -> buildSplitterToReachability(it, accMap) }
             val positionReachability = connections.sumOf { newMap.getValue(it) }
 
-            return newMap.put(position, positionReachability)
+            return newMap.putting(position, positionReachability)
         }
 
         val splitterToReachability = extraLastRow.fold(persistentHashMapOf<Position, Long>()) { accMap, position ->

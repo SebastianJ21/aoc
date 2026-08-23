@@ -130,13 +130,13 @@ class Day9 : AOCSolution {
         val initialState = persistentListOf(initial) to persistentHashSetOf<Position>()
         val searchSequence = generateSequence(initialState) { (queue, seen) ->
             val position = queue.last()
-            if (position in seen) return@generateSequence queue.removeAt(queue.lastIndex) to seen
+            if (position in seen) return@generateSequence queue.removingAt(queue.lastIndex) to seen
 
             val newPositions = directions
                 .mapNotNull { direction -> position.applyDirection(direction).takeIf { it !in allPositions } }
                 .shuffled()
 
-            queue.removeAt(queue.lastIndex).addAll(newPositions) to seen.add(position)
+            queue.removingAt(queue.lastIndex).addingAll(newPositions) to seen.adding(position)
         }
 
         return searchSequence

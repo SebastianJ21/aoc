@@ -42,7 +42,7 @@ class Day10 : AOCSolution {
                 .map { position.applyDirection(it) }
                 .filter { it !in seen && matrix.getOrNull(it) == nextValue }
 
-            return nextPositions.fold(seen.add(position)) { seenAcc, pos -> explore(pos, seenAcc) }
+            return nextPositions.fold(seen.adding(position)) { seenAcc, pos -> explore(pos, seenAcc) }
         }
         val seenPositions = explore(start, persistentHashSetOf())
 
@@ -58,7 +58,7 @@ class Day10 : AOCSolution {
             val nextPositions = directions
                 .map { position.applyDirection(it) }
                 .filter { it !in seen && matrix.getOrNull(it) == currentValue + 1 }
-            val newSeen = seen.add(position)
+            val newSeen = seen.adding(position)
 
             return nextPositions.sumOf { explore(it, newSeen) }
         }

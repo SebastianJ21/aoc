@@ -94,18 +94,18 @@ class Day25 {
     private fun PersistentMap<String, PersistentList<String>>.addEdge(
         edge: Pair<String, String>,
     ): PersistentMap<String, PersistentList<String>> {
-        val newFrom = this[edge.first]!!.add(edge.second)
-        val newTo = this[edge.second]!!.add(edge.first)
+        val newFrom = this[edge.first]!!.adding(edge.second)
+        val newTo = this[edge.second]!!.adding(edge.first)
 
-        return put(edge.first, newFrom).put(edge.second, newTo)
+        return putting(edge.first, newFrom).putting(edge.second, newTo)
     }
 
     private fun PersistentMap<String, PersistentList<String>>.withoutEdges(edges: List<Pair<String, String>>) =
         edges.fold(this) { graph, (from, to) ->
-            val newFrom = graph[from]!!.remove(to)
-            val newTo = graph[to]!!.remove(from)
+            val newFrom = graph[from]!!.removing(to)
+            val newTo = graph[to]!!.removing(from)
 
-            graph.put(from, newFrom).put(to, newTo)
+            graph.putting(from, newFrom).putting(to, newTo)
         }
 
     private fun Map<String, Iterable<String>>.isConnected(): Boolean {

@@ -68,7 +68,7 @@ class Day9 : AOCSolution {
                 adjacent.takeIf { adjacentValue != null && adjacentValue >= value }
             }
 
-            val discoveredSize = adjacentPositions.sumOf { it.dfsExploreBasin(seen.add(this)) }
+            val discoveredSize = adjacentPositions.sumOf { it.dfsExploreBasin(seen.adding(this)) }
 
             return discoveredSize + 1
         }

@@ -80,7 +80,7 @@ class Day23 : AOCSolution {
                 seen.containsAll(endPrecondition) -> return 0
             }
 
-            val localSeen = seen.add(position)
+            val localSeen = seen.adding(position)
             val result = togglePaths[position]?.maxOf { (nextToggle, pathSize) ->
                 dfs(nextToggle, sum + pathSize, localSeen)
             } ?: 0

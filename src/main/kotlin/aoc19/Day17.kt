@@ -119,7 +119,7 @@ class Day17 : AOCSolution {
         }
         val robotInput = (functionOrderInput + functionsInput + 'n'.code + newlineCode).map { it.toLong() }
 
-        val initialStatePartTwo = initialState.copy(memory = initialState.memory.put(0, 2), inputs = robotInput)
+        val initialStatePartTwo = initialState.copy(memory = initialState.memory.putting(0, 2), inputs = robotInput)
         val partTwo = executeInstructions(initialStatePartTwo).outputs.last()
 
         return AOCAnswer(partOne, partTwo)
@@ -272,7 +272,7 @@ class Day17 : AOCSolution {
         val turn = getTurn(direction, newDirection)
 
         val newPathTaken = pathTaken + turn.toCommand(pathToTake.size)
-        val newSeen = seen.addAll(pathToTake)
+        val newSeen = seen.addingAll(pathToTake)
 
         return collectWalkCommands(pathToTake.last(), newDirection, newPathTaken, newSeen, connectionNodeToPaths)
     }

@@ -20,7 +20,7 @@ class Day2 : AOCSolution {
         val fixableUnsafeLevels = unsafe.count { unsafeLevels ->
             val levelsPersistent = unsafeLevels.toPersistentList()
 
-            unsafeLevels.indices.any { index -> levelsPersistent.removeAt(index).isSafe() }
+            unsafeLevels.indices.any { index -> levelsPersistent.removingAt(index).isSafe() }
         }
 
         val partTwo = safe.size + fixableUnsafeLevels

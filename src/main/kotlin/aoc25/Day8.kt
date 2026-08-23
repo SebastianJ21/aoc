@@ -56,28 +56,28 @@ class Day8 : AOCSolution {
         val stateSequence = generateSequence(initialState) { state ->
             // Use `last` as it is a O(1) for PersistentList on both `get` and `removeAt`
             val (positionA, positionB) = state.sortedDescPairs.last()
-            val newPairs = state.sortedDescPairs.removeAt(state.sortedDescPairs.lastIndex)
+            val newPairs = state.sortedDescPairs.removingAt(state.sortedDescPairs.lastIndex)
 
             when {
                 positionA in state.pile && positionB in state.pile -> {
-                    val newPile = state.pile.removeAll(listOf(positionA, positionB))
+                    val newPile = state.pile.removingAll(listOf(positionA, positionB))
                     val newCircuit = persistentHashSetOf(positionA, positionB)
 
                     State(sortedDescPairs = newPairs, pile = newPile, circuits = state.circuits.plusElement(newCircuit))
                 }
                 positionA in state.pile -> {
-                    val newPile = state.pile.remove(positionA)
+                    val newPile = state.pile.removing(positionA)
                     val newCircuits = state.circuits.map { circuit ->
-                        if (positionB in circuit) circuit.add(positionA) else circuit
+                        if (positionB in circuit) circuit.adding(positionA) else circuit
                     }
 
                     State(sortedDescPairs = newPairs, pile = newPile, circuits = newCircuits)
                 }
                 positionB in state.pile -> {
-                    val newPile = state.pile.remove(positionB)
+                    val newPile = state.pile.removing(positionB)
 
                     val newCircuits = state.circuits.map { circuit ->
-                        if (positionA in circuit) circuit.add(positionB) else circuit
+                        if (positionA in circuit) circuit.adding(positionB) else circuit
                     }
 
                     State(sortedDescPairs = newPairs, pile = newPile, circuits = newCircuits)

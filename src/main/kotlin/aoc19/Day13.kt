@@ -62,7 +62,7 @@ class Day13 : AOCSolution {
 
         val partOne = initialGameBoard.count { (_, tile) -> tile == Tile.BLOCK }
 
-        val gameInstructions = instructions.toPersistentList().set(0, 2)
+        val gameInstructions = instructions.toPersistentList().replacingAt(0, 2)
 
         val startGameExecutionState = generateSequence(ExecutionState.fromList(gameInstructions)) { state ->
             executeInstructions(state.withClearedOutputs(), 3)
@@ -143,7 +143,7 @@ class Day13 : AOCSolution {
             if (x == -1 && y == 0) {
                 state to id
             } else {
-                state.put(Position(y, x), id.toTile()) to score
+                state.putting(Position(y, x), id.toTile()) to score
             }
         }
 

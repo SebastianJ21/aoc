@@ -95,7 +95,7 @@ class Day17 : AOCSolution {
         val (overlappingRock, newWindSeq) = fallSequence.last()
 
         val newRock = overlappingRock.moveUp()
-        val newSolidPoints = state.solidPoints.addAll(newRock)
+        val newSolidPoints = state.solidPoints.addingAll(newRock)
         val newHighestPoint = max(state.highestPoint, newRock.maxOf { (x) -> x })
 
         return FlowState(newWindSeq, newSolidPoints, newHighestPoint, rockType)

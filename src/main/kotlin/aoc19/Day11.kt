@@ -78,8 +78,8 @@ class Day11 : AOCSolution {
 
             // 0 means to paint the position black, and 1 means to paint the position white
             val (newWhiteTiles, newPaintedTiles) = when (paintInstruction) {
-                0L -> whiteTiles.remove(position) to paintedTiles
-                1L -> whiteTiles.add(position) to paintedTiles.add(position)
+                0L -> whiteTiles.removing(position) to paintedTiles
+                1L -> whiteTiles.adding(position) to paintedTiles.adding(position)
                 else -> error("Illegal instruction $paintInstruction")
             }
 

@@ -74,7 +74,7 @@ class Day17 {
                 val neighbours = getNeighbors(position).toSet()
 
                 val newNeighborOccurrences = neighbours.fold(neighborOccurrences) { map, neighbour ->
-                    map.put(neighbour, (map[neighbour] ?: 0) + 1)
+                    map.putting(neighbour, (map[neighbour] ?: 0) + 1)
                 }
 
                 val activeNeighbors = active.count { it in neighbours }

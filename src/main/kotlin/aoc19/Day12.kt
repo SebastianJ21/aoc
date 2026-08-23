@@ -68,7 +68,7 @@ class Day12 : AOCSolution {
         val sequence = generateSequence(axis to initialSeen) { (current, seen) ->
             if (current in seen) return@generateSequence null
 
-            getNextAxis(current) to seen.add(current)
+            getNextAxis(current) to seen.adding(current)
         }
 
         val periodSize = sequence.count() - 1

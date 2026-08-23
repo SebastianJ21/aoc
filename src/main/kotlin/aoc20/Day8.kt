@@ -33,7 +33,7 @@ class Day8 {
                 OperationType.ACC -> return@firstNotNullOf null
             }
 
-            val alteredInstructions = instructions.set(instructionIndex, toSwap)
+            val alteredInstructions = instructions.replacingAt(instructionIndex, toSwap)
 
             val (index, acc) = createExecutionSequence(alteredInstructions).last()
 
@@ -51,9 +51,9 @@ class Day8 {
             val (operation, value) = instructions[index]
 
             when (operation) {
-                OperationType.ACC -> Triple(index + 1, acc + value, seen.add(index))
-                OperationType.JMP -> Triple(index + value, acc, seen.add(index))
-                else -> Triple(index + 1, acc, seen.add(index))
+                OperationType.ACC -> Triple(index + 1, acc + value, seen.adding(index))
+                OperationType.JMP -> Triple(index + value, acc, seen.adding(index))
+                else -> Triple(index + 1, acc, seen.adding(index))
             }
         }
 }
