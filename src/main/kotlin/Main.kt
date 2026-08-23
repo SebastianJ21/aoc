@@ -1,11 +1,12 @@
 
-import org.reflections.Reflections
-import org.reflections.scanners.Scanners
+import java.nio.file.Files
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import kotlin.io.path.Path
+import kotlin.io.path.pathString
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.functions
 import kotlin.reflect.full.starProjectedType
@@ -41,14 +42,14 @@ fun solveYear(
     errorPropagation: ErrorPropagation = ErrorPropagation.CAUSE,
 ) {
     val prefix = year.getPrefix()
-    val reflections = Reflections(prefix)
+    val classLoader = Thread.currentThread().contextClassLoader
 
     val daysToRun = days.filter { it !in skipDays }
 
     fun log(msg: String) = if (!quietlySkipMissing) println(msg) else Unit
 
     val timings = daysToRun.mapNotNull { dayNumber ->
-        val klazz = reflections.forClass("$prefix.Day$dayNumber")?.kotlin
+        val klazz = classLoader.loadClass("$prefix.Day$dayNumber")?.kotlin
 
         if (klazz == null) {
             log("Unable to find Day$dayNumber for $prefix. Has it been solved?")
@@ -106,8 +107,6 @@ fun solveYear(
         result.onFailure { exception ->
             when (exception) {
                 is ExecutionException -> {
-                    // TODO: Get the lowest level cause (the actual error in the solving code)?
-
                     // Possibly make this configurable? Currently, an error from one day halts the entire execution
                     when (errorPropagation) {
                         ErrorPropagation.FULL -> throw exception
@@ -152,12 +151,16 @@ private fun printAOCAnswers(partOne: Any?, partTwo: Any?) {
 
 private fun latestDay(year: AOCYear): Int {
     val suffix = year.getPrefix()
-    val reflections = Reflections(suffix)
+    val classLoader = Thread.currentThread().contextClassLoader
 
-    val existingDays = reflections.getAll(Scanners.SubTypes)
-        .map { it.split(".") }
-        .filter { it.size == 2 && it.first() == suffix }
-        .mapNotNull { (_, second) -> second.removePrefix("Day").toIntOrNull() }
+    val resource = classLoader.getResource(suffix) ?: error("Failed to locate resource for $suffix")
+
+    val existingDays = Files.walk(Path(resource.path))
+        .filter(Files::isRegularFile)
+        .map { it.pathString.substringAfter(suffix, missingDelimiterValue = "") }
+        .filter { it.matches(Regex("/Day[0-9]+.class")) }
+        .map { it.removeSurrounding("/Day", ".class").toInt() }
+        .toList()
 
     return existingDays.max()
 }
