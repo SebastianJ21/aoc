@@ -7,10 +7,10 @@ import applyDirection
 import at
 import get
 import getOrNull
+import inputLines
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
 import positionsOf
-import inputLines
 import toMatrix
 
 class Day10 : AOCSolution {

@@ -5,8 +5,8 @@ import AOCSolution
 import Position
 import get
 import getOrNull
-import positions
 import inputLines
+import positions
 import toCharMatrix
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt

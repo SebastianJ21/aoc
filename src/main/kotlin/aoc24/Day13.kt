@@ -3,9 +3,9 @@ package aoc24
 import AOCAnswer
 import AOCSolution
 import Direction
+import inputLines
 import mapToInt
 import mapToLong
-import inputLines
 import splitBy
 import kotlin.math.min
 

@@ -5,14 +5,14 @@ package aoc19
 import AOCAnswer
 import AOCSolution
 import aoc19.IntCodeRunner.Companion.executeInstructions
+import inputLines
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.toPersistentMap
 import mapToLong
-import inputLines
 
 class Day7 : AOCSolution {
 
-    override fun solve(): AOCAnswer  {
+    override fun solve(): AOCAnswer {
         val inputLines = inputLines()
 
         val instructions = inputLines.single().split(",").mapToLong()

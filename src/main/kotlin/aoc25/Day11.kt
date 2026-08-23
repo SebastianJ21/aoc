@@ -2,8 +2,8 @@ package aoc25
 
 import AOCAnswer
 import AOCSolution
-import product
 import inputLines
+import product
 
 class Day11 : AOCSolution {
 

@@ -8,10 +8,10 @@ import at
 import get
 import getInDirectionOrNull
 import getOrNull
+import inputLines
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
 import product
-import inputLines
 import toMatrix
 
 class Day9 : AOCSolution {

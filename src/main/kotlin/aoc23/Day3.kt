@@ -4,9 +4,9 @@ import AOCAnswer
 import AOCSolution
 import Position
 import at
+import inputLines
 import positionsOf
 import product
-import inputLines
 import splitBy
 
 class Day3 : AOCSolution {

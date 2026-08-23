@@ -2,8 +2,8 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
-import mapToInt
 import inputLines
+import mapToInt
 
 class Day1 : AOCSolution {
 

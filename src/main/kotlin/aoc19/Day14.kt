@@ -4,9 +4,9 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
+import inputLines
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
-import inputLines
 import kotlin.math.ceil
 
 class Day14 : AOCSolution {
@@ -106,6 +106,7 @@ class Day14 : AOCSolution {
                     currentState.replacingAt(oreIndex, currentState[oreIndex] + oreCost)
                         .replacingAt(target.index, currentAmount + purchasedAmount)
                 }
+
                 else -> {
                     val newMultiplier = ceil(neededTargetAmount / targetOutput.amount.toDouble()).toLong()
                     val produced = targetOutput.amount * newMultiplier

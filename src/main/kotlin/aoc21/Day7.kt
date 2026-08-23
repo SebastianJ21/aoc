@@ -2,9 +2,9 @@ package aoc21
 
 import AOCAnswer
 import AOCSolution
+import inputLines
 import mapToInt
 import median
-import inputLines
 import kotlin.math.abs
 import kotlin.math.roundToInt
 

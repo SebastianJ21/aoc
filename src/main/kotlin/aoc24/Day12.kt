@@ -9,9 +9,9 @@ import at
 import get
 import getInDirectionOrNull
 import getOrNull
+import inputLines
 import kotlinx.collections.immutable.persistentHashSetOf
 import positions
-import inputLines
 import toCharMatrix
 import kotlin.Pair
 import kotlin.collections.sumOf

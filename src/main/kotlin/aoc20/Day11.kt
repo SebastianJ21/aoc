@@ -6,10 +6,10 @@ import Direction
 import Position
 import applyDirection
 import at
+import inputLines
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import plus
-import inputLines
 import kotlin.math.abs
 
 class Day11 : AOCSolution {

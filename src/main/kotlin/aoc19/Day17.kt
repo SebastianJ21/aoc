@@ -8,10 +8,10 @@ import aoc19.IntCodeRunner.Companion.executeInstructions
 import applyDirection
 import at
 import getOrNull
+import inputLines
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
 import mapToLong
-import inputLines
 import splitBy
 import kotlin.math.cos
 import kotlin.math.max

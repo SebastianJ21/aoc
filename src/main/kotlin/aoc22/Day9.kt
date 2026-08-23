@@ -5,8 +5,8 @@ import AOCSolution
 import Position
 import applyDirection
 import at
-import plus
 import inputLines
+import plus
 import kotlin.math.abs
 
 class Day9 : AOCSolution {

@@ -6,12 +6,12 @@ import Position
 import aoc19.IntCodeRunner.Companion.executeInstructions
 import applyDirection
 import at
+import inputLines
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toPersistentList
 import mapToLong
 import plus
-import inputLines
 
 class Day13 : AOCSolution {
 

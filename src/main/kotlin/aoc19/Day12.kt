@@ -4,10 +4,10 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
+import inputLines
 import kotlinx.collections.immutable.persistentHashSetOf
 import lcm
 import mapToInt
-import inputLines
 import transposed
 import java.math.BigInteger
 import kotlin.math.abs

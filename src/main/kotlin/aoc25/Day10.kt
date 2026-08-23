@@ -2,9 +2,9 @@ package aoc25
 
 import AOCAnswer
 import AOCSolution
+import inputLines
 import invertListMap
 import mapToInt
-import inputLines
 import transposed
 import java.math.BigInteger
 import kotlin.IndexOutOfBoundsException

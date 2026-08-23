@@ -8,8 +8,8 @@ import at
 import get
 import getInDirectionOrNull
 import getOrNull
-import product
 import inputLines
+import product
 import toMatrix
 import kotlin.math.max
 

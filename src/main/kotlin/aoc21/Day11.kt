@@ -5,9 +5,9 @@ import AOCSolution
 import Position
 import applyDirection
 import at
+import inputLines
 import plus
 import positionsOf
-import inputLines
 import toMatrix
 
 private const val FLASH_THRESHOLD = 9

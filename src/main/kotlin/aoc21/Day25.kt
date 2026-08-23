@@ -6,8 +6,8 @@ import Direction
 import Position
 import applyDirection
 import at
-import positionsOf
 import inputLines
+import positionsOf
 import toCharMatrix
 
 class Day25 : AOCSolution {

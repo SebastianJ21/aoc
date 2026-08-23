@@ -7,8 +7,8 @@ import applyDirection
 import at
 import get
 import getOrNull
-import positionsOf
 import inputLines
+import positionsOf
 import toMatrix
 import java.util.PriorityQueue
 import kotlin.math.min

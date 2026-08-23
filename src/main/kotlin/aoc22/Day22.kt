@@ -7,8 +7,8 @@ import Position
 import applyDirection
 import at
 import getOrNull
-import mapToInt
 import inputLines
+import mapToInt
 import splitBy
 import transposed
 

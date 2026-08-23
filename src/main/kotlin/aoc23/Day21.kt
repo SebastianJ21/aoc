@@ -6,8 +6,8 @@ import Position
 import applyDirection
 import at
 import getOrNull
-import positionsOf
 import inputLines
+import positionsOf
 import toCharMatrix
 import kotlin.math.pow
 

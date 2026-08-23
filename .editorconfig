@@ -354,6 +354,7 @@ ij_json_wrap_long_lines = false
 ktlint_code_style=intellij_idea
 ij_continuation_indent_size = 4
 ktlint_standard_multiline-expression-wrapping = disabled
+ktlint_standard_function-signature = disabled
 ij_kotlin_align_in_columns_case_branch = false
 ij_kotlin_align_multiline_binary_operation = false
 ij_kotlin_align_multiline_extends_list = false

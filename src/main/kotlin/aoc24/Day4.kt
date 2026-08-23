@@ -7,9 +7,9 @@ import Position
 import at
 import get
 import getInDirectionOrNull
+import inputLines
 import plus
 import positions
-import inputLines
 import toCharMatrix
 
 class Day4 : AOCSolution {

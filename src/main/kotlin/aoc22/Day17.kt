@@ -2,9 +2,9 @@ package aoc22
 
 import AOCAnswer
 import AOCSolution
+import inputLines
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.toPersistentHashSet
-import inputLines
 import kotlin.math.max
 
 private const val CHAMBER_WIDTH = 7

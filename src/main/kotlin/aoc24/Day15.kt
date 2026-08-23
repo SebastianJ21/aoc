@@ -7,10 +7,10 @@ import Position
 import applyDirection
 import at
 import get
+import inputLines
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import positionsOf
-import inputLines
 import splitBy
 
 class Day15 : AOCSolution {

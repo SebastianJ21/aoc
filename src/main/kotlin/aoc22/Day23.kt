@@ -5,9 +5,9 @@ import AOCSolution
 import Direction
 import Position
 import at
+import inputLines
 import plus
 import positionsOf
-import inputLines
 import toCharMatrix
 import transposed
 

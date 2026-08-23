@@ -105,11 +105,11 @@ class Day19 {
 
                 if (nextWorkflow in workflowFinishers) {
                     val toSum = currentInput.run {
-                        if (!isLastWorkflow) replacedRange(it.variableName!!, it.range!!) else this
+                        if (!isLastWorkflow) replacedRange(it.variableName, it.range) else this
                     }
 
                     if (!isLastWorkflow) {
-                        currentInput = currentInput.removedRange(it.variableName!!, it.range!!)
+                        currentInput = currentInput.removedRange(it.variableName, it.range)
                     }
 
                     if (workflowFinishers[nextWorkflow] == true) {
@@ -121,7 +121,7 @@ class Day19 {
                     if (isLastWorkflow) {
                         resolveRangeWorkflow(currentInput, extractedWorkflows.getValue(nextWorkflow))
                     } else {
-                        val newInput = currentInput.replacedRange(it.variableName!!, it.range!!)
+                        val newInput = currentInput.replacedRange(it.variableName, it.range)
 
                         currentInput = currentInput.removedRange(it.variableName, it.range)
 

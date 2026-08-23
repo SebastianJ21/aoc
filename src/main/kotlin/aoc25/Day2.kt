@@ -2,9 +2,9 @@ package aoc25
 
 import AOCAnswer
 import AOCSolution
+import inputLines
 import kotlinx.collections.immutable.toImmutableList
 import mapToLong
-import inputLines
 
 class Day2 : AOCSolution {
 

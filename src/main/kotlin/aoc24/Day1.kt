@@ -2,8 +2,8 @@ package aoc24
 
 import AOCAnswer
 import AOCSolution
-import mapToInt
 import inputLines
+import mapToInt
 import kotlin.math.abs
 
 class Day1 : AOCSolution {

@@ -5,9 +5,9 @@ import AOCSolution
 import Position
 import applyDirection
 import at
+import inputLines
 import invertListMap
 import mapToInt
-import inputLines
 import kotlin.math.max
 import kotlin.math.min
 

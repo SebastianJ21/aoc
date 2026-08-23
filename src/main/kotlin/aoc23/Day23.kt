@@ -6,9 +6,9 @@ import Position
 import applyDirection
 import at
 import getOrNull
+import inputLines
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
-import inputLines
 import toCharMatrix
 
 class Day23 : AOCSolution {

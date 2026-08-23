@@ -5,10 +5,10 @@ import AOCSolution
 import Position
 import applyDirection
 import at
+import inputLines
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentHashMapOf
 import positionsOf
-import inputLines
 
 class Day7 : AOCSolution {
 

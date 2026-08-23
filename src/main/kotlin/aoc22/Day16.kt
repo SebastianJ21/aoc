@@ -2,8 +2,8 @@ package aoc22
 
 import AOCAnswer
 import AOCSolution
-import maxOrZero
 import inputLines
+import maxOrZero
 
 class Day16 : AOCSolution {
 

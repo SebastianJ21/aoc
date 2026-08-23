@@ -2,8 +2,8 @@ package aoc25
 
 import AOCAnswer
 import AOCSolution
-import mapToLong
 import inputLines
+import mapToLong
 import splitBy
 
 class Day5 : AOCSolution {

@@ -7,10 +7,10 @@ import Position
 import aoc19.IntCodeRunner.Companion.executeInstructions
 import applyDirection
 import at
+import inputLines
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
 import mapToLong
-import inputLines
 
 class Day11 : AOCSolution {
 

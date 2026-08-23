@@ -7,10 +7,10 @@ import Position
 import applyDirection
 import at
 import getOrNull
+import inputLines
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import positionsOf
-import inputLines
 import toMatrix
 import kotlin.math.max
 

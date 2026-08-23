@@ -6,8 +6,8 @@ import Position
 import aoc19.IntCodeRunner.Companion.executeInstructions
 import applyDirection
 import at
-import mapToLong
 import inputLines
+import mapToLong
 import java.util.PriorityQueue
 import kotlin.math.min
 

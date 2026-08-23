@@ -3,9 +3,9 @@ package aoc19
 import AOCAnswer
 import AOCSolution
 import aoc19.IntCodeRunner.Companion.executeInstructions
+import inputLines
 import kotlinx.collections.immutable.toPersistentMap
 import mapToLong
-import inputLines
 
 class Day2 : AOCSolution {
 

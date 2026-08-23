@@ -4,8 +4,8 @@ package aoc19
 
 import AOCAnswer
 import AOCSolution
-import invertListMap
 import inputLines
+import invertListMap
 import java.util.PriorityQueue
 import kotlin.math.min
 

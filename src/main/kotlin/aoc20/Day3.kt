@@ -4,8 +4,8 @@ import AOCAnswer
 import AOCSolution
 import applyDirection
 import at
-import product
 import inputLines
+import product
 import toCharMatrix
 
 class Day3 : AOCSolution {

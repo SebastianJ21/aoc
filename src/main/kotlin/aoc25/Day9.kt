@@ -5,10 +5,10 @@ import AOCSolution
 import Position
 import applyDirection
 import at
+import inputLines
 import kotlinx.collections.immutable.persistentHashSetOf
 import kotlinx.collections.immutable.persistentListOf
 import mapToInt
-import inputLines
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min

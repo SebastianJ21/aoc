@@ -5,10 +5,10 @@ import AOCSolution
 import Position
 import applyDirection
 import at
+import inputLines
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashSetOf
 import mapToInt
-import inputLines
 import java.util.PriorityQueue
 
 class Day18 : AOCSolution {

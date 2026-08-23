@@ -2,11 +2,11 @@ package aoc24
 
 import AOCAnswer
 import AOCSolution
+import inputLines
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import mapToLong
-import inputLines
 import splitBy
 
 class Day17 : AOCSolution {

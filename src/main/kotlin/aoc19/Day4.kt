@@ -3,8 +3,8 @@ package aoc19
 import AOCAnswer
 import AOCSolution
 import firstAndRest
-import mapToInt
 import inputLines
+import mapToInt
 
 class Day4 : AOCSolution {
 

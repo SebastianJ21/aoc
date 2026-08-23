@@ -4,9 +4,9 @@ import AOCAnswer
 import AOCSolution
 import at
 import countUntil
+import inputLines
 import plus
 import positionsOf
-import inputLines
 
 class Day4 : AOCSolution {
 

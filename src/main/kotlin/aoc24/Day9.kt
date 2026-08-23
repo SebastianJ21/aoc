@@ -2,9 +2,9 @@ package aoc24
 
 import AOCAnswer
 import AOCSolution
+import inputLines
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
-import inputLines
 
 class Day9 : AOCSolution {
 

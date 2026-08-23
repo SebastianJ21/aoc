@@ -2,8 +2,8 @@ package aoc20
 
 import AOCAnswer
 import AOCSolution
-import product
 import inputLines
+import product
 import splitBy
 import toCharMatrix
 import transposed

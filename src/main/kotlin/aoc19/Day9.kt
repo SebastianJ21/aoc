@@ -3,8 +3,8 @@ package aoc19
 import AOCAnswer
 import AOCSolution
 import aoc19.IntCodeRunner.Companion.executeInstructions
-import mapToLong
 import inputLines
+import mapToLong
 
 class Day9 : AOCSolution {
 
