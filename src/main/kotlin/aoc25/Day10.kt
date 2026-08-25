@@ -5,29 +5,33 @@ import AOCSolution
 import inputLines
 import invertListMap
 import mapToInt
+import structures.IntList
+import structures.toIntList
 import transposed
 import java.math.BigInteger
-import kotlin.IndexOutOfBoundsException
 import kotlin.math.absoluteValue
 import kotlin.math.min
+import kotlin.math.sign
 
 class Day10 : AOCSolution {
 
     override fun solve(): AOCAnswer {
         val inputLines = inputLines()
+
         val inputs = inputLines.map { line ->
+            // [####] (2,3) (0,3) (1,3) (0,1,3) {34,24,10,51}
             val parts = line.split(" ")
 
             // [.####..#..]
-            val array = parts.first().drop(1).dropLast(1).map { if (it == '#') 1 else 0 }
+            val array = parts.first().removeSurrounding("[", "]").map { if (it == '#') 1 else 0 }
 
             // (2,3) (0,3) (1,3) (0,1,3)
             val buttons = parts.drop(1).dropLast(1).map {
-                it.removePrefix("(").removeSuffix(")").split(",").mapToInt()
+                it.removeSurrounding("(", ")").split(",").mapToInt()
             }
 
             // {3,5,4,7}
-            val joltage = parts.last().drop(1).dropLast(1).split(",").mapToInt()
+            val joltage = parts.last().removeSurrounding("{", "}").split(",").mapToInt()
 
             Triple(array, buttons, joltage)
         }
@@ -46,31 +50,12 @@ class Day10 : AOCSolution {
 
             findMinAnswer(
                 initialMatrix = normalizedMatrix,
-                answers = answers.toIntArray(),
+                answers = answers,
                 globalMaxAnswer = goal.sum(),
             )
         }
 
         return AOCAnswer(part1, partTwo)
-    }
-
-    private fun next(current: List<Pair<IntArray, Int>>, seen: Set<Int>, target: IntArray): List<Pair<IntArray, Int>> {
-        val newEntries = current.flatMapIndexed { index, (buttonA, buttonACost) ->
-            current // .asSequence()
-                .drop(index + 1)
-                .mapNotNull { (buttonB, buttonBCost) ->
-                    val new = IntArray(target.size) { index -> (buttonA[index] + buttonB[index]) % 2 }
-
-                    if (new.contentHashCode() in seen) return@mapNotNull null
-
-                    if (new.contentEquals(target)) return listOf(target to buttonBCost + buttonACost)
-
-                    // new to (buttonACost + buttonBCost)
-                    new to (buttonACost + buttonBCost)
-                }
-        }
-
-        return current + newEntries.distinctBy { (createdArray) -> createdArray.contentHashCode() }
     }
 
     private fun next(current: Map<List<Int>, Int>, target: List<Int>): Map<List<Int>, Int> {
@@ -98,20 +83,24 @@ class Day10 : AOCSolution {
         val nextMatrix: List<List<Int>>,
     )
 
-    private fun findMinAnswer(initialMatrix: List<List<Int>>, answers: IntArray, globalMaxAnswer: Int): Int {
-        // Since we only use (and are interested in) whole numbers, our pivots can be non 1 (i.e 3)
+    private fun findMinAnswer(
+        initialMatrix: List<List<Int>>,
+        answers: List<Int>,
+        globalMaxAnswer: Int,
+    ): Int {
+        // Since we only use (and are interested in) whole numbers, our pivots can be non 1 (i.e., 3)
         val rowIDivisor = initialMatrix.mapIndexed { rowI, row ->
             val pivotValue = row[rowI]
             require(pivotValue >= 0)
 
             pivotValue.coerceAtLeast(1)
-        }.toIntArray()
+        }.toIntList()
 
         val initialFreeParams = initialMatrix.extractFreeParams()
 
         fun search(
             matrix: List<List<Int>>,
-            answers: IntArray,
+            answers: IntList,
             fixedRowI: List<Int>,
             freeParams: List<FreeParam>,
         ): Int? {
@@ -149,26 +138,19 @@ class Day10 : AOCSolution {
                 .asSequence()
                 .map { selectedParam ->
                     // Generate new answers
-                    val nextAnswers = IntArray(answers.size) { index ->
+                    val nextAnswers = IntList(answers.size) { index ->
                         val answer = answers[index]
 
-                        if (!freeParam.rowIndexes[index]) return@IntArray answer
+                        if (!freeParam.rowIndexes[index]) return@IntList answer
 
                         val paramValue = matrix[index][freeParam.colIndex]
 
                         answer - selectedParam.times(paramValue)
                     }
-//                    val nextAnswers = answers.mapIndexed { index, answer ->
-//                        if (!freeParam.rowIndexes[index]) return@mapIndexed answer
-//
-//                        val paramValue = matrix[index][freeParam.colIndex]
-//
-//                        answer - selectedParam.times(paramValue)
-//                    }
 
                     selectedParam to nextAnswers
                 }
-                .map { (selectedParam, newAnswers) ->
+                .mapNotNull { (selectedParam, newAnswers) ->
                     search(
                         matrix = freeParam.nextMatrix,
                         answers = newAnswers,
@@ -178,7 +160,6 @@ class Day10 : AOCSolution {
                 }
                 .fold(null as Int?) { min, result ->
                     when {
-                        result == null -> min
                         min == null -> result
                         result > min -> return min
                         else -> min(result, min)
@@ -188,7 +169,7 @@ class Day10 : AOCSolution {
 
         val result = search(
             matrix = initialMatrix,
-            answers = answers,
+            answers = answers.toIntList(),
             fixedRowI = initialMatrix.fixedRowIndexes(),
             freeParams = initialFreeParams,
         )
@@ -204,11 +185,13 @@ class Day10 : AOCSolution {
 
         val columns = matrix[0].indices
         val (reducedForm) = columns.foldIndexed(augmented to 0) { _, (current, rowI), colI ->
-            // Select only from 'non reduced' rows
-            val selectedRow = current
+            // Select only from 'non-reduced' rows
+            val availableRows = current.filter { row -> row.take(colI).all { it == 0 } }
+
+            val selectedRow = availableRows
                 // Prefer pivots with value of 1
-                .find { row -> row[colI].absoluteValue == 1 && row.take(colI).all { it == 0 } }
-                ?: current.find { row -> row[colI] != 0 && row.take(colI).all { it == 0 } }
+                .find { row -> row[colI].absoluteValue == 1 }
+                ?: availableRows.find { row -> row[colI] != 0 }
                 ?: return@foldIndexed current to rowI
 
             val row = selectedRow.normalized()
@@ -248,7 +231,7 @@ class Day10 : AOCSolution {
         if (all { it == 0 }) return this
 
         val gcd = gcd()
-        val sign = if (first { it != 0 } < 0) -1 else 1
+        val sign = first { it != 0 }.sign
 
         return map { value -> value * sign / gcd }
     }
@@ -299,15 +282,11 @@ class Day10 : AOCSolution {
     }
 
     private fun List<List<Int>>.fixedRowIndexes() =
-        this.mapIndexedNotNull { rowI, row -> rowI.takeIf { row.singleOrNull { it != 0 } == 1 } }
+        this.mapIndexedNotNull { rowI, row -> rowI.takeIf { row.singleOrNull { it != 0 } == 1 } }.toIntList()
 
-    private fun List<Int>.gcd() = map { it.toBigInteger() }.reduce(BigInteger::gcd).intValueExact()
+    private fun List<Int>.gcd(): Int = map { it.toBigInteger() }.reduce(BigInteger::gcd).intValueExact()
 
     private fun <T> List<T>.set(index: Int, element: T): List<T> {
-        if (index < 0 || index >= size) {
-            throw IndexOutOfBoundsException("index: $index, size: $size")
-        }
-
         return toMutableList().apply { set(index, element) }
     }
 }
