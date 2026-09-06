@@ -38,7 +38,7 @@ class Day10 : AOCSolution {
 
         val part1 = inputs.sumOf { (target, buttons) ->
             val initial = buttons
-                .map { button -> List(target.size) { if (it in button) 1 else 0 } }
+                .map { button -> IntList(target.size) { if (it in button) 1 else 0 } }
                 .associateWith { 1 }
 
             generateSequence(initial) { current -> next(current, target) }
@@ -58,12 +58,12 @@ class Day10 : AOCSolution {
         return AOCAnswer(part1, partTwo)
     }
 
-    private fun next(current: Map<List<Int>, Int>, target: List<Int>): Map<List<Int>, Int> {
+    private fun next(current: Map<IntList, Int>, target: List<Int>): Map<IntList, Int> {
         val newEntries = current.entries.flatMapIndexed { index, (buttonA, buttonACost) ->
             current.entries
                 .drop(index + 1)
                 .mapNotNull { (buttonB, buttonBCost) ->
-                    val new = List(target.size) { index -> (buttonA[index] + buttonB[index]) % 2 }
+                    val new = IntList(target.size) { index -> (buttonA[index] + buttonB[index]) % 2 }
 
                     when (new) {
                         target -> return mapOf(new to buttonBCost + buttonACost)
@@ -78,9 +78,9 @@ class Day10 : AOCSolution {
 
     private class FreeParam(
         val colIndex: Int,
-        val rowIndexes: BooleanArray,
-        val nextFixedRowIndexes: List<Int>,
-        val nextMatrix: List<List<Int>>,
+        val rowIndexes: IntList,
+        val nextFixedRowIndexes: IntList,
+        val nextMatrix: List<IntList>,
     )
 
     private fun findMinAnswer(
@@ -99,9 +99,9 @@ class Day10 : AOCSolution {
         val initialFreeParams = initialMatrix.extractFreeParams()
 
         fun search(
-            matrix: List<List<Int>>,
+            matrix: List<IntList>,
             answers: IntList,
-            fixedRowI: List<Int>,
+            fixedRowI: IntList,
             freeParams: List<FreeParam>,
         ): Int? {
             if (freeParams.isEmpty()) {
@@ -126,7 +126,7 @@ class Day10 : AOCSolution {
             answers.forEachIndexed { rowI, answer ->
                 val isInvalid = answer < 0 || answer % rowIDivisor[rowI] != 0
                 // Row has a negative (invalid) answer which cannot be changed in the future
-                if (isInvalid && freeParams.none { state -> state.rowIndexes[rowI] }) return null
+                if (isInvalid && freeParams.none { state -> rowI in state.rowIndexes }) return null
             }
 
             val freeParam = freeParams.first()
@@ -134,41 +134,37 @@ class Day10 : AOCSolution {
 
             val maxParam = globalMaxAnswer - fixedAnswers
 
-            return (0..maxParam)
-                .asSequence()
-                .map { selectedParam ->
-                    // Generate new answers
-                    val nextAnswers = IntList(answers.size) { index ->
-                        val answer = answers[index]
+            val minResult = (0..maxParam).fold(Int.MAX_VALUE) { min, selectedParam ->
+                // There exist a number of total button presses that are lower than our `selectedParam`.
+                // Since `selectedParam` is from a strictly increasing sequence, it implies no further possibilities
+                if (min < selectedParam) return min
 
-                        if (!freeParam.rowIndexes[index]) return@IntList answer
+                // Generate new answers
+                val newAnswers = answers.mutated { clonedAnswers ->
+                    freeParam.rowIndexes.forEachInt { rowIndex ->
+                        val answer = clonedAnswers[rowIndex]
 
-                        val paramValue = matrix[index][freeParam.colIndex]
-
-                        answer - selectedParam.times(paramValue)
-                    }
-
-                    selectedParam to nextAnswers
-                }
-                .mapNotNull { (selectedParam, newAnswers) ->
-                    search(
-                        matrix = freeParam.nextMatrix,
-                        answers = newAnswers,
-                        fixedRowI = freeParam.nextFixedRowIndexes,
-                        freeParams = nextFreeParams,
-                    )?.plus(selectedParam)
-                }
-                .fold(null as Int?) { min, result ->
-                    when {
-                        min == null -> result
-                        result > min -> return min
-                        else -> min(result, min)
+                        clonedAnswers[rowIndex] = answer - selectedParam.times(matrix[rowIndex][freeParam.colIndex])
                     }
                 }
+
+                val result = search(
+                    matrix = freeParam.nextMatrix,
+                    answers = newAnswers,
+                    fixedRowI = freeParam.nextFixedRowIndexes,
+                    freeParams = nextFreeParams,
+                )?.plus(selectedParam) ?: return@fold min
+
+                if (result > min) return min
+
+                min(result, min)
+            }
+
+            return minResult.takeIf { it != Int.MAX_VALUE }
         }
 
         val result = search(
-            matrix = initialMatrix,
+            matrix = initialMatrix.map { it.toIntList() },
             answers = answers.toIntList(),
             fixedRowI = initialMatrix.fixedRowIndexes(),
             freeParams = initialFreeParams,
@@ -267,13 +263,10 @@ class Day10 : AOCSolution {
             .drop(1) // Drop the initial matrix
 
         val freeParams = freeParamColToRowPairs.zip(matrixEvolution) { (colIndex, rowIndexes), matrix ->
-            // Behaves like a hash map of { index: Int -> hasFreeParam: Boolean } (but blazingly fast)
-            val freeParamRowIndexes = BooleanArray(this.size) { it in rowIndexes }
-
             FreeParam(
                 colIndex = colIndex,
-                rowIndexes = freeParamRowIndexes,
-                nextMatrix = matrix,
+                rowIndexes = rowIndexes.toIntList(),
+                nextMatrix = matrix.map { it.toIntList() },
                 nextFixedRowIndexes = matrix.fixedRowIndexes(),
             )
         }
