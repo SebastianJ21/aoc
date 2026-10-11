@@ -1,5 +1,7 @@
 package structures
 
+import kotlin.math.min
+
 class IntList private constructor(private val elements: IntArray) : AbstractList<Int>() {
 
     constructor(size: Int, init: (index: Int) -> Int) : this(IntArray(size, init))
@@ -27,7 +29,52 @@ class IntList private constructor(private val elements: IntArray) : AbstractList
         return elements.foldIndexed(initial, operation)
     }
 
+    internal inline fun runningReduce(operation: (acc: Int, value: Int) -> Int): IntList {
+        if (isEmpty()) return IntList(IntArray(0))
+
+        var accumulator = elements[0]
+        val result = IntArray(size)
+
+        result[0] = accumulator
+
+        for (index in 1 until size) {
+            accumulator = operation(accumulator, elements[index])
+
+            result[index] = accumulator
+        }
+
+        return IntList(result)
+    }
+
+    internal inline fun zip(other: IntList, transform: (a: Int, b: Int) -> Int): IntList {
+        val list = IntArray(min(this.size, other.size))
+
+        var i = 0
+        for (element in this) {
+            if (i >= other.size) break
+            list[i] = transform(element, other[i++])
+        }
+
+        return wrap(list)
+    }
+
+    internal fun drop(n: Int): IntList {
+        require(n >= 0) { "Requested element count $n is less than zero." }
+        if (n >= size) return IntList(IntArray(0))
+
+        val result = IntArray(size - n)
+        var resultIndex = 0
+
+        for (index in n until size) {
+            result[resultIndex++] = elements[index]
+        }
+
+        return wrap(result)
+    }
+
     internal inline fun sumOf(selector: (Int) -> Int) = elements.sumOf(selector)
+
+    internal fun sum() = elements.sum()
 
     internal inline fun mutated(mutator: (IntArray) -> Unit): IntList {
         val copied = elements.copyOf()
