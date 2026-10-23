@@ -4,7 +4,7 @@ import AOCAnswer
 import AOCSolution
 import Direction
 import Position
-import aoc19.IntCodeRunner.Companion.executeInstructions
+import aoc19.IntCodeRunner.executeInstructions
 import applyDirection
 import at
 import inputLines

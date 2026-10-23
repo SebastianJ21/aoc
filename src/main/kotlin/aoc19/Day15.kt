@@ -3,7 +3,7 @@ package aoc19
 import AOCAnswer
 import AOCSolution
 import Position
-import aoc19.IntCodeRunner.Companion.executeInstructions
+import aoc19.IntCodeRunner.executeInstructions
 import applyDirection
 import at
 import inputLines
