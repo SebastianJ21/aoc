@@ -190,7 +190,7 @@ inline fun <T> Iterable<Iterable<T>>.positionsOf(crossinline predicate: (T) -> B
 inline fun Iterable<String>.positionsOf(crossinline predicate: (Char) -> Boolean): Sequence<Position> = this
     .asSequence()
     .flatMapIndexed { rowI, row ->
-        row.mapIndexedNotNull { colI, value ->
+        row.asSequence().mapIndexedNotNull { colI, value ->
             if (predicate(value)) Position(rowI, colI) else null
         }
     }
